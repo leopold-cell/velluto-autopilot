@@ -104,12 +104,13 @@ class MonitoringEngine:
         }
 
     async def _check_error_rate(self) -> dict:
+        from sqlalchemy import Integer, case
         one_hour_ago = datetime.now(timezone.utc) - timedelta(hours=1)
         result = await self.db.execute(
             select(
                 func.count().label("total"),
                 func.sum(
-                    func.cast(AuditLog.status == "failure", type_=None)
+                    case((AuditLog.status == "failure", 1), else_=0)
                 ).label("failures"),
             ).where(AuditLog.created_at >= one_hour_ago)
         )

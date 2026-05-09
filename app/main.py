@@ -18,7 +18,7 @@ log = structlog.get_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    if settings.sentry_dsn:
+    if settings.sentry_dsn and not settings.sentry_dsn.endswith("xxx"):
         sentry_sdk.init(dsn=settings.sentry_dsn, environment=settings.environment)
 
     await init_db()

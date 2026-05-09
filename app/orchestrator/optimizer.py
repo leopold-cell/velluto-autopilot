@@ -48,12 +48,13 @@ class SystemOptimizer:
         top_actions = [{"action": r.action, "count": r.count} for r in action_result]
 
         # Error rate by module
+        from sqlalchemy import case
         error_result = await self.db.execute(
             select(
                 AuditLog.module,
                 func.count(AuditLog.id).label("total"),
                 func.sum(
-                    func.cast(AuditLog.status == "failure", type_=None)
+                    case((AuditLog.status == "failure", 1), else_=0)
                 ).label("failures"),
             )
             .where(AuditLog.created_at >= cutoff)
