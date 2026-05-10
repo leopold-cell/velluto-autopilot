@@ -528,167 +528,6 @@
     </div>
   </div>
 
-  <!-- AGENT HIERARCHY -->
-  <div class="panel hierarchy-section">
-    <div class="panel-header">
-      <span class="panel-title">Multi-Agent Architecture</span>
-      <span id="orch-cycle-badge" class="orch-badge orch-badge-idle">Idle</span>
-    </div>
-    <div class="panel-body" style="padding-top:0">
-
-      <!-- Orchestrator node -->
-      <div class="hierarchy-tree">
-        <div class="orch-node">
-          <div class="orch-title">Orchestrator — Claude claude-sonnet-4-6</div>
-          <div class="orch-sub">Agentic loop · observe → reason → act · max 10 tool calls/cycle</div>
-          <div class="orch-status-row">
-            <span id="orch-status-badge" class="orch-badge orch-badge-idle">Idle</span>
-            <span id="orch-last-run" style="font-size:10px;color:var(--muted)">Last cycle: —</span>
-            <span id="orch-last-tokens" style="font-size:10px;color:var(--muted)">— tokens</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agent cards -->
-      <div class="agent-cards-row" id="agent-cards-row">
-
-        <div class="agent-card" id="agent-shopify">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="agent-icon">🛍</div>
-            <div class="agent-name">Shopify CRO</div>
-          </div>
-          <div class="agent-goal">Maximize conversion rate & AOV. Updates product SEO, manages prices, triggers discounts.</div>
-          <div class="agent-kpis">
-            <span class="agent-kpi-tag">Orders/day</span>
-            <span class="agent-kpi-tag">AOV</span>
-            <span class="agent-kpi-tag">CVR</span>
-          </div>
-          <div class="agent-last" id="last-shopify">
-            <span style="color:var(--muted)">No activity yet</span>
-          </div>
-        </div>
-
-        <div class="agent-card" id="agent-meta">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="agent-icon">📣</div>
-            <div class="agent-name">Meta Ads</div>
-          </div>
-          <div class="agent-goal">Achieve ≥3× ROAS. Adjusts budgets, pauses losers, scales winners, requests new creatives.</div>
-          <div class="agent-kpis">
-            <span class="agent-kpi-tag">ROAS</span>
-            <span class="agent-kpi-tag">CPA</span>
-            <span class="agent-kpi-tag">CTR</span>
-            <span class="agent-kpi-tag">Spend</span>
-          </div>
-          <div class="agent-last" id="last-meta">
-            <span style="color:var(--muted)">No activity yet</span>
-          </div>
-        </div>
-
-        <div class="agent-card" id="agent-seo">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="agent-icon">🔍</div>
-            <div class="agent-name">SEO / GEO</div>
-          </div>
-          <div class="agent-goal">Rank for high-intent cycling keywords. Generates product copy, FAQs & entity content for AI search.</div>
-          <div class="agent-kpis">
-            <span class="agent-kpi-tag">Organic clicks</span>
-            <span class="agent-kpi-tag">Avg position</span>
-          </div>
-          <div class="agent-last" id="last-seo">
-            <span style="color:var(--muted)">No activity yet</span>
-          </div>
-        </div>
-
-        <div class="agent-card" id="agent-email">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="agent-icon">✉️</div>
-            <div class="agent-name">Email</div>
-          </div>
-          <div class="agent-goal">Drive repeat purchases & recover abandoned carts. Runs win-back, welcome & post-purchase flows.</div>
-          <div class="agent-kpis">
-            <span class="agent-kpi-tag">Email revenue</span>
-            <span class="agent-kpi-tag">Open rate</span>
-          </div>
-          <div class="agent-last" id="last-email_marketing">
-            <span style="color:var(--muted)">No activity yet</span>
-          </div>
-        </div>
-
-        <div class="agent-card" id="agent-competitor">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="agent-icon">🕵️</div>
-            <div class="agent-name">Competitor</div>
-          </div>
-          <div class="agent-goal">Track Oakley, Rudy Project & 100%. Alerts on price changes, new products & positioning shifts.</div>
-          <div class="agent-kpis">
-            <span class="agent-kpi-tag">Price delta</span>
-            <span class="agent-kpi-tag">New SKUs</span>
-          </div>
-          <div class="agent-last" id="last-competitor">
-            <span style="color:var(--muted)">No activity yet</span>
-          </div>
-        </div>
-
-        <div class="agent-card" id="agent-creative">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="agent-icon">🎨</div>
-            <div class="agent-name">Creative</div>
-          </div>
-          <div class="agent-goal">Generate on-brand ad copy, headlines & product descriptions. All output QA-checked before use.</div>
-          <div class="agent-kpis">
-            <span class="agent-kpi-tag">Copy QA pass</span>
-            <span class="agent-kpi-tag">Ad variants</span>
-          </div>
-          <div class="agent-last" id="last-creative">
-            <span style="color:var(--muted)">No activity yet</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Support engines -->
-      <div class="support-row">
-        <div class="support-node">
-          <div class="support-icon">📊</div>
-          <div class="support-text">
-            <div class="support-name">KPI Engine</div>
-            <div class="support-desc">Snapshots every 6h · feeds orchestrator context</div>
-          </div>
-        </div>
-        <div class="support-node">
-          <div class="support-icon">✅</div>
-          <div class="support-text">
-            <div class="support-name">Approval Engine</div>
-            <div class="support-desc">WhatsApp gate for high-risk actions</div>
-          </div>
-        </div>
-        <div class="support-node">
-          <div class="support-icon">↩️</div>
-          <div class="support-text">
-            <div class="support-name">Rollback Engine</div>
-            <div class="support-desc">Every mutation has a registered inverse</div>
-          </div>
-        </div>
-        <div class="support-node">
-          <div class="support-icon">🪙</div>
-          <div class="support-text">
-            <div class="support-name">Token Optimizer</div>
-            <div class="support-desc">Prompt caching · cost tracking · Redis</div>
-          </div>
-        </div>
-        <div class="support-node">
-          <div class="support-icon">🛡</div>
-          <div class="support-text">
-            <div class="support-name">Quality Manager</div>
-            <div class="support-desc">Brand fact checks before all published output</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   <!-- KPI STRIP -->
   <div class="kpi-strip">
 
@@ -1053,6 +892,167 @@
       <div class="chart-wrap" style="height:200px">
         <canvas id="progressionChart"></canvas>
       </div>
+    </div>
+  </div>
+
+  <!-- AGENT HIERARCHY -->
+  <div class="panel hierarchy-section">
+    <div class="panel-header">
+      <span class="panel-title">Multi-Agent Architecture</span>
+      <span id="orch-cycle-badge" class="orch-badge orch-badge-idle">Idle</span>
+    </div>
+    <div class="panel-body" style="padding-top:0">
+
+      <!-- Orchestrator node -->
+      <div class="hierarchy-tree">
+        <div class="orch-node">
+          <div class="orch-title">Orchestrator — Claude claude-sonnet-4-6</div>
+          <div class="orch-sub">Agentic loop · observe → reason → act · max 10 tool calls/cycle</div>
+          <div class="orch-status-row">
+            <span id="orch-status-badge" class="orch-badge orch-badge-idle">Idle</span>
+            <span id="orch-last-run" style="font-size:10px;color:var(--muted)">Last cycle: —</span>
+            <span id="orch-last-tokens" style="font-size:10px;color:var(--muted)">— tokens</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent cards -->
+      <div class="agent-cards-row" id="agent-cards-row">
+
+        <div class="agent-card" id="agent-shopify">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🛍</div>
+            <div class="agent-name">Shopify CRO</div>
+          </div>
+          <div class="agent-goal">Maximize conversion rate & AOV. Updates product SEO, manages prices, triggers discounts.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Orders/day</span>
+            <span class="agent-kpi-tag">AOV</span>
+            <span class="agent-kpi-tag">CVR</span>
+          </div>
+          <div class="agent-last" id="last-shopify">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-meta">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">📣</div>
+            <div class="agent-name">Meta Ads</div>
+          </div>
+          <div class="agent-goal">Achieve ≥3× ROAS. Adjusts budgets, pauses losers, scales winners, requests new creatives.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">ROAS</span>
+            <span class="agent-kpi-tag">CPA</span>
+            <span class="agent-kpi-tag">CTR</span>
+            <span class="agent-kpi-tag">Spend</span>
+          </div>
+          <div class="agent-last" id="last-meta">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-seo">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🔍</div>
+            <div class="agent-name">SEO / GEO</div>
+          </div>
+          <div class="agent-goal">Rank for high-intent cycling keywords. Generates product copy, FAQs & entity content for AI search.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Organic clicks</span>
+            <span class="agent-kpi-tag">Avg position</span>
+          </div>
+          <div class="agent-last" id="last-seo">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-email">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">✉️</div>
+            <div class="agent-name">Email</div>
+          </div>
+          <div class="agent-goal">Drive repeat purchases & recover abandoned carts. Runs win-back, welcome & post-purchase flows.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Email revenue</span>
+            <span class="agent-kpi-tag">Open rate</span>
+          </div>
+          <div class="agent-last" id="last-email_marketing">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-competitor">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🕵️</div>
+            <div class="agent-name">Competitor</div>
+          </div>
+          <div class="agent-goal">Track Oakley, Rudy Project & 100%. Alerts on price changes, new products & positioning shifts.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Price delta</span>
+            <span class="agent-kpi-tag">New SKUs</span>
+          </div>
+          <div class="agent-last" id="last-competitor">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-creative">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🎨</div>
+            <div class="agent-name">Creative</div>
+          </div>
+          <div class="agent-goal">Generate on-brand ad copy, headlines & product descriptions. All output QA-checked before use.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Copy QA pass</span>
+            <span class="agent-kpi-tag">Ad variants</span>
+          </div>
+          <div class="agent-last" id="last-creative">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Support engines -->
+      <div class="support-row">
+        <div class="support-node">
+          <div class="support-icon">📊</div>
+          <div class="support-text">
+            <div class="support-name">KPI Engine</div>
+            <div class="support-desc">Snapshots every 6h · feeds orchestrator context</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">✅</div>
+          <div class="support-text">
+            <div class="support-name">Approval Engine</div>
+            <div class="support-desc">WhatsApp gate for high-risk actions</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">↩️</div>
+          <div class="support-text">
+            <div class="support-name">Rollback Engine</div>
+            <div class="support-desc">Every mutation has a registered inverse</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">🪙</div>
+          <div class="support-text">
+            <div class="support-name">Token Optimizer</div>
+            <div class="support-desc">Prompt caching · cost tracking · Redis</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">🛡</div>
+          <div class="support-text">
+            <div class="support-name">Quality Manager</div>
+            <div class="support-desc">Brand fact checks before all published output</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
