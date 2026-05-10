@@ -1,15 +1,21 @@
 from __future__ import annotations
 
+import os
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
 
+# Load .env manually first so pydantic-settings inherits from os.environ.
+# This avoids pydantic-settings' own dotenv parser dropping values that
+# contain double-underscores (which it treats as nested-model separators).
+from dotenv import load_dotenv
+load_dotenv(override=True)
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
         extra="ignore",
+        env_nested_delimiter=None,
     )
 
     # App
