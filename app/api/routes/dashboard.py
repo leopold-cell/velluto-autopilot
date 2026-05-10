@@ -29,7 +29,7 @@ async def dashboard_data(db: AsyncSession = Depends(get_db)):
     kpi_engine = KpiEngine(db)
     token_optimizer = TokenOptimizer()
 
-    today_kpis, trend, agent_activity, token_report, campaigns, suggestions, alerts = (
+    today_kpis, trend, agent_activity, token_report, campaigns, suggestions, alerts, agent_status = (
         await _gather_kpis(kpi_engine),
         await _gather_trend(db),
         await _gather_agent_activity(db),
@@ -37,6 +37,7 @@ async def dashboard_data(db: AsyncSession = Depends(get_db)):
         await _gather_campaigns(),
         await _gather_suggestions(db),
         await _gather_alerts(db),
+        await _gather_agent_status(db),
     )
 
     daily_token = await token_optimizer.get_daily_report()
@@ -53,6 +54,7 @@ async def dashboard_data(db: AsyncSession = Depends(get_db)):
         "campaigns": campaigns,
         "suggestions": suggestions,
         "alerts": alerts,
+        "agent_status": agent_status,
     }
 
 
@@ -158,6 +160,57 @@ async def _gather_suggestions(db: AsyncSession) -> list[dict]:
     except Exception as e:
         log.warning("dashboard.suggestions_failed", error=str(e))
         return []
+
+
+async def _gather_agent_status(db: AsyncSession) -> dict:
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+
+    # Latest action per module in last 24h
+    result = await db.execute(
+        select(AuditLog.module, AuditLog.action, AuditLog.status, AuditLog.created_at, AuditLog.duration_ms)
+        .where(AuditLog.created_at >= cutoff)
+        .order_by(AuditLog.created_at.desc())
+    )
+    rows = result.all()
+
+    # Build per-module last-seen summary
+    seen: dict[str, dict] = {}
+    for r in rows:
+        if r.module not in seen:
+            seen[r.module] = {
+                "last_action": r.action,
+                "last_status": r.status,
+                "last_run": r.created_at.isoformat(),
+                "duration_ms": r.duration_ms,
+            }
+
+    # Current running task
+    running_result = await db.execute(
+        select(Task).where(Task.status == TaskStatus.running).order_by(Task.started_at.desc()).limit(1)
+    )
+    running = running_result.scalar_one_or_none()
+
+    # Last completed task
+    last_result = await db.execute(
+        select(Task).where(Task.status == TaskStatus.completed).order_by(Task.completed_at.desc()).limit(1)
+    )
+    last = last_result.scalar_one_or_none()
+
+    return {
+        "modules": seen,
+        "current_task": {
+            "name": running.name,
+            "started_at": running.started_at.isoformat() if running.started_at else None,
+            "progress_pct": running.progress_pct,
+            "actions_executed": running.actions_executed,
+        } if running else None,
+        "last_task": {
+            "name": last.name,
+            "completed_at": last.completed_at.isoformat() if last.completed_at else None,
+            "actions_executed": last.actions_executed,
+            "total_tokens": last.total_tokens,
+        } if last else None,
+    }
 
 
 async def _gather_alerts(db: AsyncSession) -> list[dict]:

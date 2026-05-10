@@ -294,6 +294,201 @@
   .product-price { font-family: monospace; font-weight: 600; }
   .product-stock { font-size: 11px; color: var(--muted); }
 
+  /* ── Agent hierarchy ─────────────────────────────────────────────────── */
+  .hierarchy-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hierarchy-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 20px 0 8px;
+  }
+
+  .orch-node {
+    background: linear-gradient(135deg, rgba(124,106,247,.18), rgba(124,106,247,.08));
+    border: 1px solid rgba(124,106,247,.45);
+    border-radius: 14px;
+    padding: 14px 28px;
+    text-align: center;
+    position: relative;
+    min-width: 320px;
+  }
+
+  .orch-node::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 24px;
+    background: rgba(124,106,247,.4);
+  }
+
+  .orch-title { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: -.2px; }
+  .orch-sub { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: .3px; }
+
+  .orch-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .orch-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+  }
+
+  .orch-badge-idle { background: rgba(107,107,128,.15); color: var(--muted); border: 1px solid rgba(107,107,128,.3); }
+  .orch-badge-running { background: rgba(62,207,142,.12); color: var(--accent2); border: 1px solid rgba(62,207,142,.3); animation: pulse 2s infinite; }
+
+  /* connector bar between orchestrator and agents */
+  .connector-bar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    margin-top: 24px;
+    padding: 0 40px;
+  }
+
+  .connector-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(124,106,247,.25);
+  }
+
+  .agent-cards-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color .2s, transform .15s;
+    position: relative;
+  }
+
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 24px;
+    background: rgba(124,106,247,.2);
+  }
+
+  .agent-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .agent-card.active { border-color: rgba(62,207,142,.4); background: rgba(62,207,142,.03); }
+
+  .agent-icon { font-size: 18px; line-height: 1; }
+  .agent-name { font-size: 12px; font-weight: 700; letter-spacing: -.2px; }
+  .agent-goal { font-size: 10px; color: var(--muted); line-height: 1.45; }
+
+  .agent-kpis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 2px;
+  }
+
+  .agent-kpi-tag {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .agent-last {
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .agent-last-action {
+    font-family: monospace;
+    font-size: 10px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agent-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+    flex-shrink: 0;
+  }
+
+  .dot-success { background: var(--accent2); }
+  .dot-failure { background: var(--danger); }
+  .dot-idle    { background: var(--muted); }
+
+  /* Support layer */
+  .support-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(255,255,255,0.06);
+  }
+
+  .support-node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .support-icon { font-size: 14px; flex-shrink: 0; }
+  .support-text { flex: 1; }
+  .support-name { font-size: 10px; font-weight: 700; color: var(--text); }
+  .support-desc { font-size: 9px; color: var(--muted); margin-top: 1px; }
+  .support-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+
   /* ── Footer ──────────────────────────────────────────────────────────── */
   .footer { text-align: center; color: var(--muted); font-size: 11px; padding: 16px; }
 
@@ -330,6 +525,167 @@
         <span class="alert-item">Only 1 of 14 campaigns active</span>
         <span class="alert-item">Email flows offline — €0 revenue</span>
       </div>
+    </div>
+  </div>
+
+  <!-- AGENT HIERARCHY -->
+  <div class="panel hierarchy-section">
+    <div class="panel-header">
+      <span class="panel-title">Multi-Agent Architecture</span>
+      <span id="orch-cycle-badge" class="orch-badge orch-badge-idle">Idle</span>
+    </div>
+    <div class="panel-body" style="padding-top:0">
+
+      <!-- Orchestrator node -->
+      <div class="hierarchy-tree">
+        <div class="orch-node">
+          <div class="orch-title">Orchestrator — Claude claude-sonnet-4-6</div>
+          <div class="orch-sub">Agentic loop · observe → reason → act · max 10 tool calls/cycle</div>
+          <div class="orch-status-row">
+            <span id="orch-status-badge" class="orch-badge orch-badge-idle">Idle</span>
+            <span id="orch-last-run" style="font-size:10px;color:var(--muted)">Last cycle: —</span>
+            <span id="orch-last-tokens" style="font-size:10px;color:var(--muted)">— tokens</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent cards -->
+      <div class="agent-cards-row" id="agent-cards-row">
+
+        <div class="agent-card" id="agent-shopify">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🛍</div>
+            <div class="agent-name">Shopify CRO</div>
+          </div>
+          <div class="agent-goal">Maximize conversion rate & AOV. Updates product SEO, manages prices, triggers discounts.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Orders/day</span>
+            <span class="agent-kpi-tag">AOV</span>
+            <span class="agent-kpi-tag">CVR</span>
+          </div>
+          <div class="agent-last" id="last-shopify">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-meta">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">📣</div>
+            <div class="agent-name">Meta Ads</div>
+          </div>
+          <div class="agent-goal">Achieve ≥3× ROAS. Adjusts budgets, pauses losers, scales winners, requests new creatives.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">ROAS</span>
+            <span class="agent-kpi-tag">CPA</span>
+            <span class="agent-kpi-tag">CTR</span>
+            <span class="agent-kpi-tag">Spend</span>
+          </div>
+          <div class="agent-last" id="last-meta">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-seo">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🔍</div>
+            <div class="agent-name">SEO / GEO</div>
+          </div>
+          <div class="agent-goal">Rank for high-intent cycling keywords. Generates product copy, FAQs & entity content for AI search.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Organic clicks</span>
+            <span class="agent-kpi-tag">Avg position</span>
+          </div>
+          <div class="agent-last" id="last-seo">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-email">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">✉️</div>
+            <div class="agent-name">Email</div>
+          </div>
+          <div class="agent-goal">Drive repeat purchases & recover abandoned carts. Runs win-back, welcome & post-purchase flows.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Email revenue</span>
+            <span class="agent-kpi-tag">Open rate</span>
+          </div>
+          <div class="agent-last" id="last-email_marketing">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-competitor">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🕵️</div>
+            <div class="agent-name">Competitor</div>
+          </div>
+          <div class="agent-goal">Track Oakley, Rudy Project & 100%. Alerts on price changes, new products & positioning shifts.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Price delta</span>
+            <span class="agent-kpi-tag">New SKUs</span>
+          </div>
+          <div class="agent-last" id="last-competitor">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+        <div class="agent-card" id="agent-creative">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🎨</div>
+            <div class="agent-name">Creative</div>
+          </div>
+          <div class="agent-goal">Generate on-brand ad copy, headlines & product descriptions. All output QA-checked before use.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">Copy QA pass</span>
+            <span class="agent-kpi-tag">Ad variants</span>
+          </div>
+          <div class="agent-last" id="last-creative">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Support engines -->
+      <div class="support-row">
+        <div class="support-node">
+          <div class="support-icon">📊</div>
+          <div class="support-text">
+            <div class="support-name">KPI Engine</div>
+            <div class="support-desc">Snapshots every 6h · feeds orchestrator context</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">✅</div>
+          <div class="support-text">
+            <div class="support-name">Approval Engine</div>
+            <div class="support-desc">WhatsApp gate for high-risk actions</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">↩️</div>
+          <div class="support-text">
+            <div class="support-name">Rollback Engine</div>
+            <div class="support-desc">Every mutation has a registered inverse</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">🪙</div>
+          <div class="support-text">
+            <div class="support-name">Token Optimizer</div>
+            <div class="support-desc">Prompt caching · cost tracking · Redis</div>
+          </div>
+        </div>
+        <div class="support-node">
+          <div class="support-icon">🛡</div>
+          <div class="support-text">
+            <div class="support-name">Quality Manager</div>
+            <div class="support-desc">Brand fact checks before all published output</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1056,6 +1412,87 @@ function applyTokens(data) {
   if (legend[2]) legend[2].innerHTML = `<span style="color:var(--surface2)">■</span> Cache read ${cache.toLocaleString()}`;
 }
 
+// ── Agent status ──────────────────────────────────────────────────────────────
+
+const MODULE_MAP = {
+  shopify:          'last-shopify',
+  meta_ads:         'last-meta',
+  seo:              'last-seo',
+  email_marketing:  'last-email_marketing',
+  competitor:       'last-competitor',
+  creative:         'last-creative',
+};
+
+const CARD_MAP = {
+  shopify:          'agent-shopify',
+  meta_ads:         'agent-meta',
+  seo:              'agent-seo',
+  email_marketing:  'agent-email',
+  competitor:       'agent-competitor',
+  creative:         'agent-creative',
+};
+
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60)  return diff + 's ago';
+  if (diff < 3600) return Math.floor(diff/60) + 'min ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+function applyAgentStatus(data) {
+  const s = data.agent_status;
+  if (!s) return;
+
+  // Orchestrator node
+  const running = s.current_task;
+  const last    = s.last_task;
+  const orchBadge  = document.getElementById('orch-status-badge');
+  const cycleBadge = document.getElementById('orch-cycle-badge');
+
+  if (running) {
+    orchBadge.textContent  = '● Running';
+    orchBadge.className    = 'orch-badge orch-badge-running';
+    cycleBadge.textContent = '● Running';
+    cycleBadge.className   = 'orch-badge orch-badge-running';
+    setEl('orch-last-run',    'Started ' + timeAgo(running.started_at));
+    setEl('orch-last-tokens', running.actions_executed + ' actions so far');
+  } else if (last) {
+    orchBadge.textContent  = 'Idle';
+    orchBadge.className    = 'orch-badge orch-badge-idle';
+    cycleBadge.textContent = 'Idle';
+    cycleBadge.className   = 'orch-badge orch-badge-idle';
+    setEl('orch-last-run',    'Last cycle ' + timeAgo(last.completed_at));
+    setEl('orch-last-tokens', (last.total_tokens || 0).toLocaleString() + ' tokens');
+  }
+
+  // Per-module last action
+  const modules = s.modules || {};
+  for (const [mod, elId] of Object.entries(MODULE_MAP)) {
+    const el   = document.getElementById(elId);
+    const card = document.getElementById(CARD_MAP[mod]);
+    const info = modules[mod];
+    if (!el) continue;
+
+    if (info) {
+      const dotClass = info.last_status === 'success' ? 'dot-success'
+                     : info.last_status === 'failure' ? 'dot-failure' : 'dot-idle';
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:4px">
+          <span class="agent-dot ${dotClass}"></span>
+          <span class="agent-last-action">${info.last_action}</span>
+        </div>
+        <span style="color:var(--muted)">${timeAgo(info.last_run)}${info.duration_ms ? ' · ' + (info.duration_ms > 999 ? (info.duration_ms/1000).toFixed(1)+'s' : info.duration_ms+'ms') : ''}</span>`;
+      if (card) {
+        card.classList.toggle('active', info.last_status === 'success');
+      }
+    } else {
+      el.innerHTML = `<span style="color:var(--muted)">No activity yet</span>`;
+    }
+  }
+}
+
 // ── Live fetch ────────────────────────────────────────────────────────────────
 
 async function refresh() {
@@ -1070,6 +1507,7 @@ async function refresh() {
     applyCampaigns(data);
     applyActivity(data);
     applyTokens(data);
+    applyAgentStatus(data);
 
     const now = new Date();
     setEl('last-update', 'Updated ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}));
