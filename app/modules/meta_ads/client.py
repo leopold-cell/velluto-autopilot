@@ -90,6 +90,18 @@ class MetaAdsClient:
         rows = data.get("data", [])
         return rows[0] if rows else {}
 
+    def extract_atc_metrics(self, insights: dict) -> dict:
+        """Pull add_to_cart count and cost-per-ATC from a raw insights response."""
+        atc_count = 0
+        cost_per_atc = 0.0
+        for item in insights.get("actions", []):
+            if item.get("action_type") == "add_to_cart":
+                atc_count = int(float(item.get("value", 0)))
+        for item in insights.get("cost_per_action_type", []):
+            if item.get("action_type") == "add_to_cart":
+                cost_per_atc = float(item.get("value", 0))
+        return {"atc_count": atc_count, "cost_per_atc": cost_per_atc}
+
     # ── Ads ───────────────────────────────────────────────────────────────────
 
     async def get_ads(self, campaign_id: str) -> list[dict]:

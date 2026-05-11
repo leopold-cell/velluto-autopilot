@@ -100,6 +100,33 @@
     color: #fca5a5;
   }
 
+  .alert-banner.info {
+    background: rgba(124,106,247,.08);
+    border-color: rgba(124,106,247,.3);
+  }
+
+  .alert-banner.info .alert-item {
+    background: rgba(124,106,247,.1);
+    border-color: rgba(124,106,247,.2);
+    color: #c4b5fd;
+  }
+
+  /* ── Pixel training progress bar ──────────────────────────────────────── */
+  .training-bar-wrap {
+    margin-top: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 5px;
+    overflow: hidden;
+  }
+
+  .training-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width .6s ease;
+  }
+
   /* ── KPI strip ───────────────────────────────────────────────────────── */
   .kpi-strip {
     display: grid;
@@ -546,16 +573,16 @@
       <div class="kpi-sub">AOV: <span id="kpi-aov">€0</span></div>
     </div>
 
-    <div class="kpi-card danger">
+    <div class="kpi-card" id="spend-card">
       <div class="kpi-label">Ad Spend Today</div>
       <div class="kpi-value" id="kpi-spend">€40</div>
-      <div class="kpi-sub">ROAS: <span id="kpi-roas" style="color:var(--danger)">0.0×</span></div>
+      <div class="kpi-sub" id="spend-sub">ROAS: <span id="kpi-roas" style="color:var(--danger)">0.0×</span></div>
     </div>
 
-    <div class="kpi-card" id="ctr-card">
-      <div class="kpi-label">Ad CTR</div>
-      <div class="kpi-value" id="kpi-ctr">2.68%</div>
-      <div class="kpi-sub">Benchmark: 1.5%</div>
+    <div class="kpi-card warn" id="atc-card">
+      <div class="kpi-label" id="atc-label">Add to Cart Events</div>
+      <div class="kpi-value" id="kpi-atc">—</div>
+      <div class="kpi-sub" id="atc-sub">Cost/ATC: <span id="kpi-cost-atc">—</span></div>
     </div>
 
     <div class="kpi-card">
@@ -1316,6 +1343,23 @@ function applyKpis(data) {
   // ROAS color
   const roasEl = document.getElementById('kpi-roas');
   if (roasEl) roasEl.style.color = (m.roas ?? 0) > 0 ? 'var(--accent2)' : 'var(--danger)';
+
+  // ATC card
+  const atcCount = m.atc_count ?? null;
+  const costAtc  = m.cost_per_atc ?? null;
+  setEl('kpi-atc', atcCount != null ? atcCount : '—');
+  setEl('kpi-cost-atc', costAtc != null ? fmtEur(costAtc) : '—');
+
+  // In pixel training mode: relabel spend card, colour ATC card by performance
+  if (atcCount != null) {
+    const atcCard = document.getElementById('atc-card');
+    if (atcCard) {
+      atcCard.className = 'kpi-card ' + (costAtc > 15 ? 'danger' : costAtc > 8 ? 'warn' : 'ok');
+    }
+    setEl('atc-label', 'Add to Cart Events');
+    const sub = document.getElementById('atc-sub');
+    if (sub) sub.innerHTML = 'Cost/ATC: <span id="kpi-cost-atc">' + (costAtc != null ? fmtEur(costAtc) : '—') + '</span>';
+  }
 }
 
 function applyTrend(data) {
@@ -1335,11 +1379,28 @@ function applyTrend(data) {
 
 function applyAlerts(data) {
   const alerts = data.alerts || [];
-  const banner = document.querySelector('.alert-banner .alert-items');
-  if (!banner || !alerts.length) return;
-  banner.innerHTML = alerts.map(a =>
-    `<span class="alert-item">${a.message}</span>`
-  ).join('');
+  const banner = document.querySelector('.alert-banner');
+  const items  = document.querySelector('.alert-banner .alert-items');
+  if (!items) return;
+
+  const hasInfo     = alerts.some(a => a.level === 'info');
+  const hasCritical = alerts.some(a => a.level === 'critical');
+
+  if (hasInfo && !hasCritical) {
+    banner.classList.add('info');
+    document.querySelector('.alert-icon').textContent = 'ℹ️';
+    document.querySelector('.alert-banner strong').textContent = 'Pixel Training in Progress';
+  } else {
+    banner.classList.remove('info');
+    document.querySelector('.alert-icon').textContent = '🚨';
+    document.querySelector('.alert-banner strong').textContent = 'Critical Issues Detected';
+  }
+
+  if (alerts.length) {
+    items.innerHTML = alerts.map(a =>
+      `<span class="alert-item">${a.message}</span>`
+    ).join('');
+  }
 }
 
 function applyCampaigns(data) {

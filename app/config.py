@@ -86,6 +86,10 @@ class Settings(BaseSettings):
     daily_report_time: str = "08:30"
     daily_report_timezone: str = "Europe/Berlin"
 
+    # Pixel training mode
+    pixel_training_mode: bool = True
+    pixel_training_events_target: int = 50  # purchases needed before switching to Purchase campaigns
+
     # Autonomy thresholds
     max_auto_budget_change_pct: float = 0.10
     max_auto_discount_pct: float = 0.00

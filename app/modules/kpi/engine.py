@@ -89,6 +89,8 @@ class KpiEngine:
                 "roas": snap.ad_roas,
                 "cpa_eur": snap.ad_cpa_eur,
                 "ctr_pct": snap.ad_ctr_pct,
+                "atc_count": snap.raw.get("meta", {}).get("atc_count", 0),
+                "cost_per_atc": snap.raw.get("meta", {}).get("cost_per_atc", 0.0),
             },
             "seo": {
                 "organic_clicks": snap.organic_clicks,
@@ -160,16 +162,20 @@ class KpiEngine:
             for item in insights.get("cost_per_action_type", []):
                 if item.get("action_type") == "purchase":
                     cpa = float(item.get("value", 0))
+            atc = client.extract_atc_metrics(insights)
             return {
                 "spend": float(insights.get("spend", 0)),
                 "roas": roas,
                 "cpa": cpa,
                 "ctr": float(insights.get("ctr", 0)),
                 "impressions": int(insights.get("impressions", 0)),
+                "atc_count": atc["atc_count"],
+                "cost_per_atc": atc["cost_per_atc"],
             }
         except Exception as e:
             log.warning("kpi.meta_fetch_failed", error=str(e))
-            return {"spend": 0.0, "roas": 0.0, "cpa": 0.0, "ctr": 0.0, "impressions": 0}
+            return {"spend": 0.0, "roas": 0.0, "cpa": 0.0, "ctr": 0.0, "impressions": 0,
+                    "atc_count": 0, "cost_per_atc": 0.0}
 
     async def _fetch_gsc(self) -> dict:
         try:

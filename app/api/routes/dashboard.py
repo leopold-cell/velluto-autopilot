@@ -216,6 +216,7 @@ async def _gather_agent_status(db: AsyncSession) -> dict:
 async def _gather_alerts(db: AsyncSession) -> list[dict]:
     alerts = []
     try:
+        from app.config import settings as cfg
         today = datetime.now(timezone.utc).date()
         result = await db.execute(
             select(KpiSnapshot)
@@ -226,11 +227,19 @@ async def _gather_alerts(db: AsyncSession) -> list[dict]:
         snap = result.scalar_one_or_none()
         if snap:
             if (snap.ad_spend_eur or 0) > 5 and (snap.ad_roas or 0) == 0:
-                alerts.append({
-                    "level": "critical",
-                    "message": f"€{snap.ad_spend_eur:.2f} spent today with 0x ROAS — pixel tracking may be broken",
-                })
-            if snap.orders_count == 0 and (snap.ad_spend_eur or 0) > 0:
+                if cfg.pixel_training_mode:
+                    atc = snap.raw.get("meta", {}).get("atc_count", 0)
+                    target = cfg.pixel_training_events_target
+                    alerts.append({
+                        "level": "info",
+                        "message": f"Pixel training mode — ATC campaigns active. {atc}/{target} add-to-cart events collected. ROAS tracking begins after {target} purchases.",
+                    })
+                else:
+                    alerts.append({
+                        "level": "critical",
+                        "message": f"€{snap.ad_spend_eur:.2f} spent today with 0× ROAS — pixel tracking may be broken",
+                    })
+            if snap.orders_count == 0 and (snap.ad_spend_eur or 0) > 0 and not cfg.pixel_training_mode:
                 alerts.append({
                     "level": "warning",
                     "message": "Zero orders recorded despite active ad spend",
