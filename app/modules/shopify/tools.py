@@ -91,9 +91,18 @@ TOOL_SPECS = [
 
 # ── Executor functions ────────────────────────────────────────────────────────
 
+B2B_TAGS = {"b2b_order", "b2b_sample"}
+
+
+def _is_b2b(order: dict) -> bool:
+    tags = {t.strip().lower() for t in order.get("tags", "").split(",")}
+    return bool(tags & B2B_TAGS)
+
+
 async def shopify_get_orders(days: int = 1, status: str = "any") -> dict[str, Any]:
     since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
-    orders = await client.get_orders(status=status, created_at_min=since)
+    all_orders = await client.get_orders(status=status, created_at_min=since)
+    orders = [o for o in all_orders if not _is_b2b(o)]
     total_rev = sum(float(o.get("total_price", 0)) for o in orders)
     return {
         "order_count": len(orders),
