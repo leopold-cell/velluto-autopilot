@@ -67,6 +67,28 @@ async def job_competitor_scan():
         log.error("scheduler.job_failed", job="competitor_scan", error=str(e))
 
 
+async def job_clarity_analysis():
+    from app.modules.clarity.agent import run_clarity_analysis
+    log.info("scheduler.job_start", job="clarity_analysis")
+    try:
+        result = await run_clarity_analysis()
+        log.info("scheduler.job_done", job="clarity_analysis",
+                 health=result.get("health_score"), blockers=len(result.get("conversion_blockers", [])))
+    except Exception as e:
+        log.error("scheduler.job_failed", job="clarity_analysis", error=str(e))
+
+
+async def job_meta_orchestration():
+    from app.orchestrator.meta_orchestrator import run_meta_orchestration
+    log.info("scheduler.job_start", job="meta_orchestration")
+    try:
+        report = await run_meta_orchestration()
+        score = (report.get("system_health") or {}).get("score", "?")
+        log.info("scheduler.job_done", job="meta_orchestration", system_score=score)
+    except Exception as e:
+        log.error("scheduler.job_failed", job="meta_orchestration", error=str(e))
+
+
 async def job_health_check():
     from app.database import AsyncSessionLocal
     from app.engines.monitoring import MonitoringEngine
@@ -105,6 +127,16 @@ def build_scheduler() -> AsyncIOScheduler:
         job_competitor_scan,
         CronTrigger(day_of_week="mon", hour=7, minute=0, timezone=tz),
         id="competitor_scan_weekly",
+    )
+
+    # Clarity behavioral analysis every 6 hours
+    scheduler.add_job(job_clarity_analysis, "interval", hours=6, id="clarity_analysis")
+
+    # Meta-orchestrator daily at 05:00 — system-wide analysis + QA improvement
+    scheduler.add_job(
+        job_meta_orchestration,
+        CronTrigger(hour=5, minute=0, timezone=tz),
+        id="meta_orchestration_daily",
     )
 
     # Health check every 15 minutes

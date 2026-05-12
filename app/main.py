@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from prometheus_client import make_asgi_app
 
-from app.api.routes import approvals, dashboard, health, meta, orchestrator, reports, shopify, whatsapp
+from app.api.routes import approvals, chat, dashboard, health, meta, orchestrator, reports, shopify, whatsapp
 from app.config import settings
 from app.database import init_db
 from app.redis_client import close_redis, get_redis
@@ -60,6 +60,7 @@ app.include_router(shopify.router, prefix="/shopify", tags=["shopify"])
 app.include_router(meta.router, prefix="/meta", tags=["meta"])
 app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
+app.include_router(chat.router, prefix="/chat", tags=["chat"])
 
 # Serve dashboard UI
 @app.get("/ui", include_in_schema=False)

@@ -29,7 +29,10 @@ async def dashboard_data(db: AsyncSession = Depends(get_db)):
     kpi_engine = KpiEngine(db)
     token_optimizer = TokenOptimizer()
 
-    today_kpis, trend, agent_activity, token_report, campaigns, suggestions, alerts, agent_status = (
+    from app.orchestrator.meta_orchestrator import get_latest_meta_report
+    from app.modules.clarity.agent import get_latest_clarity_insights
+
+    today_kpis, trend, agent_activity, token_report, campaigns, suggestions, alerts, agent_status, meta_report, clarity = (
         await _gather_kpis(kpi_engine),
         await _gather_trend(db),
         await _gather_agent_activity(db),
@@ -38,6 +41,8 @@ async def dashboard_data(db: AsyncSession = Depends(get_db)):
         await _gather_suggestions(db),
         await _gather_alerts(db),
         await _gather_agent_status(db),
+        await get_latest_meta_report(db),
+        await get_latest_clarity_insights(db),
     )
 
     daily_token = await token_optimizer.get_daily_report()
@@ -55,6 +60,8 @@ async def dashboard_data(db: AsyncSession = Depends(get_db)):
         "suggestions": suggestions,
         "alerts": alerts,
         "agent_status": agent_status,
+        "meta_report": meta_report,
+        "clarity": clarity,
     }
 
 

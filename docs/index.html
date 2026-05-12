@@ -111,6 +111,294 @@
     color: #c4b5fd;
   }
 
+  /* ── Chat interface ──────────────────────────────────────────────────── */
+  .chat-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 20px rgba(124,106,247,.45);
+    z-index: 1000;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(124,106,247,.6); }
+
+  .chat-panel {
+    position: fixed;
+    bottom: 92px;
+    right: 28px;
+    width: 400px;
+    max-height: 580px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 12px 48px rgba(0,0,0,.6);
+    z-index: 999;
+    overflow: hidden;
+    transform-origin: bottom right;
+    transition: transform .2s, opacity .2s;
+  }
+  .chat-panel.hidden { transform: scale(0.85); opacity: 0; pointer-events: none; }
+
+  .chat-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .chat-header-icon { font-size: 18px; }
+  .chat-header-title { font-weight: 700; font-size: 13px; flex: 1; }
+  .chat-header-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .chat-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
+  .chat-close:hover { color: var(--text); }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .msg { display: flex; flex-direction: column; gap: 4px; max-width: 90%; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.assistant { align-self: flex-start; align-items: flex-start; }
+
+  .msg-bubble {
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .msg.user .msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 3px; }
+  .msg.assistant .msg-bubble { background: var(--surface2); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
+
+  .msg-time { font-size: 10px; color: var(--muted); padding: 0 4px; }
+
+  .chat-typing { display: flex; align-items: center; gap: 4px; padding: 9px 13px; }
+  .chat-typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: typing-bounce .9s infinite; }
+  .chat-typing-dot:nth-child(2) { animation-delay: .15s; }
+  .chat-typing-dot:nth-child(3) { animation-delay: .3s; }
+  @keyframes typing-bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+
+  .chat-input-row {
+    padding: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-size: 12.5px;
+    font-family: var(--font);
+    outline: none;
+    resize: none;
+    min-height: 38px;
+    max-height: 120px;
+    line-height: 1.4;
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-input::placeholder { color: var(--muted); }
+  .chat-send {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    align-self: flex-end;
+    transition: background .15s;
+  }
+  .chat-send:hover { background: #9580ff; }
+  .chat-send:disabled { background: var(--border); cursor: not-allowed; }
+
+  .chat-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    flex: 1;
+  }
+  .chat-empty-icon { font-size: 32px; opacity: .5; }
+  .chat-starter-pills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 8px; }
+  .chat-pill {
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 11px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .chat-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Clarity Insights panel ─────────────────────────────────────────── */
+  .clarity-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .clarity-stat {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+  }
+  .clarity-stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 4px; }
+  .clarity-stat-value { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
+  .clarity-stat-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .clarity-blocker {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .clarity-blocker:last-child { border-bottom: none; padding-bottom: 0; }
+  .clarity-impact {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .impact-high { background: rgba(239,68,68,.15); color: #fca5a5; border: 1px solid rgba(239,68,68,.2); }
+  .impact-medium { background: rgba(245,158,11,.12); color: #fcd34d; border: 1px solid rgba(245,158,11,.2); }
+  .impact-low { background: rgba(62,207,142,.1); color: var(--accent2); border: 1px solid rgba(62,207,142,.2); }
+
+  .clarity-blocker-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .clarity-blocker-evidence { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+  .clarity-blocker-fix { font-size: 11px; color: var(--accent); }
+
+  .clarity-quick-wins { margin-top: 12px; }
+  .clarity-win {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11.5px;
+  }
+  .clarity-win:last-child { border-bottom: none; }
+  .clarity-win-icon { color: var(--accent2); flex-shrink: 0; font-size: 13px; }
+
+  .clarity-health-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .clarity-health-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+
+  .clarity-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .clarity-agent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(62,207,142,.1);
+    color: var(--accent2);
+    border: 1px solid rgba(62,207,142,.2);
+  }
+
+  /* ── Meta-orchestrator panel ──────────────────────────────────────────── */
+  .meta-node {
+    background: linear-gradient(135deg, rgba(124,106,247,.12) 0%, rgba(62,207,142,.08) 100%);
+    border: 1px solid rgba(124,106,247,.35);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .meta-node-title { font-size: 13px; font-weight: 700; color: #c4b5fd; margin-bottom: 3px; }
+  .meta-node-sub { font-size: 11px; color: var(--muted); }
+  .meta-score-badge {
+    position: absolute;
+    top: 14px; right: 16px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent2);
+    letter-spacing: -1px;
+  }
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .meta-pill {
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    border: 1px solid rgba(124,106,247,.3);
+    background: rgba(124,106,247,.08);
+    color: #c4b5fd;
+  }
+  .meta-pill.new { border-color: rgba(62,207,142,.3); background: rgba(62,207,142,.08); color: var(--accent2); }
+
+  .meta-report-panel {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .meta-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--accent); margin: 10px 0 5px; }
+  .meta-item { padding: 4px 0; border-bottom: 1px solid var(--border); color: var(--text); }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-item-rank { color: var(--accent); font-weight: 700; margin-right: 4px; }
+  .qa-score-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .qa-score-row:last-child { border-bottom: none; }
+  .qa-bar-wrap { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .qa-bar-fill { height: 100%; border-radius: 2px; }
+
   /* ── Pixel training progress bar ──────────────────────────────────────── */
   .training-bar-wrap {
     margin-top: 8px;
@@ -922,6 +1210,44 @@
     </div>
   </div>
 
+  <!-- MS CLARITY INSIGHTS -->
+  <div class="panel">
+    <div class="panel-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="panel-title">MS Clarity — Behavioral Insights</span>
+        <span class="clarity-agent-badge">🧠 AI Agent</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="clarity-health-label" style="font-size:11px;color:var(--muted)">UX Health: —</span>
+        <span id="clarity-age" style="font-size:11px;color:var(--muted)">—</span>
+      </div>
+    </div>
+    <div class="panel-body" id="clarity-panel-body">
+      <div class="clarity-empty" id="clarity-empty">
+        <div style="font-size:28px;margin-bottom:8px">🔍</div>
+        <div>Clarity Insights Agent runs every 6 hours.</div>
+        <div style="margin-top:4px;font-size:11px">Set <code>CLARITY_PROJECT_ID</code> and <code>CLARITY_API_TOKEN</code> in .env to activate.</div>
+      </div>
+
+      <!-- Populated by JS -->
+      <div id="clarity-stats-grid" class="clarity-grid" style="display:none"></div>
+
+      <div id="clarity-summary-wrap" style="display:none;margin-bottom:14px">
+        <div style="font-size:12px;line-height:1.6;color:var(--text)" id="clarity-summary"></div>
+      </div>
+
+      <div id="clarity-blockers-wrap" style="display:none">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:8px">⚠ Conversion Blockers</div>
+        <div id="clarity-blockers"></div>
+      </div>
+
+      <div id="clarity-wins-wrap" style="display:none">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent2);margin:14px 0 8px">✅ Quick Wins</div>
+        <div class="clarity-quick-wins" id="clarity-wins"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- AGENT HIERARCHY -->
   <div class="panel hierarchy-section">
     <div class="panel-header">
@@ -929,6 +1255,20 @@
       <span id="orch-cycle-badge" class="orch-badge orch-badge-idle">Idle</span>
     </div>
     <div class="panel-body" style="padding-top:0">
+
+      <!-- Meta-Orchestrator node (top-level overseer) -->
+      <div class="meta-node" id="meta-orch-node">
+        <div class="meta-score-badge" id="meta-system-score">—</div>
+        <div class="meta-node-title">⚙️ Meta-Orchestrator — System Optimizer</div>
+        <div class="meta-node-sub">Runs daily 05:00 · Analyzes all agents · Improves QA · Recommends new agents · Optimizes inter-agent communication</div>
+        <div class="meta-pills" id="meta-pills">
+          <span class="meta-pill">Daily system analysis</span>
+          <span class="meta-pill">QA improvement</span>
+          <span class="meta-pill">Agent recommendations</span>
+          <span class="meta-pill">Communication optimization</span>
+        </div>
+        <div id="meta-report-content"></div>
+      </div>
 
       <!-- Orchestrator node -->
       <div class="hierarchy-tree">
@@ -1039,6 +1379,22 @@
           </div>
         </div>
 
+        <div class="agent-card" id="agent-clarity">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="agent-icon">🔬</div>
+            <div class="agent-name">Clarity CRO</div>
+          </div>
+          <div class="agent-goal">Analyzes MS Clarity heatmaps, rage clicks & funnel drop-offs every 6h. Identifies conversion blockers and suggests fixes.</div>
+          <div class="agent-kpis">
+            <span class="agent-kpi-tag">UX Health</span>
+            <span class="agent-kpi-tag">Rage clicks</span>
+            <span class="agent-kpi-tag">Funnel CVR</span>
+          </div>
+          <div class="agent-last" id="last-clarity_agent">
+            <span style="color:var(--muted)">No activity yet</span>
+          </div>
+        </div>
+
       </div>
 
       <!-- Support engines -->
@@ -1087,6 +1443,40 @@
 
 <div class="footer">
   Velluto Autopilot · <span id="cycle-time">Last cycle: 09:53 today</span> · Next cycle in ~47 min
+</div>
+
+<!-- ── Chat floating button ──────────────────────────────────────────────── -->
+<button class="chat-btn" id="chat-toggle" title="Ask the Autopilot AI">💬</button>
+
+<!-- ── Chat panel ───────────────────────────────────────────────────────── -->
+<div class="chat-panel hidden" id="chat-panel">
+  <div class="chat-header">
+    <span class="chat-header-icon">🤖</span>
+    <div style="flex:1">
+      <div class="chat-header-title">Autopilot AI</div>
+      <div class="chat-header-sub">Grounded in live KPIs · using Anthropic API</div>
+    </div>
+    <button class="chat-close" id="chat-close">×</button>
+  </div>
+
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-empty" id="chat-empty">
+      <div class="chat-empty-icon">✨</div>
+      <div>Ask anything about your store performance, agent activity, or growth strategy.</div>
+      <div class="chat-starter-pills">
+        <button class="chat-pill" onclick="sendStarter(this)">Why is ROAS 0?</button>
+        <button class="chat-pill" onclick="sendStarter(this)">What did agents do today?</button>
+        <button class="chat-pill" onclick="sendStarter(this)">How is the pixel training going?</button>
+        <button class="chat-pill" onclick="sendStarter(this)">Top growth priority this week?</button>
+        <button class="chat-pill" onclick="sendStarter(this)">Explain the meta-orchestrator</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-row">
+    <textarea class="chat-input" id="chat-input" placeholder="Ask about KPIs, campaigns, agents…" rows="1"></textarea>
+    <button class="chat-send" id="chat-send">↑</button>
+  </div>
 </div>
 
 <script>
@@ -1482,6 +1872,7 @@ const MODULE_MAP = {
   email_marketing:  'last-email_marketing',
   competitor:       'last-competitor',
   creative:         'last-creative',
+  clarity_agent:    'last-clarity_agent',
 };
 
 const CARD_MAP = {
@@ -1491,6 +1882,7 @@ const CARD_MAP = {
   email_marketing:  'agent-email',
   competitor:       'agent-competitor',
   creative:         'agent-creative',
+  clarity_agent:    'agent-clarity',
 };
 
 function timeAgo(iso) {
@@ -1569,6 +1961,8 @@ async function refresh() {
     applyActivity(data);
     applyTokens(data);
     applyAgentStatus(data);
+    applyMetaReport(data);
+    applyClarity(data);
 
     const now = new Date();
     setEl('last-update', 'Updated ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}));
@@ -1583,6 +1977,287 @@ async function refresh() {
 // Initial load + auto-refresh every 60s
 refresh();
 setInterval(refresh, 60_000);
+
+// ── Clarity Insights renderer ─────────────────────────────────────────────────
+
+function applyClarity(data) {
+  const cl = data.clarity;
+  if (!cl || !cl.insights) return;
+  const ins = cl.insights;
+
+  // Hide empty state
+  const empty = document.getElementById('clarity-empty');
+  if (empty) empty.style.display = 'none';
+
+  // Age label
+  if (cl.generated_at) {
+    setEl('clarity-age', 'Updated ' + timeAgo(cl.generated_at));
+  }
+
+  // Health score
+  const score = ins.health_score ?? null;
+  if (score != null) {
+    const colour = score >= 70 ? 'var(--accent2)' : score >= 45 ? 'var(--warn)' : 'var(--danger)';
+    setEl('clarity-health-label', `UX Health: ${score}/100`);
+    document.getElementById('clarity-health-label').style.color = colour;
+  }
+
+  // Top metric stat cards
+  const statsGrid = document.getElementById('clarity-stats-grid');
+  const topMetric = ins.top_metric;
+  if (topMetric && statsGrid) {
+    const trendColour = topMetric.trend === 'good' ? 'var(--accent2)' : topMetric.trend === 'bad' ? 'var(--danger)' : 'var(--muted)';
+    const trendIcon   = topMetric.trend === 'good' ? '↑' : topMetric.trend === 'bad' ? '↓' : '→';
+    statsGrid.innerHTML = `
+      <div class="clarity-stat">
+        <div class="clarity-stat-label">${escapeHtml(topMetric.label || 'Top Metric')}</div>
+        <div class="clarity-stat-value" style="color:${trendColour}">${escapeHtml(String(topMetric.value || '—'))}</div>
+        <div class="clarity-stat-sub">${trendIcon} vs last week</div>
+      </div>
+      <div class="clarity-stat">
+        <div class="clarity-stat-label">Conversion Blockers</div>
+        <div class="clarity-stat-value" style="color:var(--danger)">${(ins.conversion_blockers || []).length}</div>
+        <div class="clarity-stat-sub">identified this week</div>
+      </div>`;
+    statsGrid.style.display = 'grid';
+  }
+
+  // Summary
+  if (ins.summary) {
+    document.getElementById('clarity-summary').textContent = ins.summary;
+    document.getElementById('clarity-summary-wrap').style.display = 'block';
+  }
+
+  // Conversion blockers
+  const blockers = ins.conversion_blockers || [];
+  if (blockers.length) {
+    const impactClass = { high: 'impact-high', medium: 'impact-medium', low: 'impact-low' };
+    document.getElementById('clarity-blockers').innerHTML = blockers.map(b => `
+      <div class="clarity-blocker">
+        <span class="clarity-impact ${impactClass[b.impact] || 'impact-medium'}">${escapeHtml(b.impact || 'med')}</span>
+        <div>
+          <div class="clarity-blocker-title">${escapeHtml(b.issue || '')}</div>
+          <div class="clarity-blocker-evidence">${escapeHtml(b.evidence || '')}</div>
+          <div class="clarity-blocker-fix">→ ${escapeHtml(b.fix || '')}</div>
+        </div>
+      </div>`).join('');
+    document.getElementById('clarity-blockers-wrap').style.display = 'block';
+  }
+
+  // Quick wins
+  const wins = ins.quick_wins || [];
+  if (wins.length) {
+    document.getElementById('clarity-wins').innerHTML = wins.slice(0, 5).map(w =>
+      `<div class="clarity-win"><span class="clarity-win-icon">✦</span><span>${escapeHtml(String(w))}</span></div>`
+    ).join('');
+    document.getElementById('clarity-wins-wrap').style.display = 'block';
+  }
+}
+
+// ── Meta-orchestrator report renderer ────────────────────────────────────────
+
+function applyMetaReport(data) {
+  const mr = data.meta_report;
+  if (!mr || !mr.report) return;
+  const r = mr.report;
+
+  // System health score
+  const score = (r.system_health || {}).score;
+  if (score != null) {
+    const el = document.getElementById('meta-system-score');
+    if (el) {
+      el.textContent = score + '/100';
+      el.style.color = score >= 75 ? 'var(--accent2)' : score >= 50 ? 'var(--warn)' : 'var(--danger)';
+    }
+  }
+
+  // Weekly priority pill
+  if (r.weekly_priority) {
+    const pills = document.getElementById('meta-pills');
+    if (pills) {
+      const p = document.createElement('span');
+      p.className = 'meta-pill new';
+      p.textContent = '★ ' + r.weekly_priority.substring(0, 50);
+      pills.appendChild(p);
+    }
+  }
+
+  const container = document.getElementById('meta-report-content');
+  if (!container) return;
+
+  let html = '<div class="meta-report-panel">';
+  const age = mr.generated_at ? timeAgo(mr.generated_at) : '—';
+  html += `<div style="color:var(--muted);font-size:10px;margin-bottom:8px">Last analysis: ${age}</div>`;
+
+  // Agent recommendations
+  const recs = r.agent_recommendations || [];
+  if (recs.length) {
+    html += '<div class="meta-section-title">🚀 Recommended New Agents</div>';
+    recs.slice(0, 4).forEach((rec, i) => {
+      const name = typeof rec === 'string' ? rec : (rec.name || rec.agent || JSON.stringify(rec));
+      const reason = typeof rec === 'object' ? (rec.reason || rec.justification || '') : '';
+      html += `<div class="meta-item"><span class="meta-item-rank">#${i+1}</span>${name}${reason ? ' — <span style="color:var(--muted)">' + String(reason).substring(0,80) + '</span>' : ''}</div>`;
+    });
+  }
+
+  // QA scores
+  const qa = r.quality_scores || {};
+  const qaEntries = Object.entries(qa);
+  if (qaEntries.length) {
+    html += '<div class="meta-section-title">✅ Agent Quality Scores</div>';
+    qaEntries.forEach(([agent, val]) => {
+      const score = typeof val === 'object' ? (val.score || val) : val;
+      const num = parseInt(score) || 0;
+      const colour = num >= 75 ? 'var(--accent2)' : num >= 50 ? 'var(--warn)' : 'var(--danger)';
+      html += `<div class="qa-score-row">
+        <span style="color:var(--text)">${agent}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="qa-bar-wrap"><div class="qa-bar-fill" style="width:${num}%;background:${colour}"></div></div>
+          <span style="font-size:11px;font-weight:700;color:${colour};width:32px;text-align:right">${num}</span>
+        </div>
+      </div>`;
+    });
+  }
+
+  // QA improvements
+  const qaImprove = r.qa_improvements || [];
+  if (qaImprove.length) {
+    html += '<div class="meta-section-title">🔧 Today\'s QA Improvements</div>';
+    qaImprove.slice(0, 4).forEach(item => {
+      const text = typeof item === 'string' ? item : (item.measure || item.improvement || JSON.stringify(item));
+      html += `<div class="meta-item">• ${String(text).substring(0, 110)}</div>`;
+    });
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ── Chat logic ────────────────────────────────────────────────────────────────
+
+const chatHistory = [];   // [{role, content}]
+let chatOpen = false;
+let chatStreaming = false;
+
+document.getElementById('chat-toggle').addEventListener('click', () => toggleChat(true));
+document.getElementById('chat-close').addEventListener('click', () => toggleChat(false));
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+});
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+document.getElementById('chat-send').addEventListener('click', sendChat);
+
+function toggleChat(open) {
+  chatOpen = open;
+  const panel = document.getElementById('chat-panel');
+  panel.classList.toggle('hidden', !open);
+  if (open) document.getElementById('chat-input').focus();
+}
+
+function sendStarter(btn) {
+  document.getElementById('chat-input').value = btn.textContent;
+  sendChat();
+}
+
+function addMessage(role, content) {
+  const empty = document.getElementById('chat-empty');
+  if (empty) empty.remove();
+
+  const msgs = document.getElementById('chat-messages');
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+  wrap.innerHTML = `
+    <div class="msg-bubble" id="msg-${Date.now()}">${escapeHtml(content)}</div>
+    <span class="msg-time">${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>`;
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+  return wrap.querySelector('.msg-bubble');
+}
+
+function addTypingIndicator() {
+  const msgs = document.getElementById('chat-messages');
+  const el = document.createElement('div');
+  el.className = 'msg assistant';
+  el.id = 'chat-typing';
+  el.innerHTML = `<div class="chat-typing">
+    <div class="chat-typing-dot"></div>
+    <div class="chat-typing-dot"></div>
+    <div class="chat-typing-dot"></div>
+  </div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+async function sendChat() {
+  if (chatStreaming) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('chat-send').disabled = true;
+  chatStreaming = true;
+
+  chatHistory.push({ role: 'user', content: text });
+  addMessage('user', text);
+
+  const typing = addTypingIndicator();
+
+  try {
+    const res = await fetch(`${API_BASE}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory, stream: true }),
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    // Remove typing indicator, add real bubble
+    typing.remove();
+    const bubble = addMessage('assistant', '');
+    bubble.textContent = '';  // start empty for streaming
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const payload = line.slice(6);
+        if (payload === '[DONE]') break;
+        fullText += payload;
+        bubble.innerHTML = escapeHtml(fullText);
+        document.getElementById('chat-messages').scrollTop = 9999;
+      }
+    }
+
+    chatHistory.push({ role: 'assistant', content: fullText });
+
+  } catch (e) {
+    typing.remove();
+    addMessage('assistant', '⚠️ Could not reach the API. Make sure the server is running at localhost:8000.');
+    console.error('Chat error:', e);
+  } finally {
+    chatStreaming = false;
+    document.getElementById('chat-send').disabled = false;
+    document.getElementById('chat-input').focus();
+  }
+}
 </script>
 </body>
 </html>
