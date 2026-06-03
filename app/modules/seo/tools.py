@@ -8,6 +8,7 @@ import anthropic
 import structlog
 
 from app.config import settings
+from app.utils.links import normalize_content_links
 
 log = structlog.get_logger()
 
@@ -76,6 +77,9 @@ async def seo_generate_product_content(
                 "text": (
                     "You write SEO-optimized Shopify product copy for Velluto, a premium road "
                     "cycling eyewear brand. Be technical, performance-focused, and premium. "
+                    "For any internal link to a Velluto page, always use root-relative paths "
+                    "(e.g. /products/handle). Never output absolute URLs or a domain for "
+                    "internal links. "
                     "Output only valid JSON with keys: seo_title (50-60 chars), "
                     "seo_description (120-160 chars), product_description (150-200 words)."
                 ),
@@ -101,6 +105,9 @@ async def seo_generate_product_content(
     except Exception:
         content = {"raw": text, "parse_error": True}
 
+    # On-site copy: enforce root-relative internal links.
+    content = normalize_content_links(content, mode="relative")
+
     return {"product_id": product_id, "content": content, "keyword": target_keyword}
 
 
@@ -117,6 +124,9 @@ async def seo_generate_geo_content(topic: str, target_query: str) -> dict[str, A
                     "You write GEO (Generative Engine Optimization) content for Velluto cycling eyewear. "
                     "GEO content is structured to be cited by AI search engines. "
                     "Use: direct answers, statistics, entity definitions, FAQ format. "
+                    "For any internal link to a Velluto page, always use root-relative paths "
+                    "(e.g. /products/handle). Never output absolute URLs or a domain for "
+                    "internal links. "
                     "Output JSON: {answer_paragraph, faq_items: [{q, a}], key_entities: [], "
                     "citation_worthy_facts: []}."
                 ),
@@ -136,6 +146,9 @@ async def seo_generate_geo_content(topic: str, target_query: str) -> dict[str, A
         content = json.loads(text)
     except Exception:
         content = {"raw": text}
+
+    # On-site / citation copy: enforce root-relative internal links.
+    content = normalize_content_links(content, mode="relative")
 
     return {"topic": topic, "target_query": target_query, "geo_content": content}
 

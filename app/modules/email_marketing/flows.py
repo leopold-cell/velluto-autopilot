@@ -12,6 +12,7 @@ import structlog
 
 from app.config import settings
 from app.modules.email_marketing.client import EmailClient
+from app.utils.links import canonical_base, normalize_content_links
 
 log = structlog.get_logger()
 
@@ -57,6 +58,7 @@ Customer context:
 Flow: {flow.get('description', flow_name)}
 
 Write in Velluto's premium, cycling-focused voice.
+All internal links must be absolute URLs on {canonical_base()} (e.g. {canonical_base()}/products/handle) — relative links do not work in email.
 Output JSON: {{
   "subject": "...",
   "preview_text": "...",
@@ -72,9 +74,12 @@ Output JSON: {{
     import json
     text = response.content[0].text.strip()
     try:
-        return json.loads(text)
+        content = json.loads(text)
     except Exception:
-        return {"subject": f"From Velluto — {flow_name}", "html_body": text, "plain_text": text}
+        content = {"subject": f"From Velluto — {flow_name}", "html_body": text, "plain_text": text}
+
+    # Email links must be absolute on the canonical storefront domain.
+    return normalize_content_links(content, mode="absolute")
 
 
 async def trigger_flow(

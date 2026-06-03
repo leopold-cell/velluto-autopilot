@@ -37,6 +37,12 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-sonnet-4-6"
     anthropic_max_tokens: int = 8192
 
+    # Storefront
+    # Canonical public storefront domain. Used to detect "internal" links so
+    # generated on-site content uses root-relative paths (and emails/ads use
+    # absolute links to this domain). See app/utils/links.py.
+    storefront_domain: str = "velluto-shop.com"
+
     # Shopify
     shopify_shop_name: str = ""
     shopify_api_key: str = ""

@@ -53,6 +53,7 @@ Brand voice: technical, performance-focused, premium European sensibility.
 Target: serious road cyclists, ages 25-45, spending €150-400 on eyewear.
 Always output valid JSON with the exact keys requested.
 Never make unverified claims. No before/after. No medical claims.
+Do not put raw URLs or links in the copy — the destination URL is configured on the Meta ad object, not in the text.
 """
 
 
