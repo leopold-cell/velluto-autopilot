@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -19,29 +21,58 @@ SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 
 class GSCClient:
     def __init__(self):
-        if not settings.google_service_account_json:
-            raise RuntimeError("GOOGLE_SERVICE_ACCOUNT_JSON not configured")
-
-        credentials = service_account.Credentials.from_service_account_file(
-            settings.google_service_account_json, scopes=SCOPES
-        )
+        credentials = self._load_credentials()
         self._service = build("searchconsole", "v1", credentials=credentials, cache_discovery=False)
         self.site_url = settings.gsc_site_url
+
+    @staticmethod
+    def _load_credentials() -> service_account.Credentials:
+        """Build service-account credentials from either inline JSON or a file path.
+
+        GOOGLE_SERVICE_ACCOUNT_JSON may hold the JSON key contents directly
+        (the usual pattern when the secret is injected as an env var on hosts
+        like Render/Railway/Fly/Cloud Run) or a path to a mounted key file.
+        Supporting only the file path silently broke GSC whenever the secret
+        was supplied inline.
+        """
+        raw = settings.google_service_account_json
+        if not raw:
+            raise RuntimeError("GOOGLE_SERVICE_ACCOUNT_JSON not configured")
+
+        stripped = raw.strip()
+        if stripped.startswith("{"):
+            try:
+                info = json.loads(stripped)
+            except json.JSONDecodeError as e:
+                raise RuntimeError(f"GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON: {e}") from e
+            return service_account.Credentials.from_service_account_info(info, scopes=SCOPES)
+
+        if not os.path.isfile(stripped):
+            raise RuntimeError(
+                f"GOOGLE_SERVICE_ACCOUNT_JSON points to a missing file: {stripped}"
+            )
+        return service_account.Credentials.from_service_account_file(stripped, scopes=SCOPES)
 
     def _date(self, days_ago: int) -> str:
         return (datetime.now(timezone.utc) - timedelta(days=days_ago)).strftime("%Y-%m-%d")
 
-    def _query(self, request: dict) -> dict:
-        return (
-            self._service.searchanalytics()
-            .query(siteUrl=self.site_url, body=request)
-            .execute()
-        )
+    async def _query(self, request: dict) -> dict:
+        # googleapiclient is synchronous; run the blocking HTTP call in a worker
+        # thread so it doesn't stall the asyncio event loop (and every other
+        # in-flight request) while waiting on the Search Console API.
+        def _execute() -> dict:
+            return (
+                self._service.searchanalytics()
+                .query(siteUrl=self.site_url, body=request)
+                .execute()
+            )
+
+        return await asyncio.to_thread(_execute)
 
     async def get_today_summary(self) -> dict[str, Any]:
         today = self._date(1)
         try:
-            data = self._query({
+            data = await self._query({
                 "startDate": today,
                 "endDate": today,
                 "dimensions": [],
@@ -63,7 +94,7 @@ class GSCClient:
         end = self._date(1)
         start = self._date(28)
         try:
-            data = self._query({
+            data = await self._query({
                 "startDate": start,
                 "endDate": end,
                 "dimensions": ["query"],
@@ -91,7 +122,7 @@ class GSCClient:
         end = self._date(1)
         start = self._date(days)
         try:
-            data = self._query({
+            data = await self._query({
                 "startDate": start,
                 "endDate": end,
                 "dimensions": ["page"],
