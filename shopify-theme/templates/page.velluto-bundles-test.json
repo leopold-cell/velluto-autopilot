@@ -1,0 +1,63 @@
+{
+  "name": "Velluto Bundles (TEST)",
+  "sections": {
+    "bundle_landing": {
+      "type": "velluto-bundle-landing",
+      "blocks": {
+        "starter": {
+          "type": "bundle",
+          "settings": {
+            "product": "strada-pro-starter-set",
+            "display_title": "Starter Set",
+            "tagline": "The essentials, ready to ride",
+            "included_items": "Strada Pro\nVelluto Visione™ Lens",
+            "badge_label": "",
+            "highlight": false,
+            "cta_label": "Choose Starter"
+          }
+        },
+        "performance": {
+          "type": "bundle",
+          "settings": {
+            "product": "strada-pro-performance-set",
+            "display_title": "Performance Set",
+            "tagline": "Every condition covered",
+            "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case",
+            "badge_label": "Most Popular",
+            "highlight": true,
+            "cta_label": "Choose Performance"
+          }
+        },
+        "ultimate": {
+          "type": "bundle",
+          "settings": {
+            "product": "strada-pro-ultimate-set",
+            "display_title": "Ultimate Set",
+            "tagline": "The complete Velluto ritual",
+            "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case\nCleaning Spray\nMicrofiber Cloth\nBottle",
+            "badge_label": "",
+            "highlight": false,
+            "cta_label": "Choose Ultimate"
+          }
+        }
+      },
+      "block_order": ["starter", "performance", "ultimate"],
+      "settings": {
+        "eyebrow": "Ride Fast. Live Slow.",
+        "heading": "Choose your Strada Pro setup",
+        "subheading": "Every set includes the Strada Pro and the Velluto Visione™ lens. Pick the setup that fits the way you ride.",
+        "shipping_note": "Free shipping on orders from [threshold]",
+        "free_shipping_threshold": 99,
+        "free_shipping_label": "Free shipping included",
+        "shipping_from_label": "Free shipping from [threshold]",
+        "trust_1": "Designed in Italy",
+        "trust_2": "30-day returns",
+        "trust_3": "2-year warranty",
+        "show_comparison": true,
+        "comparison_heading": "Compare the sets",
+        "comparison_shipping_label": "Free Shipping"
+      }
+    }
+  },
+  "order": ["bundle_landing"]
+}

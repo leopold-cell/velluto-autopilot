@@ -1,0 +1,18 @@
+{
+  "name": "Velluto Bundle (TEST)",
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {}
+    },
+    "bundle_includes": {
+      "type": "velluto-bundle-included-items",
+      "settings": {
+        "heading": "What's in your set",
+        "free_shipping_threshold": 99,
+        "free_shipping_text": "Free shipping included — on all orders from [threshold]"
+      }
+    }
+  },
+  "order": ["main", "bundle_includes"]
+}
