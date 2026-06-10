@@ -6,8 +6,9 @@
 <title>Velluto — Choose your Strada Pro setup (TEST PREVIEW)</title>
 <!--
   Static design preview of shopify-theme/sections/velluto-bundle-landing.liquid
-  with placeholder imagery. Open directly in a browser — no Shopify needed.
-  In the real section, prices/images/variants come from the Shopify products.
+  using the real StradaPro imagery from the live store CDN. Open directly in a
+  browser — no Shopify needed. In the real section, prices/images/links come
+  from the Shopify bundle products.
 -->
 <style>
   :root {
@@ -45,8 +46,8 @@
   .vbl__card--highlight { border: 2px solid var(--ink); box-shadow: 0 18px 50px rgba(28,27,24,.12); }
   .vbl__badge { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2; background: var(--ink); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: 7px 16px; border-radius: 999px; white-space: nowrap; }
 
-  .vbl__card-media { display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3; background: linear-gradient(160deg, #efe9dd, #e2dac9); }
-  .vbl__glasses { width: 62%; transition: filter .25s ease; }
+  .vbl__card-media { display: block; background: #f3efe7; }
+  .vbl__card-media img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
 
   .vbl__card-body { padding: 24px 24px 28px; display: flex; flex-direction: column; flex: 1; }
   .vbl__card-title { font-size: 21px; font-weight: 600; margin: 0 0 4px; letter-spacing: -.01em; }
@@ -60,10 +61,12 @@
   .vbl__shipping { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
   .vbl__shipping--free { color: var(--accent); font-weight: 600; }
 
-  .vbl__swatches { display: flex; gap: 10px; border: 0; padding: 0; margin: 0 0 20px; }
-  .vbl__swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(28,27,24,.18); box-shadow: inset 0 0 0 2px var(--card); padding: 0; transition: transform .15s ease; }
-  .vbl__swatch:hover { transform: scale(1.1); }
-  .vbl__swatch.is-active { outline: 2px solid var(--ink); outline-offset: 2px; }
+  /* color switcher — image swatches, same feel as the live vcol pattern */
+  .vbl__swatches { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 20px; }
+  .vbl__swatch { width: 44px; height: 44px; border-radius: 8px; cursor: pointer; overflow: hidden; border: 2px solid transparent; background: #f3efe7; padding: 0; transition: border-color .15s ease, transform .15s ease; }
+  .vbl__swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vbl__swatch:hover { border-color: #888; transform: scale(1.05); }
+  .vbl__swatch.is-active { border-color: var(--ink); }
 
   .vbl__cta { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; padding: 15px 24px; border-radius: 12px; font-size: 14.5px; font-weight: 600; letter-spacing: .03em; text-decoration: none; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; transition: background .2s ease, color .2s ease; }
   .vbl__cta:hover { background: var(--ink); color: #fff; }
@@ -84,6 +87,7 @@
   .vbl__table td { text-align: center; }
   .vbl__table-name { display: block; font-weight: 600; }
   .vbl__table-price { display: block; font-size: 13px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+  .vbl__tick { color: var(--accent); font-weight: 700; }
   .vbl__dash { color: #c9c3b8; }
   .vbl__table-col--highlight { background: #faf7f0; }
   .vbl__table thead .vbl__table-col--highlight { box-shadow: inset 0 3px 0 var(--ink); }
@@ -97,7 +101,7 @@
 </head>
 <body>
 
-<div class="preview-banner">TEST PREVIEW — STATIC MOCKUP, NOT CONNECTED TO SHOPIFY</div>
+<div class="preview-banner">TEST PREVIEW — STATIC MOCKUP WITH LIVE STORE IMAGERY, NOT CONNECTED TO SHOPIFY</div>
 
 <div class="vbl">
   <header class="vbl__hero">
@@ -107,99 +111,7 @@
     <p class="vbl__shipping-note">Free shipping on orders from €99</p>
   </header>
 
-  <div class="vbl__grid">
-    <!-- Starter -->
-    <article class="vbl__card">
-      <div class="vbl__card-media">
-        <svg class="vbl__glasses" viewBox="0 0 200 70" data-glasses>
-          <path d="M10 22 Q100 8 190 22" fill="none" stroke="#1c1b18" stroke-width="5" stroke-linecap="round" data-frame/>
-          <path d="M14 24 Q55 20 92 26 Q97 48 70 54 Q30 58 18 40 Z" fill="#5a4632" opacity=".85" data-lens/>
-          <path d="M186 24 Q145 20 108 26 Q103 48 130 54 Q170 58 182 40 Z" fill="#5a4632" opacity=".85" data-lens/>
-        </svg>
-      </div>
-      <div class="vbl__card-body">
-        <h2 class="vbl__card-title">Starter Set</h2>
-        <p class="vbl__card-tagline">The essentials, ready to ride</p>
-        <div class="vbl__price"><span class="vbl__price-current">€69</span></div>
-        <ul class="vbl__items">
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Strada Pro</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Velluto Visione™ Lens</li>
-        </ul>
-        <p class="vbl__shipping">Free shipping from €99</p>
-        <fieldset class="vbl__swatches">
-          <button type="button" class="vbl__swatch is-active" style="background:#15151a" title="Nero" data-tint="#3a3a40"></button>
-          <button type="button" class="vbl__swatch" style="background:#e2641e" title="Arancia" data-tint="#e2641e"></button>
-          <button type="button" class="vbl__swatch" style="background:linear-gradient(135deg,#5a3c28,#2e1d12)" title="Espresso" data-tint="#5a3c28"></button>
-          <button type="button" class="vbl__swatch" style="background:#6d4a8f" title="Viola" data-tint="#6d4a8f"></button>
-        </fieldset>
-        <a href="#" class="vbl__cta">Choose Starter</a>
-      </div>
-    </article>
-
-    <!-- Performance -->
-    <article class="vbl__card vbl__card--highlight">
-      <span class="vbl__badge">Most Popular</span>
-      <div class="vbl__card-media">
-        <svg class="vbl__glasses" viewBox="0 0 200 70" data-glasses>
-          <path d="M10 22 Q100 8 190 22" fill="none" stroke="#1c1b18" stroke-width="5" stroke-linecap="round" data-frame/>
-          <path d="M14 24 Q55 20 92 26 Q97 48 70 54 Q30 58 18 40 Z" fill="#5a4632" opacity=".85" data-lens/>
-          <path d="M186 24 Q145 20 108 26 Q103 48 130 54 Q170 58 182 40 Z" fill="#5a4632" opacity=".85" data-lens/>
-        </svg>
-      </div>
-      <div class="vbl__card-body">
-        <h2 class="vbl__card-title">Performance Set</h2>
-        <p class="vbl__card-tagline">Every condition covered</p>
-        <div class="vbl__price"><span class="vbl__price-current">€99</span><span class="vbl__price-value">€127 individual value</span></div>
-        <ul class="vbl__items">
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Strada Pro</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Velluto Visione™ Lens</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Clear Lens</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Hard Case</li>
-        </ul>
-        <p class="vbl__shipping vbl__shipping--free">Free shipping included</p>
-        <fieldset class="vbl__swatches">
-          <button type="button" class="vbl__swatch is-active" style="background:#15151a" title="Nero" data-tint="#3a3a40"></button>
-          <button type="button" class="vbl__swatch" style="background:#e2641e" title="Arancia" data-tint="#e2641e"></button>
-          <button type="button" class="vbl__swatch" style="background:linear-gradient(135deg,#5a3c28,#2e1d12)" title="Espresso" data-tint="#5a3c28"></button>
-          <button type="button" class="vbl__swatch" style="background:#6d4a8f" title="Viola" data-tint="#6d4a8f"></button>
-        </fieldset>
-        <a href="#" class="vbl__cta vbl__cta--primary">Choose Performance</a>
-      </div>
-    </article>
-
-    <!-- Ultimate -->
-    <article class="vbl__card">
-      <div class="vbl__card-media">
-        <svg class="vbl__glasses" viewBox="0 0 200 70" data-glasses>
-          <path d="M10 22 Q100 8 190 22" fill="none" stroke="#1c1b18" stroke-width="5" stroke-linecap="round" data-frame/>
-          <path d="M14 24 Q55 20 92 26 Q97 48 70 54 Q30 58 18 40 Z" fill="#5a4632" opacity=".85" data-lens/>
-          <path d="M186 24 Q145 20 108 26 Q103 48 130 54 Q170 58 182 40 Z" fill="#5a4632" opacity=".85" data-lens/>
-        </svg>
-      </div>
-      <div class="vbl__card-body">
-        <h2 class="vbl__card-title">Ultimate Set</h2>
-        <p class="vbl__card-tagline">The complete Velluto ritual</p>
-        <div class="vbl__price"><span class="vbl__price-current">€119</span><span class="vbl__price-value">€156 individual value</span></div>
-        <ul class="vbl__items">
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Strada Pro</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Velluto Visione™ Lens</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Clear Lens</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Hard Case</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Cleaning Spray</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Microfiber Cloth</li>
-          <li class="vbl__item"><svg class="vbl__check" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bottle</li>
-        </ul>
-        <p class="vbl__shipping vbl__shipping--free">Free shipping included</p>
-        <fieldset class="vbl__swatches">
-          <button type="button" class="vbl__swatch is-active" style="background:#15151a" title="Nero" data-tint="#3a3a40"></button>
-          <button type="button" class="vbl__swatch" style="background:#e2641e" title="Arancia" data-tint="#e2641e"></button>
-          <button type="button" class="vbl__swatch" style="background:linear-gradient(135deg,#5a3c28,#2e1d12)" title="Espresso" data-tint="#5a3c28"></button>
-          <button type="button" class="vbl__swatch" style="background:#6d4a8f" title="Viola" data-tint="#6d4a8f"></button>
-        </fieldset>
-        <a href="#" class="vbl__cta">Choose Ultimate</a>
-      </div>
-    </article>
-  </div>
+  <div class="vbl__grid" id="grid"></div>
 
   <ul class="vbl__trust">
     <li>Designed in Italy</li>
@@ -219,34 +131,93 @@
             <th scope="col"><span class="vbl__table-name">Ultimate Set</span><span class="vbl__table-price">€119</span></th>
           </tr>
         </thead>
-        <tbody>
-          <tr><th scope="row">Strada Pro</th><td>✓</td><td class="vbl__table-col--highlight">✓</td><td>✓</td></tr>
-          <tr><th scope="row">Velluto Visione™ Lens</th><td>✓</td><td class="vbl__table-col--highlight">✓</td><td>✓</td></tr>
-          <tr><th scope="row">Clear Lens</th><td><span class="vbl__dash">–</span></td><td class="vbl__table-col--highlight">✓</td><td>✓</td></tr>
-          <tr><th scope="row">Hard Case</th><td><span class="vbl__dash">–</span></td><td class="vbl__table-col--highlight">✓</td><td>✓</td></tr>
-          <tr><th scope="row">Cleaning Spray</th><td><span class="vbl__dash">–</span></td><td class="vbl__table-col--highlight"><span class="vbl__dash">–</span></td><td>✓</td></tr>
-          <tr><th scope="row">Microfiber Cloth</th><td><span class="vbl__dash">–</span></td><td class="vbl__table-col--highlight"><span class="vbl__dash">–</span></td><td>✓</td></tr>
-          <tr><th scope="row">Bottle</th><td><span class="vbl__dash">–</span></td><td class="vbl__table-col--highlight"><span class="vbl__dash">–</span></td><td>✓</td></tr>
-          <tr><th scope="row">Free Shipping</th><td><span class="vbl__dash">–</span></td><td class="vbl__table-col--highlight">✓</td><td>✓</td></tr>
-        </tbody>
+        <tbody id="compare-body"></tbody>
       </table>
     </div>
   </section>
 </div>
 
 <script>
-  // Mirrors the section's swatch behavior: recolors the placeholder frame.
-  document.querySelectorAll('.vbl__card').forEach(function (card) {
-    var lenses = card.querySelectorAll('[data-lens]');
-    var frame = card.querySelector('[data-frame]');
-    card.querySelectorAll('.vbl__swatch').forEach(function (swatch) {
-      swatch.addEventListener('click', function () {
-        card.querySelectorAll('.vbl__swatch').forEach(function (s) { s.classList.remove('is-active'); });
-        swatch.classList.add('is-active');
-        if (frame) frame.setAttribute('stroke', swatch.dataset.tint);
-        lenses.forEach(function (l) { l.setAttribute('fill', swatch.dataset.tint); });
+  // Real imagery from the live store CDN (public URLs).
+  var IMAGES = {
+    Nero:     "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/004.webp?v=1776868478&width=900",
+    Arancia:  "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/002.webp?v=1776868548&width=900",
+    Espresso: "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/003.webp?v=1776868548&width=900",
+    Viola:    "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/001.webp?v=1776868548&width=900"
+  };
+  var SWATCHES = {
+    Nero:     "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoBlack_45.webp?v=1776792135",
+    Arancia:  "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoOrange_45.webp?v=1776792409",
+    Espresso: "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoBrown_45.webp?v=1776792355",
+    Viola:    "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoPurple_45.webp?v=1776792280"
+  };
+  var COLORS = ["Nero", "Arancia", "Espresso", "Viola"];
+
+  var SETS = [
+    {
+      title: "Starter Set", tagline: "The essentials, ready to ride", price: "€69", value: "",
+      items: ["Strada Pro", "Velluto Visione™ Lens"],
+      shipping: "Free shipping from €99", free: false, highlight: false, cta: "Choose Starter"
+    },
+    {
+      title: "Performance Set", tagline: "Every condition covered", price: "€99", value: "€226 individual value",
+      items: ["Strada Pro", "Velluto Visione™ Lens", "Clear Lens", "Hard Case"],
+      shipping: "Free shipping included", free: true, highlight: true, badge: "Most Popular", cta: "Choose Performance"
+    },
+    {
+      title: "Ultimate Set", tagline: "The complete Velluto ritual", price: "€119", value: "€256 individual value",
+      items: ["Strada Pro", "Velluto Visione™ Lens", "Clear Lens", "Hard Case", "Cleaning Spray", "Microfiber Cloth", "Bottle"],
+      shipping: "Free shipping included", free: true, highlight: false, cta: "Choose Ultimate"
+    }
+  ];
+
+  var CHECK = '<svg class="vbl__check" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var grid = document.getElementById("grid");
+  SETS.forEach(function (s) {
+    var card = document.createElement("article");
+    card.className = "vbl__card" + (s.highlight ? " vbl__card--highlight" : "");
+    card.innerHTML =
+      (s.badge ? '<span class="vbl__badge">' + s.badge + "</span>" : "") +
+      '<a class="vbl__card-media" href="#"><img data-img src="' + IMAGES.Nero + '" alt="' + s.title + '"></a>' +
+      '<div class="vbl__card-body">' +
+        '<h2 class="vbl__card-title">' + s.title + "</h2>" +
+        '<p class="vbl__card-tagline">' + s.tagline + "</p>" +
+        '<div class="vbl__price"><span class="vbl__price-current">' + s.price + "</span>" +
+          (s.value ? '<span class="vbl__price-value">' + s.value + "</span>" : "") + "</div>" +
+        '<ul class="vbl__items">' + s.items.map(function (i) { return '<li class="vbl__item">' + CHECK + i + "</li>"; }).join("") + "</ul>" +
+        '<p class="vbl__shipping' + (s.free ? " vbl__shipping--free" : "") + '">' + s.shipping + "</p>" +
+        '<div class="vbl__swatches">' + COLORS.map(function (c, idx) {
+          return '<button type="button" class="vbl__swatch' + (idx === 0 ? " is-active" : "") + '" title="' + c + '" data-color="' + c + '"><img src="' + SWATCHES[c] + '" alt="' + c + '"></button>';
+        }).join("") + "</div>" +
+        '<a href="#" class="vbl__cta' + (s.highlight ? " vbl__cta--primary" : "") + '">' + s.cta + "</a>" +
+      "</div>";
+    grid.appendChild(card);
+
+    var img = card.querySelector("[data-img]");
+    card.querySelectorAll(".vbl__swatch").forEach(function (sw) {
+      sw.addEventListener("click", function () {
+        card.querySelectorAll(".vbl__swatch").forEach(function (x) { x.classList.remove("is-active"); });
+        sw.classList.add("is-active");
+        img.src = IMAGES[sw.dataset.color];
       });
     });
+  });
+
+  // Comparison table rows generated from the sets' item lists (same logic
+  // as the Liquid section) + the Free Shipping row.
+  var allItems = [];
+  SETS.forEach(function (s) { s.items.forEach(function (i) { if (allItems.indexOf(i) < 0) allItems.push(i); }); });
+  var tbody = document.getElementById("compare-body");
+  allItems.concat(["Free Shipping"]).forEach(function (item) {
+    var tr = document.createElement("tr");
+    var cells = SETS.map(function (s, idx) {
+      var has = item === "Free Shipping" ? s.free : s.items.indexOf(item) >= 0;
+      return '<td class="' + (s.highlight ? "vbl__table-col--highlight" : "") + '">' +
+        (has ? '<span class="vbl__tick">✓</span>' : '<span class="vbl__dash">–</span>') + "</td>";
+    }).join("");
+    tr.innerHTML = '<th scope="row">' + item + "</th>" + cells;
+    tbody.appendChild(tr);
   });
 </script>
 
