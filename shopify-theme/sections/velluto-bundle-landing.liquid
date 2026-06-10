@@ -16,13 +16,14 @@
     the union of all bundles' item lists, so it never goes out of sync.
   - Free shipping eligibility is computed against the section's threshold
     setting (default €99) — nothing is hardcoded per bundle.
-  - Each card gets a lightweight color switcher built from the bundle
-    product's existing color option (same option structure as Strada Pro).
-    It swaps the card image and carries the chosen variant to the product
-    page via ?variant=… — it does not replace or interfere with the main
-    product page's color switcher.
-  - CTA links to the bundle's own product page (safest with 4 color
-    variants), per spec.
+  - Color switcher: matches the live store's existing structure, where each
+    frame color is its own product (Nero / Arancia / Espresso / Viola) and
+    the switcher links between sibling products (see the
+    velluto_color_swatches custom liquid block on the StradaPro product
+    page). Each bundle card therefore takes up to four color products via
+    product pickers; swatches swap the card image and retarget the CTA to
+    the selected color's product page. No variant logic involved.
+  - CTA links to the bundle's own product page, per spec.
 {% endcomment %}
 
 {%- liquid
@@ -89,20 +90,6 @@
         if product.price >= fs_threshold_cents
           assign fs_eligible = true
         endif
-
-        # NEW BUNDLE LOGIC: locate the existing color option on the bundle
-        # product (same option structure as the Strada Pro), so each set is
-        # selectable in all frame colors without duplicating switcher logic
-        # on the product page itself.
-        assign color_option = blank
-        assign color_pos = 0
-        for option in product.options_with_values
-          assign oname = option.name | downcase | strip
-          if 'color colour farbe colore frame color' contains oname
-            assign color_option = option
-            assign color_pos = forloop.index0
-          endif
-        endfor
 
         assign default_variant = product.selected_or_first_available_variant
       -%}
@@ -175,72 +162,58 @@
               {%- endif -%}
             </p>
 
-            {%- if color_option != blank -%}
-              {%- comment -%}
-                NEW BUNDLE LOGIC: per-card color switcher. One swatch per
-                color value of the existing option; each swatch carries the
-                matching variant's image and a ?variant= deep link so the
-                chosen color is preselected on the bundle product page.
-              {%- endcomment -%}
-              <fieldset class="vbl__swatches" data-vbl-swatches>
-                <legend class="visually-hidden vbl__sr-only">{{ color_option.name }}</legend>
-                {%- for value in color_option.values -%}
-                  {%- liquid
-                    assign swatch_variant = blank
-                    for variant in product.variants
-                      if variant.options[color_pos] == value
-                        assign swatch_variant = variant
-                        break
-                      endif
-                    endfor
-
-                    assign swatch_image = swatch_variant.featured_media.preview_image | default: product.featured_image
-
-                    # Swatch color: prefer Shopify's native option-value
-                    # swatch if configured, otherwise map common frame
-                    # color names, otherwise neutral grey.
-                    assign swatch_css = ''
-                    if value.swatch.color
-                      assign swatch_css = value.swatch.color
-                    else
-                      assign vkey = value | downcase
-                      case vkey
-                        when 'black', 'nero', 'matte black'
-                          assign swatch_css = '#15151a'
-                        when 'white', 'bianco'
-                          assign swatch_css = '#f4f1ea'
-                        when 'tortoise', 'havana'
-                          assign swatch_css = 'linear-gradient(135deg,#6e4a23,#3a2410)'
-                        when 'crystal', 'clear', 'trasparente'
-                          assign swatch_css = 'linear-gradient(135deg,#ececec,#cfcfcf)'
-                        when 'red', 'rosso'
-                          assign swatch_css = '#9d2235'
-                        when 'green', 'verde'
-                          assign swatch_css = '#2f4538'
-                        when 'navy', 'blue', 'blu'
-                          assign swatch_css = '#1f2a44'
-                        else
-                          assign swatch_css = '#b9b3a9'
-                      endcase
-                    endif
-                  -%}
-                  <button
-                    type="button"
-                    class="vbl__swatch{% if swatch_variant.id == default_variant.id %} is-active{% endif %}"
-                    style="background: {{ swatch_css }};"
-                    title="{{ value | escape }}"
-                    aria-label="{{ color_option.name | escape }}: {{ value | escape }}"
-                    aria-pressed="{% if swatch_variant.id == default_variant.id %}true{% else %}false{% endif %}"
-                    data-vbl-swatch
-                    data-variant-url="{{ product.url }}?variant={{ swatch_variant.id }}"
-                    {% if swatch_image %}data-image="{{ swatch_image | image_url: width: 720 }}"{% endif %}
-                  ></button>
-                {%- endfor -%}
-              </fieldset>
+            {%- comment -%}
+              NEW BUNDLE LOGIC: per-card color switcher matching the live
+              store's structure, where each frame color is its own product
+              (like the StradaPro Nero/Arancia/Espresso/Viola pages and the
+              velluto_color_swatches block that links between them). The
+              block takes up to four color products; each swatch swaps the
+              card image and retargets the CTA to that color's product page.
+              The label comes from the metafield velluto.color_label or the
+              "… | Color" suffix of the product title.
+            {%- endcomment -%}
+            {%- capture swatch_html -%}
+              {%- for i in (1..4) -%}
+                {%- liquid
+                  case i
+                    when 1
+                      assign cprod = block.settings.color_product_1
+                    when 2
+                      assign cprod = block.settings.color_product_2
+                    when 3
+                      assign cprod = block.settings.color_product_3
+                    when 4
+                      assign cprod = block.settings.color_product_4
+                  endcase
+                  if cprod == blank
+                    continue
+                  endif
+                  assign clabel = cprod.metafields.velluto.color_label.value | default: cprod.title | split: '|' | last | strip
+                -%}
+                <button
+                  type="button"
+                  class="vbl__swatch{% if cprod.handle == product.handle %} is-active{% endif %}"
+                  title="{{ clabel | escape }}"
+                  aria-label="Color: {{ clabel | escape }}"
+                  aria-pressed="{% if cprod.handle == product.handle %}true{% else %}false{% endif %}"
+                  data-vbl-swatch
+                  data-url="{{ cprod.url }}"
+                  {% if cprod.featured_image %}data-image="{{ cprod.featured_image | image_url: width: 720 }}"{% endif %}
+                >
+                  {%- if cprod.featured_image -%}
+                    <img src="{{ cprod.featured_image | image_url: width: 104, height: 104, crop: 'center' }}" alt="{{ clabel | escape }}" width="52" height="52" loading="lazy">
+                  {%- endif -%}
+                </button>
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- if swatch_html contains 'vbl__swatch' -%}
+              <div class="vbl__swatches" data-vbl-swatches role="group" aria-label="Frame color">
+                {{ swatch_html }}
+              </div>
             {%- endif -%}
 
             <a
-              href="{{ product.url }}?variant={{ default_variant.id }}"
+              href="{{ product.url }}"
               class="vbl__cta{% if is_highlighted %} vbl__cta--primary{% endif %}"
               data-vbl-cta
             >
@@ -416,15 +389,17 @@
   #vbl-{{ section.id }} .vbl__shipping { font-size: 13px; color: var(--vbl-muted); margin: 0 0 18px; }
   #vbl-{{ section.id }} .vbl__shipping--free { color: var(--vbl-accent); font-weight: 600; }
 
-  /* Per-card color switcher */
-  #vbl-{{ section.id }} .vbl__swatches { display: flex; gap: 10px; border: 0; padding: 0; margin: 0 0 20px; }
+  /* Per-card color switcher — image swatches, same feel as the existing
+     vcol-swatch pattern on the StradaPro product page. */
+  #vbl-{{ section.id }} .vbl__swatches { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 20px; }
   #vbl-{{ section.id }} .vbl__swatch {
-    width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
-    border: 1px solid rgba(28,27,24,.18); box-shadow: inset 0 0 0 2px var(--vbl-card);
-    padding: 0; transition: transform .15s ease;
+    width: 44px; height: 44px; border-radius: 8px; cursor: pointer; overflow: hidden;
+    border: 2px solid transparent; background: #f3efe7; padding: 0;
+    transition: border-color .15s ease, transform .15s ease;
   }
-  #vbl-{{ section.id }} .vbl__swatch:hover { transform: scale(1.1); }
-  #vbl-{{ section.id }} .vbl__swatch.is-active { outline: 2px solid var(--vbl-ink); outline-offset: 2px; }
+  #vbl-{{ section.id }} .vbl__swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #vbl-{{ section.id }} .vbl__swatch:hover { border-color: #888; transform: scale(1.05); }
+  #vbl-{{ section.id }} .vbl__swatch.is-active { border-color: var(--vbl-ink); }
 
   #vbl-{{ section.id }} .vbl__cta {
     margin-top: auto; display: inline-flex; align-items: center; justify-content: center;
@@ -486,10 +461,10 @@
 
 <script>
   /* NEW BUNDLE LOGIC: per-card color switcher.
-     Swaps the card image and rewrites the CTA / image links to deep-link the
-     selected color variant on the bundle product page. Progressive
-     enhancement only — without JS every card still links to its product page
-     with the default variant. */
+     Each frame color is its own product (matching the live store's
+     structure), so selecting a swatch swaps the card image and points the
+     CTA / image links at that color's product page. Progressive enhancement
+     only — without JS every card still links to its default color product. */
   (function () {
     var root = document.getElementById('vbl-{{ section.id }}');
     if (!root || root.dataset.vblInit) return;
@@ -513,9 +488,9 @@
             image.src = swatch.dataset.image;
             image.removeAttribute('srcset');
           }
-          if (swatch.dataset.variantUrl) {
-            if (cta) cta.href = swatch.dataset.variantUrl;
-            if (mediaLink) mediaLink.href = swatch.dataset.variantUrl;
+          if (swatch.dataset.url) {
+            if (cta) cta.href = swatch.dataset.url;
+            if (mediaLink) mediaLink.href = swatch.dataset.url;
           }
         });
       });
@@ -577,7 +552,21 @@
       "name": "Bundle card",
       "limit": 3,
       "settings": [
-        { "type": "product", "id": "product", "label": "Bundle product" },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Bundle product (default color)",
+          "info": "Drives price, CTA and the comparison table. Usually the Nero version of the set."
+        },
+        { "type": "header", "content": "Color products" },
+        {
+          "type": "paragraph",
+          "content": "Each frame color is its own product (same structure as the StradaPro pages). Pick all four color versions of this set; the first is usually the same as the bundle product above."
+        },
+        { "type": "product", "id": "color_product_1", "label": "Color 1 (e.g. Nero)" },
+        { "type": "product", "id": "color_product_2", "label": "Color 2 (e.g. Arancia)" },
+        { "type": "product", "id": "color_product_3", "label": "Color 3 (e.g. Espresso)" },
+        { "type": "product", "id": "color_product_4", "label": "Color 4 (e.g. Viola)" },
         {
           "type": "text",
           "id": "display_title",

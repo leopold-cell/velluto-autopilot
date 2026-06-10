@@ -1,0 +1,61 @@
+{% comment %}
+  ─────────────────────────────────────────────────────────────────────────────
+  VELLUTO — Bundle color swatches (TEST)
+  ─────────────────────────────────────────────────────────────────────────────
+  Color switcher for the bundle product pages. Mirrors the existing
+  velluto_color_swatches custom liquid block on the StradaPro product pages
+  (each frame color is its own product; swatches are links between sibling
+  products) and reuses the same vcol-* classes from assets/velluto-product.css
+  so the look stays identical.
+
+  Sibling products are NOT hardcoded — they come from product metafields:
+    - velluto.color_label     (single line text)  e.g. "Nero"
+    - velluto.color_siblings  (single line text)  comma-separated handles of
+      ALL color versions of this set, in display order, e.g.
+      "strada-pro-starter-set-viola,strada-pro-starter-set-arancia,..."
+
+  Usage: add a Custom Liquid block to the product-info section of the bundle
+  product template containing:
+    {% raw %}{% render 'velluto-bundle-color-swatches', product: product %}{% endraw %}
+{% endcomment %}
+
+{{ 'velluto-product.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign sibling_handles = product.metafields.velluto.color_siblings.value | default: ''
+  assign current_label = product.metafields.velluto.color_label.value | default: product.title | split: '|' | last | strip
+-%}
+
+{%- if sibling_handles != blank -%}
+  <div class="vcol-swatches">
+    <p class="vcol-label">COLOR: <strong>{{ current_label }}</strong></p>
+    <div class="vcol-list">
+      {%- assign handles = sibling_handles | split: ',' -%}
+      {%- for h in handles -%}
+        {%- liquid
+          assign sib_handle = h | strip
+          assign sib = all_products[sib_handle]
+          if sib == blank
+            continue
+          endif
+          assign sib_label = sib.metafields.velluto.color_label.value | default: sib.title | split: '|' | last | strip
+        -%}
+        <a
+          href="{{ sib.url }}"
+          class="vcol-swatch{% if sib.handle == product.handle %} vcol-active{% endif %}"
+          title="{{ sib_label | escape }}"
+        >
+          {%- if sib.featured_image -%}
+            <img
+              src="{{ sib.featured_image | image_url: width: 104, height: 104, crop: 'center' }}"
+              alt="{{ sib_label | escape }}"
+              loading="lazy"
+              width="52"
+              height="52"
+            >
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

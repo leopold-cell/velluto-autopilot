@@ -7,7 +7,11 @@
         "starter": {
           "type": "bundle",
           "settings": {
-            "product": "strada-pro-starter-set",
+            "product": "strada-pro-starter-set-nero",
+            "color_product_1": "strada-pro-starter-set-nero",
+            "color_product_2": "strada-pro-starter-set-arancia",
+            "color_product_3": "strada-pro-starter-set-espresso",
+            "color_product_4": "strada-pro-starter-set-viola",
             "display_title": "Starter Set",
             "tagline": "The essentials, ready to ride",
             "included_items": "Strada Pro\nVelluto Visione™ Lens",
@@ -19,7 +23,11 @@
         "performance": {
           "type": "bundle",
           "settings": {
-            "product": "strada-pro-performance-set",
+            "product": "strada-pro-performance-set-nero",
+            "color_product_1": "strada-pro-performance-set-nero",
+            "color_product_2": "strada-pro-performance-set-arancia",
+            "color_product_3": "strada-pro-performance-set-espresso",
+            "color_product_4": "strada-pro-performance-set-viola",
             "display_title": "Performance Set",
             "tagline": "Every condition covered",
             "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case",
@@ -31,7 +39,11 @@
         "ultimate": {
           "type": "bundle",
           "settings": {
-            "product": "strada-pro-ultimate-set",
+            "product": "strada-pro-ultimate-set-nero",
+            "color_product_1": "strada-pro-ultimate-set-nero",
+            "color_product_2": "strada-pro-ultimate-set-arancia",
+            "color_product_3": "strada-pro-ultimate-set-espresso",
+            "color_product_4": "strada-pro-ultimate-set-viola",
             "display_title": "Ultimate Set",
             "tagline": "The complete Velluto ritual",
             "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case\nCleaning Spray\nMicrofiber Cloth\nBottle",
