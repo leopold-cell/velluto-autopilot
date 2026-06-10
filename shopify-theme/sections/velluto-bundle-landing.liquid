@@ -1,0 +1,648 @@
+{% comment %}
+  ─────────────────────────────────────────────────────────────────────────────
+  VELLUTO — Strada Pro Bundle Landing (TEST)
+  ─────────────────────────────────────────────────────────────────────────────
+  Conversion-focused bundle selector for the Strada Pro sets.
+
+  - Online Store 2.0 section, intended for an alternate page template
+    (templates/page.velluto-bundles-test.json) so it can be previewed on an
+    unpublished theme before going live.
+  - No hardcoded product IDs: each bundle card is a block with a product
+    picker (stored as a product handle). Prices, images, variants and
+    compare-at "value" pricing are read live from the product objects.
+  - Included items come from the product metafield `velluto.included_items`
+    (multi-line text, one item per line) when present, otherwise from the
+    block's "Included items" setting. The comparison table is generated from
+    the union of all bundles' item lists, so it never goes out of sync.
+  - Free shipping eligibility is computed against the section's threshold
+    setting (default €99) — nothing is hardcoded per bundle.
+  - Each card gets a lightweight color switcher built from the bundle
+    product's existing color option (same option structure as Strada Pro).
+    It swaps the card image and carries the chosen variant to the product
+    page via ?variant=… — it does not replace or interfere with the main
+    product page's color switcher.
+  - CTA links to the bundle's own product page (safest with 4 color
+    variants), per spec.
+{% endcomment %}
+
+{%- liquid
+  # NEW BUNDLE LOGIC: free-shipping threshold in cents, for comparing
+  # against product.price (which Shopify exposes in cents).
+  assign fs_threshold_cents = section.settings.free_shipping_threshold | times: 100
+  assign fs_threshold_formatted = fs_threshold_cents | money_without_trailing_zeros
+
+  # NEW BUNDLE LOGIC: build the master item list for the comparison table —
+  # an ordered union of every bundle's included items. '|;|' is used as a
+  # delimiter that will not appear in item names.
+  assign master_items = ''
+  for block in section.blocks
+    assign raw_items = block.settings.product.metafields.velluto.included_items.value | default: block.settings.included_items
+    assign lines = raw_items | strip | newline_to_br | split: '<br />'
+    for line in lines
+      assign t = line | strip_html | strip
+      if t == blank
+        continue
+      endif
+      assign probe = '|;|' | append: master_items | append: '|;|'
+      assign needle = '|;|' | append: t | append: '|;|'
+      unless probe contains needle
+        if master_items == ''
+          assign master_items = t
+        else
+          assign master_items = master_items | append: '|;|' | append: t
+        endif
+      endunless
+    endfor
+  endfor
+  assign master_list = master_items | split: '|;|'
+-%}
+
+<div class="vbl" id="vbl-{{ section.id }}">
+
+  {%- comment -%} ── Hero ──────────────────────────────────────────────── {%- endcomment -%}
+  <header class="vbl__hero">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="vbl__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="vbl__heading">{{ section.settings.heading }}</h1>
+    {%- if section.settings.subheading != blank -%}
+      <p class="vbl__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+    <p class="vbl__shipping-note">
+      {{ section.settings.shipping_note | replace: '[threshold]', fs_threshold_formatted }}
+    </p>
+  </header>
+
+  {%- comment -%} ── Bundle cards ──────────────────────────────────────── {%- endcomment -%}
+  <div class="vbl__grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign product = block.settings.product
+        assign is_highlighted = block.settings.highlight
+
+        # Included items: metafield first, block setting as fallback.
+        assign raw_items = product.metafields.velluto.included_items.value | default: block.settings.included_items
+        assign item_lines = raw_items | strip | newline_to_br | split: '<br />'
+
+        # NEW BUNDLE LOGIC: free-shipping eligibility per bundle.
+        assign fs_eligible = false
+        if product.price >= fs_threshold_cents
+          assign fs_eligible = true
+        endif
+
+        # NEW BUNDLE LOGIC: locate the existing color option on the bundle
+        # product (same option structure as the Strada Pro), so each set is
+        # selectable in all frame colors without duplicating switcher logic
+        # on the product page itself.
+        assign color_option = blank
+        assign color_pos = 0
+        for option in product.options_with_values
+          assign oname = option.name | downcase | strip
+          if 'color colour farbe colore frame color' contains oname
+            assign color_option = option
+            assign color_pos = forloop.index0
+          endif
+        endfor
+
+        assign default_variant = product.selected_or_first_available_variant
+      -%}
+
+      <article
+        class="vbl__card{% if is_highlighted %} vbl__card--highlight{% endif %}"
+        data-vbl-card
+        {{ block.shopify_attributes }}
+      >
+        {%- if block.settings.badge_label != blank -%}
+          <span class="vbl__badge">{{ block.settings.badge_label }}</span>
+        {%- endif -%}
+
+        {%- if product == blank -%}
+          {%- comment -%} Editor onboarding state — select a product. {%- endcomment -%}
+          <div class="vbl__card-empty">{{ 'Select a bundle product for this card in the theme editor.' }}</div>
+        {%- else -%}
+
+          <a href="{{ product.url }}" class="vbl__card-media" data-vbl-link tabindex="-1" aria-hidden="true">
+            {%- assign card_image = default_variant.featured_media.preview_image | default: product.featured_image -%}
+            {%- if card_image -%}
+              <img
+                src="{{ card_image | image_url: width: 720 }}"
+                srcset="{{ card_image | image_url: width: 480 }} 480w, {{ card_image | image_url: width: 720 }} 720w, {{ card_image | image_url: width: 1080 }} 1080w"
+                sizes="(min-width: 990px) 30vw, 90vw"
+                alt="{{ product.title | escape }}"
+                width="{{ card_image.width }}"
+                height="{{ card_image.height }}"
+                loading="lazy"
+                data-vbl-image
+              >
+            {%- endif -%}
+          </a>
+
+          <div class="vbl__card-body">
+            <h2 class="vbl__card-title">{{ block.settings.display_title | default: product.title }}</h2>
+            {%- if block.settings.tagline != blank -%}
+              <p class="vbl__card-tagline">{{ block.settings.tagline }}</p>
+            {%- endif -%}
+
+            <div class="vbl__price">
+              <span class="vbl__price-current">{{ product.price | money_without_trailing_zeros }}</span>
+              {%- comment -%}
+                Value framing, not discount framing: when a compare-at price
+                exists we present it as the value of the individual items,
+                never as a slashed sale price.
+              {%- endcomment -%}
+              {%- if product.compare_at_price > product.price -%}
+                <span class="vbl__price-value">{{ product.compare_at_price | money_without_trailing_zeros }} individual value</span>
+              {%- endif -%}
+            </div>
+
+            <ul class="vbl__items" role="list">
+              {%- for line in item_lines -%}
+                {%- assign t = line | strip_html | strip -%}
+                {%- if t != blank -%}
+                  <li class="vbl__item">
+                    <svg class="vbl__check" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    {{ t }}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+
+            <p class="vbl__shipping {% if fs_eligible %}vbl__shipping--free{% endif %}">
+              {%- if fs_eligible -%}
+                {{ section.settings.free_shipping_label }}
+              {%- else -%}
+                {{ section.settings.shipping_from_label | replace: '[threshold]', fs_threshold_formatted }}
+              {%- endif -%}
+            </p>
+
+            {%- if color_option != blank -%}
+              {%- comment -%}
+                NEW BUNDLE LOGIC: per-card color switcher. One swatch per
+                color value of the existing option; each swatch carries the
+                matching variant's image and a ?variant= deep link so the
+                chosen color is preselected on the bundle product page.
+              {%- endcomment -%}
+              <fieldset class="vbl__swatches" data-vbl-swatches>
+                <legend class="visually-hidden vbl__sr-only">{{ color_option.name }}</legend>
+                {%- for value in color_option.values -%}
+                  {%- liquid
+                    assign swatch_variant = blank
+                    for variant in product.variants
+                      if variant.options[color_pos] == value
+                        assign swatch_variant = variant
+                        break
+                      endif
+                    endfor
+
+                    assign swatch_image = swatch_variant.featured_media.preview_image | default: product.featured_image
+
+                    # Swatch color: prefer Shopify's native option-value
+                    # swatch if configured, otherwise map common frame
+                    # color names, otherwise neutral grey.
+                    assign swatch_css = ''
+                    if value.swatch.color
+                      assign swatch_css = value.swatch.color
+                    else
+                      assign vkey = value | downcase
+                      case vkey
+                        when 'black', 'nero', 'matte black'
+                          assign swatch_css = '#15151a'
+                        when 'white', 'bianco'
+                          assign swatch_css = '#f4f1ea'
+                        when 'tortoise', 'havana'
+                          assign swatch_css = 'linear-gradient(135deg,#6e4a23,#3a2410)'
+                        when 'crystal', 'clear', 'trasparente'
+                          assign swatch_css = 'linear-gradient(135deg,#ececec,#cfcfcf)'
+                        when 'red', 'rosso'
+                          assign swatch_css = '#9d2235'
+                        when 'green', 'verde'
+                          assign swatch_css = '#2f4538'
+                        when 'navy', 'blue', 'blu'
+                          assign swatch_css = '#1f2a44'
+                        else
+                          assign swatch_css = '#b9b3a9'
+                      endcase
+                    endif
+                  -%}
+                  <button
+                    type="button"
+                    class="vbl__swatch{% if swatch_variant.id == default_variant.id %} is-active{% endif %}"
+                    style="background: {{ swatch_css }};"
+                    title="{{ value | escape }}"
+                    aria-label="{{ color_option.name | escape }}: {{ value | escape }}"
+                    aria-pressed="{% if swatch_variant.id == default_variant.id %}true{% else %}false{% endif %}"
+                    data-vbl-swatch
+                    data-variant-url="{{ product.url }}?variant={{ swatch_variant.id }}"
+                    {% if swatch_image %}data-image="{{ swatch_image | image_url: width: 720 }}"{% endif %}
+                  ></button>
+                {%- endfor -%}
+              </fieldset>
+            {%- endif -%}
+
+            <a
+              href="{{ product.url }}?variant={{ default_variant.id }}"
+              class="vbl__cta{% if is_highlighted %} vbl__cta--primary{% endif %}"
+              data-vbl-cta
+            >
+              {{ block.settings.cta_label | default: 'Choose this set' }}
+            </a>
+          </div>
+        {%- endif -%}
+      </article>
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} ── Trust row ─────────────────────────────────────────── {%- endcomment -%}
+  {%- if section.settings.trust_1 != blank or section.settings.trust_2 != blank or section.settings.trust_3 != blank -%}
+    <ul class="vbl__trust" role="list">
+      {%- if section.settings.trust_1 != blank -%}<li>{{ section.settings.trust_1 }}</li>{%- endif -%}
+      {%- if section.settings.trust_2 != blank -%}<li>{{ section.settings.trust_2 }}</li>{%- endif -%}
+      {%- if section.settings.trust_3 != blank -%}<li>{{ section.settings.trust_3 }}</li>{%- endif -%}
+    </ul>
+  {%- endif -%}
+
+  {%- comment -%} ── Comparison table ──────────────────────────────────── {%- endcomment -%}
+  {%- if section.settings.show_comparison and master_list.size > 0 -%}
+    <section class="vbl__compare" aria-label="{{ section.settings.comparison_heading | escape }}">
+      <h2 class="vbl__compare-heading">{{ section.settings.comparison_heading }}</h2>
+      <div class="vbl__compare-scroll">
+        <table class="vbl__table">
+          <thead>
+            <tr>
+              <th scope="col"><span class="vbl__sr-only">Included item</span></th>
+              {%- for block in section.blocks -%}
+                <th scope="col" class="{% if block.settings.highlight %}vbl__table-col--highlight{% endif %}">
+                  <span class="vbl__table-name">{{ block.settings.display_title | default: block.settings.product.title }}</span>
+                  {%- if block.settings.product != blank -%}
+                    <span class="vbl__table-price">{{ block.settings.product.price | money_without_trailing_zeros }}</span>
+                  {%- endif -%}
+                </th>
+              {%- endfor -%}
+            </tr>
+          </thead>
+          <tbody>
+            {%- for item in master_list -%}
+              <tr>
+                <th scope="row">{{ item }}</th>
+                {%- for block in section.blocks -%}
+                  {%- liquid
+                    # NEW BUNDLE LOGIC: checkmark when this bundle's item
+                    # list contains the row item (exact line match).
+                    assign raw_items = block.settings.product.metafields.velluto.included_items.value | default: block.settings.included_items
+                    assign joined = ''
+                    assign lines = raw_items | strip | newline_to_br | split: '<br />'
+                    for line in lines
+                      assign t = line | strip_html | strip
+                      if t != blank
+                        assign joined = joined | append: '|;|' | append: t
+                      endif
+                    endfor
+                    assign joined = joined | append: '|;|'
+                    assign needle = '|;|' | append: item | append: '|;|'
+                  -%}
+                  <td class="{% if block.settings.highlight %}vbl__table-col--highlight{% endif %}">
+                    {%- if joined contains needle -%}
+                      <svg class="vbl__check vbl__check--table" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span class="vbl__sr-only">Included</span>
+                    {%- else -%}
+                      <span class="vbl__dash" aria-hidden="true">&ndash;</span>
+                      <span class="vbl__sr-only">Not included</span>
+                    {%- endif -%}
+                  </td>
+                {%- endfor -%}
+              </tr>
+            {%- endfor -%}
+            <tr>
+              <th scope="row">{{ section.settings.comparison_shipping_label }}</th>
+              {%- for block in section.blocks -%}
+                <td class="{% if block.settings.highlight %}vbl__table-col--highlight{% endif %}">
+                  {%- if block.settings.product.price >= fs_threshold_cents -%}
+                    <svg class="vbl__check vbl__check--table" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="vbl__sr-only">Free shipping</span>
+                  {%- else -%}
+                    <span class="vbl__dash" aria-hidden="true">&ndash;</span>
+                    <span class="vbl__sr-only">Standard shipping rates apply</span>
+                  {%- endif -%}
+                </td>
+              {%- endfor -%}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {%- endif -%}
+</div>
+
+{% style %}
+  /* Scoped to this section instance — safe to drop into any theme. */
+  #vbl-{{ section.id }} {
+    --vbl-bg: {{ section.settings.background_color }};
+    --vbl-ink: #1c1b18;
+    --vbl-muted: #6f6a60;
+    --vbl-line: #e6e1d7;
+    --vbl-card: #ffffff;
+    --vbl-accent: {{ section.settings.accent_color }};
+    --vbl-accent-ink: #ffffff;
+    background: var(--vbl-bg);
+    color: var(--vbl-ink);
+    padding: 56px 20px 72px;
+    font-feature-settings: "kern";
+  }
+  #vbl-{{ section.id }} .vbl__sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  /* ── Hero ── */
+  #vbl-{{ section.id }} .vbl__hero { max-width: 720px; margin: 0 auto 40px; text-align: center; }
+  #vbl-{{ section.id }} .vbl__eyebrow {
+    font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--vbl-accent); margin: 0 0 14px; font-weight: 600;
+  }
+  #vbl-{{ section.id }} .vbl__heading {
+    font-size: clamp(30px, 5vw, 46px); line-height: 1.08; letter-spacing: -.01em;
+    margin: 0 0 14px; font-weight: 600;
+  }
+  #vbl-{{ section.id }} .vbl__subheading {
+    font-size: 16px; line-height: 1.6; color: var(--vbl-muted); margin: 0 auto 18px; max-width: 560px;
+  }
+  #vbl-{{ section.id }} .vbl__shipping-note {
+    display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .02em;
+    border: 1px solid var(--vbl-line); border-radius: 999px; padding: 8px 18px;
+    background: var(--vbl-card); margin: 0;
+  }
+
+  /* ── Cards: mobile-first, stacked; highlighted set surfaces first ── */
+  #vbl-{{ section.id }} .vbl__grid {
+    display: flex; flex-direction: column; gap: 20px; max-width: 1120px; margin: 0 auto;
+  }
+  #vbl-{{ section.id }} .vbl__card--highlight { order: -1; }
+
+  #vbl-{{ section.id }} .vbl__card {
+    position: relative; background: var(--vbl-card); border: 1px solid var(--vbl-line);
+    border-radius: 18px; overflow: hidden; display: flex; flex-direction: column;
+    transition: box-shadow .25s ease, transform .25s ease;
+  }
+  #vbl-{{ section.id }} .vbl__card:hover { box-shadow: 0 14px 40px rgba(28, 27, 24, .10); }
+  #vbl-{{ section.id }} .vbl__card--highlight {
+    border: 2px solid var(--vbl-ink);
+    box-shadow: 0 18px 50px rgba(28, 27, 24, .12);
+  }
+  #vbl-{{ section.id }} .vbl__badge {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2;
+    background: var(--vbl-ink); color: var(--vbl-accent-ink);
+    font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    padding: 7px 16px; border-radius: 999px; white-space: nowrap;
+  }
+  #vbl-{{ section.id }} .vbl__card-empty { padding: 60px 24px; text-align: center; color: var(--vbl-muted); }
+
+  #vbl-{{ section.id }} .vbl__card-media { display: block; background: #f3efe7; }
+  #vbl-{{ section.id }} .vbl__card-media img {
+    width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; display: block;
+  }
+
+  #vbl-{{ section.id }} .vbl__card-body { padding: 24px 24px 28px; display: flex; flex-direction: column; flex: 1; }
+  #vbl-{{ section.id }} .vbl__card-title { font-size: 21px; font-weight: 600; margin: 0 0 4px; letter-spacing: -.01em; }
+  #vbl-{{ section.id }} .vbl__card-tagline { font-size: 13.5px; color: var(--vbl-muted); margin: 0 0 14px; }
+
+  #vbl-{{ section.id }} .vbl__price { display: flex; align-items: baseline; gap: 10px; margin: 0 0 16px; flex-wrap: wrap; }
+  #vbl-{{ section.id }} .vbl__price-current { font-size: 26px; font-weight: 600; }
+  #vbl-{{ section.id }} .vbl__price-value { font-size: 13px; color: var(--vbl-muted); }
+
+  #vbl-{{ section.id }} .vbl__items { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 9px; }
+  #vbl-{{ section.id }} .vbl__item { display: flex; align-items: center; gap: 10px; font-size: 14.5px; }
+  #vbl-{{ section.id }} .vbl__check { width: 14px; height: 14px; color: var(--vbl-accent); flex-shrink: 0; }
+
+  #vbl-{{ section.id }} .vbl__shipping { font-size: 13px; color: var(--vbl-muted); margin: 0 0 18px; }
+  #vbl-{{ section.id }} .vbl__shipping--free { color: var(--vbl-accent); font-weight: 600; }
+
+  /* Per-card color switcher */
+  #vbl-{{ section.id }} .vbl__swatches { display: flex; gap: 10px; border: 0; padding: 0; margin: 0 0 20px; }
+  #vbl-{{ section.id }} .vbl__swatch {
+    width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+    border: 1px solid rgba(28,27,24,.18); box-shadow: inset 0 0 0 2px var(--vbl-card);
+    padding: 0; transition: transform .15s ease;
+  }
+  #vbl-{{ section.id }} .vbl__swatch:hover { transform: scale(1.1); }
+  #vbl-{{ section.id }} .vbl__swatch.is-active { outline: 2px solid var(--vbl-ink); outline-offset: 2px; }
+
+  #vbl-{{ section.id }} .vbl__cta {
+    margin-top: auto; display: inline-flex; align-items: center; justify-content: center;
+    padding: 15px 24px; border-radius: 12px; font-size: 14.5px; font-weight: 600;
+    letter-spacing: .03em; text-decoration: none; text-align: center;
+    border: 1.5px solid var(--vbl-ink); color: var(--vbl-ink); background: transparent;
+    transition: background .2s ease, color .2s ease;
+  }
+  #vbl-{{ section.id }} .vbl__cta:hover { background: var(--vbl-ink); color: var(--vbl-accent-ink); }
+  #vbl-{{ section.id }} .vbl__cta--primary { background: var(--vbl-ink); color: var(--vbl-accent-ink); }
+  #vbl-{{ section.id }} .vbl__cta--primary:hover { background: var(--vbl-accent); border-color: var(--vbl-accent); }
+
+  /* ── Trust row ── */
+  #vbl-{{ section.id }} .vbl__trust {
+    list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px;
+    max-width: 1120px; margin: 36px auto 0; padding: 0; font-size: 13px; color: var(--vbl-muted);
+  }
+
+  /* ── Comparison table ── */
+  #vbl-{{ section.id }} .vbl__compare { max-width: 880px; margin: 64px auto 0; }
+  #vbl-{{ section.id }} .vbl__compare-heading { text-align: center; font-size: clamp(22px, 3vw, 30px); font-weight: 600; margin: 0 0 28px; }
+  #vbl-{{ section.id }} .vbl__compare-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #vbl-{{ section.id }} .vbl__table {
+    width: 100%; min-width: 560px; border-collapse: collapse; background: var(--vbl-card);
+    border: 1px solid var(--vbl-line); border-radius: 16px; overflow: hidden;
+  }
+  #vbl-{{ section.id }} .vbl__table th,
+  #vbl-{{ section.id }} .vbl__table td { padding: 14px 18px; border-bottom: 1px solid var(--vbl-line); font-size: 14px; }
+  #vbl-{{ section.id }} .vbl__table tbody tr:last-child th,
+  #vbl-{{ section.id }} .vbl__table tbody tr:last-child td { border-bottom: 0; }
+  #vbl-{{ section.id }} .vbl__table thead th { text-align: center; vertical-align: top; padding-top: 18px; }
+  #vbl-{{ section.id }} .vbl__table tbody th { text-align: left; font-weight: 500; }
+  #vbl-{{ section.id }} .vbl__table td { text-align: center; }
+  #vbl-{{ section.id }} .vbl__table-name { display: block; font-weight: 600; }
+  #vbl-{{ section.id }} .vbl__table-price { display: block; font-size: 13px; color: var(--vbl-muted); font-weight: 500; margin-top: 2px; }
+  #vbl-{{ section.id }} .vbl__check--table { width: 15px; height: 15px; }
+  #vbl-{{ section.id }} .vbl__dash { color: #c9c3b8; }
+  #vbl-{{ section.id }} .vbl__table-col--highlight { background: #faf7f0; }
+  #vbl-{{ section.id }} .vbl__table thead .vbl__table-col--highlight { box-shadow: inset 0 3px 0 var(--vbl-ink); }
+
+  /* ── Desktop: three cards side by side, highlighted card elevated ── */
+  @media (min-width: 990px) {
+    #vbl-{{ section.id }} { padding: 84px 32px 96px; }
+    #vbl-{{ section.id }} .vbl__grid {
+      display: grid; grid-template-columns: repeat({{ section.blocks.size | at_most: 3 | at_least: 1 }}, 1fr);
+      align-items: stretch; gap: 24px;
+    }
+    /* Restore authored order on desktop so the popular set sits center. */
+    #vbl-{{ section.id }} .vbl__card--highlight { order: 0; transform: scale(1.025); }
+    #vbl-{{ section.id }} .vbl__card--highlight:hover { transform: scale(1.025); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #vbl-{{ section.id }} .vbl__card,
+    #vbl-{{ section.id }} .vbl__swatch,
+    #vbl-{{ section.id }} .vbl__cta { transition: none; }
+  }
+{% endstyle %}
+
+<script>
+  /* NEW BUNDLE LOGIC: per-card color switcher.
+     Swaps the card image and rewrites the CTA / image links to deep-link the
+     selected color variant on the bundle product page. Progressive
+     enhancement only — without JS every card still links to its product page
+     with the default variant. */
+  (function () {
+    var root = document.getElementById('vbl-{{ section.id }}');
+    if (!root || root.dataset.vblInit) return;
+    root.dataset.vblInit = 'true';
+
+    root.querySelectorAll('[data-vbl-card]').forEach(function (card) {
+      var image = card.querySelector('[data-vbl-image]');
+      var cta = card.querySelector('[data-vbl-cta]');
+      var mediaLink = card.querySelector('[data-vbl-link]');
+
+      card.querySelectorAll('[data-vbl-swatch]').forEach(function (swatch) {
+        swatch.addEventListener('click', function () {
+          card.querySelectorAll('[data-vbl-swatch]').forEach(function (s) {
+            s.classList.remove('is-active');
+            s.setAttribute('aria-pressed', 'false');
+          });
+          swatch.classList.add('is-active');
+          swatch.setAttribute('aria-pressed', 'true');
+
+          if (swatch.dataset.image && image) {
+            image.src = swatch.dataset.image;
+            image.removeAttribute('srcset');
+          }
+          if (swatch.dataset.variantUrl) {
+            if (cta) cta.href = swatch.dataset.variantUrl;
+            if (mediaLink) mediaLink.href = swatch.dataset.variantUrl;
+          }
+        });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Velluto Bundle Landing",
+  "tag": "section",
+  "class": "section-velluto-bundle-landing",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Ride Fast. Live Slow." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Choose your Strada Pro setup" },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Every set includes the Strada Pro and the Velluto Visione™ lens. Pick the setup that fits the way you ride."
+    },
+    {
+      "type": "text",
+      "id": "shipping_note",
+      "label": "Shipping note (use [threshold])",
+      "default": "Free shipping on orders from [threshold]"
+    },
+    { "type": "header", "content": "Free shipping" },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold (store currency)",
+      "default": 99,
+      "info": "Bundles priced at or above this amount show the free shipping label. Keep in sync with your shipping settings."
+    },
+    { "type": "text", "id": "free_shipping_label", "label": "Eligible label", "default": "Free shipping included" },
+    {
+      "type": "text",
+      "id": "shipping_from_label",
+      "label": "Not-eligible label (use [threshold])",
+      "default": "Free shipping from [threshold]"
+    },
+    { "type": "header", "content": "Trust row" },
+    { "type": "text", "id": "trust_1", "label": "Trust item 1", "default": "Designed in Italy" },
+    { "type": "text", "id": "trust_2", "label": "Trust item 2", "default": "30-day returns" },
+    { "type": "text", "id": "trust_3", "label": "Trust item 3", "default": "2-year warranty" },
+    { "type": "header", "content": "Comparison table" },
+    { "type": "checkbox", "id": "show_comparison", "label": "Show comparison table", "default": true },
+    { "type": "text", "id": "comparison_heading", "label": "Comparison heading", "default": "Compare the sets" },
+    { "type": "text", "id": "comparison_shipping_label", "label": "Free shipping row label", "default": "Free Shipping" },
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#F7F4EE" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#9D2235" }
+  ],
+  "blocks": [
+    {
+      "type": "bundle",
+      "name": "Bundle card",
+      "limit": 3,
+      "settings": [
+        { "type": "product", "id": "product", "label": "Bundle product" },
+        {
+          "type": "text",
+          "id": "display_title",
+          "label": "Display title",
+          "info": "Optional. Falls back to the product title."
+        },
+        { "type": "text", "id": "tagline", "label": "Tagline" },
+        {
+          "type": "textarea",
+          "id": "included_items",
+          "label": "Included items (one per line)",
+          "info": "Fallback when the product metafield velluto.included_items is empty. Also drives the comparison table."
+        },
+        {
+          "type": "text",
+          "id": "badge_label",
+          "label": "Badge label",
+          "info": "E.g. \"Most Popular\". Leave empty for no badge."
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight as recommended",
+          "default": false,
+          "info": "Elevates the card on desktop and shows it first on mobile."
+        },
+        { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Choose this set" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velluto Bundle Landing",
+      "blocks": [
+        {
+          "type": "bundle",
+          "settings": {
+            "display_title": "Starter Set",
+            "tagline": "The essentials, ready to ride",
+            "included_items": "Strada Pro\nVelluto Visione™ Lens",
+            "cta_label": "Choose Starter"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "display_title": "Performance Set",
+            "tagline": "Every condition covered",
+            "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case",
+            "badge_label": "Most Popular",
+            "highlight": true,
+            "cta_label": "Choose Performance"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "display_title": "Ultimate Set",
+            "tagline": "The complete Velluto ritual",
+            "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case\nCleaning Spray\nMicrofiber Cloth\nBottle",
+            "cta_label": "Choose Ultimate"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

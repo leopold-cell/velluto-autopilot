@@ -1,0 +1,104 @@
+{% comment %}
+  ─────────────────────────────────────────────────────────────────────────────
+  VELLUTO — Bundle: What's Included (TEST)
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion section for the bundle product pages (Starter / Performance /
+  Ultimate). Added below the theme's existing main product section in
+  templates/product.velluto-bundle.json so that the existing image gallery,
+  color switcher, price, CTA and trust badges remain completely untouched.
+
+  - Included items: product metafield `velluto.included_items` (multi-line
+    text, one item per line), with the section setting as fallback.
+  - Free shipping message renders only when the product price is at or above
+    the configurable threshold (default €99). No per-product hardcoding.
+{% endcomment %}
+
+{%- liquid
+  # NEW BUNDLE LOGIC: threshold in cents to compare with product.price.
+  assign fs_threshold_cents = section.settings.free_shipping_threshold | times: 100
+  assign fs_threshold_formatted = fs_threshold_cents | money_without_trailing_zeros
+
+  assign raw_items = product.metafields.velluto.included_items.value | default: section.settings.included_items_fallback
+  assign item_lines = raw_items | strip | newline_to_br | split: '<br />'
+-%}
+
+<div class="vbi" id="vbi-{{ section.id }}">
+  <div class="vbi__inner">
+    <h2 class="vbi__heading">{{ section.settings.heading }}</h2>
+
+    <ul class="vbi__items" role="list">
+      {%- for line in item_lines -%}
+        {%- assign t = line | strip_html | strip -%}
+        {%- if t != blank -%}
+          <li class="vbi__item">
+            <svg class="vbi__check" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {{ t }}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+    {%- comment -%} NEW BUNDLE LOGIC: free shipping message from €[threshold]. {%- endcomment -%}
+    {%- if product.price >= fs_threshold_cents -%}
+      <p class="vbi__shipping">
+        {{ section.settings.free_shipping_text | replace: '[threshold]', fs_threshold_formatted }}
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% style %}
+  #vbi-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    padding: 40px 20px;
+  }
+  #vbi-{{ section.id }} .vbi__inner { max-width: 640px; margin: 0 auto; }
+  #vbi-{{ section.id }} .vbi__heading {
+    font-size: clamp(20px, 3vw, 26px); font-weight: 600; margin: 0 0 18px; color: #1c1b18;
+  }
+  #vbi-{{ section.id }} .vbi__items {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 10px;
+  }
+  @media (min-width: 750px) {
+    #vbi-{{ section.id }} .vbi__items { grid-template-columns: 1fr 1fr; }
+  }
+  #vbi-{{ section.id }} .vbi__item {
+    display: flex; align-items: center; gap: 10px; font-size: 15px; color: #1c1b18;
+  }
+  #vbi-{{ section.id }} .vbi__check { width: 14px; height: 14px; color: {{ section.settings.accent_color }}; flex-shrink: 0; }
+  #vbi-{{ section.id }} .vbi__shipping {
+    margin: 20px 0 0; font-size: 13.5px; font-weight: 600; color: {{ section.settings.accent_color }};
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Bundle: What's Included",
+  "tag": "section",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What's in your set" },
+    {
+      "type": "textarea",
+      "id": "included_items_fallback",
+      "label": "Included items (one per line)",
+      "info": "Fallback when the product metafield velluto.included_items is empty."
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold (store currency)",
+      "default": 99
+    },
+    {
+      "type": "text",
+      "id": "free_shipping_text",
+      "label": "Free shipping text (use [threshold])",
+      "default": "Free shipping included — on all orders from [threshold]"
+    },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#F7F4EE" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#9D2235" }
+  ],
+  "presets": [{ "name": "Bundle: What's Included" }]
+}
+{% endschema %}
