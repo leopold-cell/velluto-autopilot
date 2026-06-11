@@ -14,7 +14,7 @@ Usage:
   SHOPIFY_TOKEN=shpat_... python3 deploy_kits.py --list-themes
   SHOPIFY_TOKEN=shpat_... python3 deploy_kits.py --theme-id 123456789
   ... --rename-live       # ALSO rename the 4 live StradaPro products (title only)
-  ... --reprice-live      # ALSO reprice them to 69.00 (compare-at 149.00)
+  ... --reprice-live      # ALSO reprice them to 69.00 (compare-at 108.00)
   ... --skip-products     # theme files only
   ... --dry-run           # print what would happen
 
@@ -56,17 +56,17 @@ COLOR_LABELS = {"nero": "Nero", "arancia": "Arancia", "espresso": "Espresso", "v
 STARTER_HANDLES = {c: f"velluto-stradapro-cycling-glasses-{c}" for c in COLORS}
 
 # Kit definitions. Starter = the existing products (renamed + repriced).
-# Individual item values at current storefront prices (2026-06-11):
-# glasses 149, Visione lens 39, clear lens 19, hard case 19, spray 8, cloth 8, bidon 14.
+# Regular values (compare-at) per user spec 2026-06-11:
+# Starter 108 (save 39), Performance 146 (save 47), Ultimate 162 (save 43).
 KITS = {
     "starter": {
         "label": "Starter Kit",
         "tagline": "The essentials, ready to ride",
         "badge": "",
         # Applied to the 4 LIVE products only with --reprice-live.
-        # compare_at 149.00 = the current price / UVP, kept as the anchor.
+        # compare_at = regular value of the kit contents (user-provided).
         "price": "69.00",
-        "compare_at": "149.00",
+        "compare_at": "108.00",
         "items": ["Strada Pro", "Velluto Visione™ Lens"],
     },
     "performance": {
@@ -74,7 +74,7 @@ KITS = {
         "tagline": "Every condition covered",
         "badge": "Most Popular",
         "price": "99.00",
-        "compare_at": "226.00",
+        "compare_at": "146.00",
         "items": ["Strada Pro", "Velluto Visione™ Lens", "Clear Lens", "Hard Case"],
     },
     "ultimate": {
@@ -82,7 +82,7 @@ KITS = {
         "tagline": "The complete Velluto ritual",
         "badge": "",
         "price": "119.00",
-        "compare_at": "256.00",
+        "compare_at": "162.00",
         "items": [
             "Strada Pro", "Velluto Visione™ Lens", "Clear Lens", "Hard Case",
             "Cleaning Spray", "Microfiber Cloth", "Bottle",
@@ -409,7 +409,7 @@ def main():
     ap.add_argument("--rename-live", action="store_true",
                     help="rename the 4 LIVE StradaPro products to '… | Starter Kit | Color'")
     ap.add_argument("--reprice-live", action="store_true",
-                    help="reprice the 4 LIVE StradaPro products to 69.00 (compare-at 149.00)")
+                    help="reprice the 4 LIVE StradaPro products to 69.00 (compare-at 108.00)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
