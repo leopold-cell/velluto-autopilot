@@ -1,0 +1,39 @@
+/* VELLUTO — PDP Kit Switcher (TEST)
+   Companion to snippets/velluto-kit-switcher.liquid. Kept separate from the
+   existing velluto-product.css so the live styles are never touched. */
+.vkit { margin: 16px 0 20px; }
+.vkit__label {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  margin: 0 0 8px; color: #555;
+}
+.vkit__list { display: flex; flex-direction: column; gap: 10px; }
+.vkit__card {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  border: 1.5px solid #e3e3e3; border-radius: 12px; text-decoration: none;
+  color: #111; background: #fff; position: relative;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.vkit__card:hover { border-color: #999; }
+.vkit__card.is-active { border-color: #111; box-shadow: 0 0 0 1px #111; }
+.vkit__radio {
+  width: 18px; height: 18px; border-radius: 50%; border: 2px solid #c9c9c9;
+  flex-shrink: 0; position: relative;
+}
+.vkit__card.is-active .vkit__radio { border-color: #111; }
+.vkit__card.is-active .vkit__radio::after {
+  content: ""; position: absolute; inset: 3px; border-radius: 50%; background: #111;
+}
+.vkit__main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.vkit__name {
+  font-weight: 700; font-size: 14px; display: flex; align-items: center;
+  gap: 8px; flex-wrap: wrap;
+}
+.vkit__badge {
+  background: #111; color: #fff; font-size: 10px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px;
+  border-radius: 999px; white-space: nowrap;
+}
+.vkit__tagline { font-size: 12px; color: #666; }
+.vkit__pricing { text-align: right; display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+.vkit__price { font-weight: 700; font-size: 15px; }
+.vkit__value { font-size: 11px; color: #999; }

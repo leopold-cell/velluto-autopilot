@@ -7,12 +7,12 @@
         "starter": {
           "type": "bundle",
           "settings": {
-            "product": "strada-pro-starter-set-nero",
-            "color_product_1": "strada-pro-starter-set-nero",
-            "color_product_2": "strada-pro-starter-set-arancia",
-            "color_product_3": "strada-pro-starter-set-espresso",
-            "color_product_4": "strada-pro-starter-set-viola",
-            "display_title": "Starter Set",
+            "product": "velluto-stradapro-cycling-glasses-nero",
+            "color_product_1": "velluto-stradapro-cycling-glasses-nero",
+            "color_product_2": "velluto-stradapro-cycling-glasses-arancia",
+            "color_product_3": "velluto-stradapro-cycling-glasses-espresso",
+            "color_product_4": "velluto-stradapro-cycling-glasses-viola",
+            "display_title": "Starter Kit",
             "tagline": "The essentials, ready to ride",
             "included_items": "Strada Pro\nVelluto Visione™ Lens",
             "badge_label": "",
@@ -23,12 +23,12 @@
         "performance": {
           "type": "bundle",
           "settings": {
-            "product": "strada-pro-performance-set-nero",
-            "color_product_1": "strada-pro-performance-set-nero",
-            "color_product_2": "strada-pro-performance-set-arancia",
-            "color_product_3": "strada-pro-performance-set-espresso",
-            "color_product_4": "strada-pro-performance-set-viola",
-            "display_title": "Performance Set",
+            "product": "velluto-stradapro-performance-kit-nero",
+            "color_product_1": "velluto-stradapro-performance-kit-nero",
+            "color_product_2": "velluto-stradapro-performance-kit-arancia",
+            "color_product_3": "velluto-stradapro-performance-kit-espresso",
+            "color_product_4": "velluto-stradapro-performance-kit-viola",
+            "display_title": "Performance Kit",
             "tagline": "Every condition covered",
             "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case",
             "badge_label": "Most Popular",
@@ -39,12 +39,12 @@
         "ultimate": {
           "type": "bundle",
           "settings": {
-            "product": "strada-pro-ultimate-set-nero",
-            "color_product_1": "strada-pro-ultimate-set-nero",
-            "color_product_2": "strada-pro-ultimate-set-arancia",
-            "color_product_3": "strada-pro-ultimate-set-espresso",
-            "color_product_4": "strada-pro-ultimate-set-viola",
-            "display_title": "Ultimate Set",
+            "product": "velluto-stradapro-ultimate-kit-nero",
+            "color_product_1": "velluto-stradapro-ultimate-kit-nero",
+            "color_product_2": "velluto-stradapro-ultimate-kit-arancia",
+            "color_product_3": "velluto-stradapro-ultimate-kit-espresso",
+            "color_product_4": "velluto-stradapro-ultimate-kit-viola",
+            "display_title": "Ultimate Kit",
             "tagline": "The complete Velluto ritual",
             "included_items": "Strada Pro\nVelluto Visione™ Lens\nClear Lens\nHard Case\nCleaning Spray\nMicrofiber Cloth\nBottle",
             "badge_label": "",
@@ -53,7 +53,11 @@
           }
         }
       },
-      "block_order": ["starter", "performance", "ultimate"],
+      "block_order": [
+        "starter",
+        "performance",
+        "ultimate"
+      ],
       "settings": {
         "eyebrow": "Ride Fast. Live Slow.",
         "heading": "Choose your Strada Pro setup",
@@ -71,5 +75,7 @@
       }
     }
   },
-  "order": ["bundle_landing"]
+  "order": [
+    "bundle_landing"
+  ]
 }

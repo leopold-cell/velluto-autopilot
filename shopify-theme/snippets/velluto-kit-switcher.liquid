@@ -1,0 +1,91 @@
+{% comment %}
+  ─────────────────────────────────────────────────────────────────────────────
+  VELLUTO — PDP Kit Switcher (TEST)
+  ─────────────────────────────────────────────────────────────────────────────
+  Daily-Elements-style bundle switcher rendered directly on the product page:
+  one selectable card per kit (Starter / Performance / Ultimate), shown above
+  the buy buttons. Since each kit×color is its own product (same architecture
+  as the existing color switcher), the cards are plain links to the sibling
+  kit product in the SAME color — no JS, crawlable, progressive.
+
+  Driven entirely by product metafields (namespace `velluto`) — nothing is
+  hardcoded, and the snippet renders NOTHING when the metafields are absent,
+  so it is safe inside the shared product template:
+    - kit_siblings  (single line text)  comma-separated handles of this
+      color's kit versions, in display order, e.g.
+      "velluto-stradapro-cycling-glasses-nero,velluto-stradapro-performance-kit-nero,velluto-stradapro-ultimate-kit-nero"
+    - kit_label     (single line text)  e.g. "Performance Kit"
+                    (fallback: middle segment of "… | Performance Kit | Nero")
+    - kit_tagline   (single line text)  one-liner under the kit name
+    - kit_badge     (single line text)  e.g. "Most Popular" — set only on the
+                    recommended kit
+
+  Usage: Custom Liquid block in the product-info section:
+    {% raw %}{% render 'velluto-kit-switcher', product: product %}{% endraw %}
+
+  Note: `all_products` only resolves ACTIVE products — draft kit products
+  silently drop out of the switcher.
+{% endcomment %}
+
+{%- liquid
+  assign kit_handles = product.metafields.velluto.kit_siblings.value | default: ''
+-%}
+
+{%- if kit_handles != blank -%}
+  {{ 'velluto-kit-switcher.css' | asset_url | stylesheet_tag }}
+  <div class="vkit">
+    <p class="vkit__label">Choose your kit</p>
+    <div class="vkit__list">
+      {%- assign handles = kit_handles | split: ',' -%}
+      {%- for h in handles -%}
+        {%- liquid
+          assign kit_handle = h | strip
+          assign kit_product = all_products[kit_handle]
+          if kit_product == blank
+            continue
+          endif
+
+          assign title_parts = kit_product.title | split: '|'
+          if title_parts.size > 1
+            assign fallback_label = title_parts[1] | strip
+          else
+            assign fallback_label = kit_product.title
+          endif
+          assign kit_label = kit_product.metafields.velluto.kit_label.value | default: fallback_label
+          assign kit_tagline = kit_product.metafields.velluto.kit_tagline.value
+          assign kit_badge = kit_product.metafields.velluto.kit_badge.value
+          assign is_current = false
+          if kit_product.handle == product.handle
+            assign is_current = true
+          endif
+        -%}
+        <a
+          href="{{ kit_product.url }}"
+          class="vkit__card{% if is_current %} is-active{% endif %}"
+          {% if is_current %}aria-current="page"{% endif %}
+        >
+          <span class="vkit__radio" aria-hidden="true"></span>
+          <span class="vkit__main">
+            <span class="vkit__name">
+              {{ kit_label }}
+              {%- if kit_badge != blank %}<span class="vkit__badge">{{ kit_badge }}</span>{% endif -%}
+            </span>
+            {%- if kit_tagline != blank -%}
+              <span class="vkit__tagline">{{ kit_tagline }}</span>
+            {%- endif -%}
+          </span>
+          <span class="vkit__pricing">
+            <span class="vkit__price">{{ kit_product.price | money_without_trailing_zeros }}</span>
+            {%- comment -%}
+              Value framing, not discount framing — the compare-at price is
+              shown as the value of the individual items.
+            {%- endcomment -%}
+            {%- if kit_product.compare_at_price > kit_product.price -%}
+              <span class="vkit__value">{{ kit_product.compare_at_price | money_without_trailing_zeros }} value</span>
+            {%- endif -%}
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

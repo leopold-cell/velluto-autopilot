@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velluto PDP — Kit Switcher (TEST PREVIEW)</title>
+<!--
+  Static design preview of the PDP kit switcher
+  (snippets/velluto-kit-switcher.liquid) in a simplified product-page layout,
+  using real imagery from the live store CDN. Open directly in a browser.
+  On the real PDP the switcher sits inside the existing Stretch product-info
+  column, above the buy buttons; gallery/reviews/accordions stay as they are.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; color: #111; font-family: "Helvetica Neue", -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  .preview-banner { background: #111; color: #fff; text-align: center; font-size: 12px; letter-spacing: .08em; padding: 8px 16px; }
+
+  .pdp { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; display: grid; gap: 32px; }
+  @media (min-width: 900px) { .pdp { grid-template-columns: 1.1fr 1fr; padding-top: 48px; } }
+
+  .pdp__media img { width: 100%; border-radius: 12px; background: #f5f3ef; }
+
+  .pdp__vendor { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #888; margin: 0 0 6px; }
+  .pdp__title { font-size: 26px; font-weight: 600; margin: 0 0 8px; letter-spacing: -.01em; }
+  .pdp__rating { font-size: 13px; color: #555; margin: 0 0 14px; }
+  .pdp__price { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+  .pdp__price .value { font-size: 13px; color: #999; font-weight: 400; margin-left: 8px; }
+  .pdp__shipfree { font-size: 13px; font-weight: 600; color: #9D2235; margin: 0 0 18px; }
+
+  /* ── Kit switcher (mirrors velluto-kit-switcher.css) ── */
+  .vkit { margin: 16px 0 20px; }
+  .vkit__label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 8px; color: #555; }
+  .vkit__list { display: flex; flex-direction: column; gap: 10px; }
+  .vkit__card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid #e3e3e3; border-radius: 12px; text-decoration: none; color: #111; background: #fff; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+  .vkit__card:hover { border-color: #999; }
+  .vkit__card.is-active { border-color: #111; box-shadow: 0 0 0 1px #111; }
+  .vkit__radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #c9c9c9; flex-shrink: 0; position: relative; }
+  .vkit__card.is-active .vkit__radio { border-color: #111; }
+  .vkit__card.is-active .vkit__radio::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: #111; }
+  .vkit__main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .vkit__name { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .vkit__badge { background: #111; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+  .vkit__tagline { font-size: 12px; color: #666; }
+  .vkit__pricing { text-align: right; display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+  .vkit__price { font-weight: 700; font-size: 15px; }
+  .vkit__value { font-size: 11px; color: #999; }
+
+  /* ── Color switcher (mirrors the live vcol pattern) ── */
+  .vcol-swatches { margin: 16px 0 20px; }
+  .vcol-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 8px; color: #555; }
+  .vcol-label strong { color: #111; }
+  .vcol-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .vcol-swatch { display: block; width: 52px; height: 52px; border: 2px solid transparent; border-radius: 4px; overflow: hidden; transition: border-color .15s ease, transform .1s ease; cursor: pointer; padding: 0; background: #f5f3ef; }
+  .vcol-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vcol-swatch:hover { border-color: #888; transform: scale(1.05); }
+  .vcol-active { border-color: #111 !important; }
+
+  /* included items + CTA */
+  .pdp__items { list-style: none; margin: 0 0 20px; padding: 14px 16px; border: 1px solid #eee; border-radius: 12px; display: grid; gap: 8px; }
+  .pdp__items li { display: flex; align-items: center; gap: 9px; font-size: 13.5px; }
+  .pdp__items svg { width: 13px; height: 13px; color: #9D2235; flex-shrink: 0; }
+  .pdp__cta { display: flex; width: 100%; padding: 16px; border-radius: 10px; background: #111; color: #fff; border: 0; font-size: 15px; font-weight: 700; letter-spacing: .03em; justify-content: center; cursor: pointer; }
+  .pdp__cta:hover { background: #9D2235; }
+  .pdp__trust { display: flex; gap: 18px; justify-content: center; font-size: 12px; color: #666; margin-top: 14px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<div class="preview-banner">TEST PREVIEW — PDP KIT SWITCHER MOCKUP, NOT CONNECTED TO SHOPIFY</div>
+
+<div class="pdp">
+  <div class="pdp__media"><img id="hero" src="" alt="Velluto StradaPro"></div>
+
+  <div class="pdp__info">
+    <p class="pdp__vendor">Velluto · Ride Fast. Live Slow.</p>
+    <h1 class="pdp__title" id="title"></h1>
+    <p class="pdp__rating">★★★★★ 4.7 · 29 Reviews</p>
+    <p class="pdp__price"><span id="price"></span><span class="value" id="value"></span></p>
+    <p class="pdp__shipfree" id="shipnote"></p>
+
+    <div class="vkit">
+      <p class="vkit__label">Choose your kit</p>
+      <div class="vkit__list" id="kits"></div>
+    </div>
+
+    <div class="vcol-swatches">
+      <p class="vcol-label">Color: <strong id="colorname">Nero</strong></p>
+      <div class="vcol-list" id="colors"></div>
+    </div>
+
+    <ul class="pdp__items" id="items"></ul>
+
+    <button class="pdp__cta">Add to cart</button>
+    <div class="pdp__trust"><span>Free shipping from €99</span><span>30-day returns</span><span>2-year warranty</span></div>
+  </div>
+</div>
+
+<script>
+  var IMAGES = {
+    Nero:     "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/004.webp?v=1776868478&width=1100",
+    Arancia:  "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/002.webp?v=1776868548&width=1100",
+    Espresso: "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/003.webp?v=1776868548&width=1100",
+    Viola:    "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/001.webp?v=1776868548&width=1100"
+  };
+  var SWATCHES = {
+    Nero:     "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoBlack_45.webp?v=1776792135",
+    Arancia:  "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoOrange_45.webp?v=1776792409",
+    Espresso: "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoBrown_45.webp?v=1776792355",
+    Viola:    "https://cdn.shopify.com/s/files/1/0621/5607/9275/files/VellutoPurple_45.webp?v=1776792280"
+  };
+  var KITS = [
+    { key: "starter", label: "Starter Kit", tagline: "The essentials, ready to ride", price: "€149", value: "",
+      items: ["Strada Pro", "Velluto Visione™ Lens"] },
+    { key: "performance", label: "Performance Kit", tagline: "Every condition covered", price: "€99", value: "€226 value", badge: "Most Popular",
+      items: ["Strada Pro", "Velluto Visione™ Lens", "Clear Lens", "Hard Case"] },
+    { key: "ultimate", label: "Ultimate Kit", tagline: "The complete Velluto ritual", price: "€119", value: "€256 value",
+      items: ["Strada Pro", "Velluto Visione™ Lens", "Clear Lens", "Hard Case", "Cleaning Spray", "Microfiber Cloth", "Bottle"] }
+  ];
+  var CHECK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var state = { kit: "starter", color: "Nero" };
+
+  function render() {
+    var kit = KITS.find(function (k) { return k.key === state.kit; });
+    document.getElementById("hero").src = IMAGES[state.color];
+    document.getElementById("title").textContent = "Velluto StradaPro | " + kit.label + " | " + state.color;
+    document.getElementById("price").textContent = kit.price;
+    document.getElementById("value").textContent = kit.value;
+    var p = parseInt(kit.price.replace(/\D/g, ""), 10);
+    document.getElementById("shipnote").textContent = p >= 99 ? "Free shipping included" : "Free shipping from €99";
+    document.getElementById("colorname").textContent = state.color;
+
+    var kitsEl = document.getElementById("kits");
+    kitsEl.innerHTML = KITS.map(function (k) {
+      return '<a class="vkit__card' + (k.key === state.kit ? " is-active" : "") + '" data-kit="' + k.key + '">' +
+        '<span class="vkit__radio"></span>' +
+        '<span class="vkit__main"><span class="vkit__name">' + k.label +
+          (k.badge ? '<span class="vkit__badge">' + k.badge + "</span>" : "") + "</span>" +
+          '<span class="vkit__tagline">' + k.tagline + "</span></span>" +
+        '<span class="vkit__pricing"><span class="vkit__price">' + k.price + "</span>" +
+          (k.value ? '<span class="vkit__value">' + k.value + "</span>" : "") + "</span></a>";
+    }).join("");
+    kitsEl.querySelectorAll("[data-kit]").forEach(function (el) {
+      el.addEventListener("click", function () { state.kit = el.dataset.kit; render(); });
+    });
+
+    var colorsEl = document.getElementById("colors");
+    colorsEl.innerHTML = Object.keys(IMAGES).map(function (c) {
+      return '<button type="button" class="vcol-swatch' + (c === state.color ? " vcol-active" : "") + '" data-color="' + c + '" title="' + c + '">' +
+        '<img src="' + SWATCHES[c] + '" alt="' + c + '"></button>';
+    }).join("");
+    colorsEl.querySelectorAll("[data-color]").forEach(function (el) {
+      el.addEventListener("click", function () { state.color = el.dataset.color; render(); });
+    });
+
+    document.getElementById("items").innerHTML =
+      kit.items.map(function (i) { return "<li>" + CHECK + i + "</li>"; }).join("");
+  }
+  render();
+</script>
+
+</body>
+</html>

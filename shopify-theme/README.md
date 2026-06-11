@@ -1,104 +1,102 @@
-# Velluto — Strada Pro Bundle Page (TEST)
+# Velluto — StradaPro Kit Switcher & Bundle Page (TEST)
 
-Test implementation of the Strada Pro bundle landing page and bundle product
-page concept for **velluto-shop.com** (theme: **Stretch v1.4.1**).
-**This is not live and must not be published without review.** All files are
-designed to be deployed to an **unpublished copy** of the live theme and
-previewed there first.
+Test implementation for **velluto-shop.com** (theme: **Stretch v1.4.1**) of:
 
-## Store facts these files are built against
+1. a **Daily-Elements-style kit switcher directly on the PDP** — switch
+   between Starter / Performance / Ultimate Kit without leaving the page,
+   plus the existing color switch,
+2. a bundle landing page comparing the three kits.
 
-Verified against the live storefront (2026-06-10):
+**Theme changes deploy to an unpublished theme copy only — never the live
+theme.** The one approved live change is renaming the 4 StradaPro products
+(`--rename-live`).
 
-- Each StradaPro frame color is **its own product** (no color variants):
-  `velluto-stradapro-cycling-glasses-nero` / `-arancia` / `-espresso` /
-  `-viola`, €149 each. The existing color switcher is the
-  `velluto_color_swatches` custom liquid block in the product-info section —
-  plain links between sibling products, styled by `assets/velluto-product.css`
-  (`vcol-*` classes).
-- Accessories: VellutoVisione™ High Contrast Lens €39, VellutoPuro
-  Transparent Lens €19, Hard Case €19, Microfiber Cloth €8, Cleaning Spray
-  €8, TACX Bidon €14.
-- Live theme: `197496209749` ("Velluto Update 2026 with collection images").
+## Catalog model (approved)
 
-The bundle products follow the same one-product-per-color structure:
-3 sets × 4 colors = 12 products (created as **drafts** for testing), e.g.
-`strada-pro-starter-set-nero` … `strada-pro-ultimate-set-viola`, connected
-via metafields (see below) instead of hardcoded handles.
+| Kit | Products | Price | Contents |
+| --- | --- | --- | --- |
+| **Starter Kit** | the 4 **existing** StradaPro color products, renamed to `Velluto StradaPro \| Starter Kit \| {Color}` (handles unchanged for SEO/ads) | unchanged (€149 default market) | Strada Pro + Visione™ Lens |
+| **Performance Kit** | 4 **new** products `velluto-stradapro-performance-kit-{color}` | €99 (compare-at €226 value) | + Clear Lens, Hard Case |
+| **Ultimate Kit** | 4 **new** products `velluto-stradapro-ultimate-kit-{color}` | €119 (compare-at €256 value) | + Cleaning Spray, Microfiber Cloth, Bottle |
 
-## What's in here
+Colors: Nero / Arancia / Espresso / Viola — one product per kit×color,
+matching the store's existing one-product-per-color architecture.
+
+⚠️ Pricing is intentionally inverted (Performance €99 / Ultimate €119 are
+cheaper than the €149 Starter): user-confirmed anchor/upsell play.
+
+## How the switchers work
+
+Both switchers are **links between sibling products** (the same mechanic as
+the live `velluto_color_swatches` block), driven by product metafields
+(namespace `velluto`) — no hardcoded handles, no JS required on the PDP:
+
+| Metafield | Example | Drives |
+| --- | --- | --- |
+| `kit_siblings` | `velluto-stradapro-cycling-glasses-nero,velluto-stradapro-performance-kit-nero,velluto-stradapro-ultimate-kit-nero` | kit switcher (same color, kit order) |
+| `kit_label` / `kit_tagline` / `kit_badge` | `Performance Kit` / `Every condition covered` / `Most Popular` | switcher card content |
+| `color_siblings` / `color_label` | handles of the 4 colors of one kit / `Nero` | color switcher on the new kit products |
+| `included_items` | one item per line | included-items section, landing cards, comparison table |
+
+The kit-switcher snippet renders **nothing** when `kit_siblings` is absent,
+so it is safe inside the shared product template (accessories unaffected).
+`all_products[...]` only resolves active products, so draft kits silently
+drop out.
+
+## Files
 
 | File | Purpose |
 | --- | --- |
-| `sections/velluto-bundle-landing.liquid` | The bundle selector landing page: hero, three bundle cards ("Most Popular" badge, per-card color switcher across the four color products, free-shipping indicator, CTA), trust row, and auto-generated comparison table. |
-| `sections/velluto-bundle-included-items.liquid` | Companion section for the bundle product pages: included-items list + free-shipping message (only shown at/above the threshold). |
-| `snippets/velluto-bundle-color-swatches.liquid` | Color switcher for the bundle product pages. Mirrors the existing `velluto_color_swatches` block (same `vcol-*` classes and `velluto-product.css`), but driven by metafields instead of hardcoded HTML. |
-| `templates/page.velluto-bundles-test.json` | Page template pre-wired with the Starter / Performance / Ultimate cards and the per-color product handles. |
-| `templates/product.velluto-bundle.json` | Placeholder — regenerate from the theme copy's real `templates/product.json` at deploy time (see below) so the existing gallery, accordion blocks and trust badges carry over 1:1. |
-| `preview/bundle-page-preview.html` | Static design preview with placeholder imagery — open directly in any browser, no Shopify required. |
+| `snippets/velluto-kit-switcher.liquid` + `assets/velluto-kit-switcher.css` | The PDP kit switcher: radio-style cards (name, tagline, price, "€X value", "Most Popular" badge), inserted as a Custom Liquid block above the buy buttons. |
+| `snippets/velluto-bundle-color-swatches.liquid` | Metafield-driven color switcher for the new kit products (existing 4 keep their hardcoded block); same `vcol-*` classes/`velluto-product.css` as live. |
+| `sections/velluto-bundle-included-items.liquid` | Included items + free-shipping message (renders at/above the €99 threshold) for the kit PDPs. |
+| `sections/velluto-bundle-landing.liquid` + `templates/page.velluto-bundles-test.json` | Bundle landing page (hero, three cards with Most Popular badge + color swatches, trust row, auto-generated comparison table), pre-wired to the kit products. |
+| `preview/pdp-kit-switcher-preview.html` | Static PDP mockup with working kit + color switching, real CDN imagery — open in any browser. |
+| `preview/bundle-page-preview.html` | Static landing-page mockup. |
+| `scripts/deploy_kits.py` | One-shot deploy (see below). |
 
-## Bundle metafields (namespace `velluto`)
+## Deploy (`scripts/deploy_kits.py`)
 
-| Key | Type | Used for |
-| --- | --- | --- |
-| `included_items` | multi-line text, one item per line | Card lists, product page list, comparison table (theme-editor textarea as fallback). |
-| `color_label` | single line text, e.g. `Nero` | Swatch labels (falls back to the `… \| Color` title suffix). |
-| `color_siblings` | single line text, comma-separated handles of all color versions of the set, in display order | The product-page color switcher. |
+Needs `SHOPIFY_TOKEN` (scopes: `write_themes`, `write_products`,
+`write_content`) and optionally `SHOPIFY_STORE` (defaults to
+`velluto-brand.myshopify.com`) — same env vars as seo-bot.
 
-## Design decisions (mapped to the brief)
+```
+python3 deploy_kits.py --list-themes
+python3 deploy_kits.py --theme-id <COPY_ID> --dry-run
+python3 deploy_kits.py --theme-id <COPY_ID> --rename-live
+```
 
-- **Three cards side by side on desktop, stacked on mobile** with the
-  Performance Set first on mobile (CSS `order`) and centered/elevated on
-  desktop, carrying the "Most Popular" badge and the filled primary CTA.
-- **Premium, not discount-heavy:** compare-at prices render as
-  "€X individual value", never as slashed sale prices. No urgency or sale
-  language. Ivory/charcoal palette with one Italian-red accent.
-- **Free shipping from €99** is a single section setting
-  (`free_shipping_threshold`); eligibility per bundle is computed from the
-  live product price — Starter (€69) shows "Free shipping from €99",
-  Performance and Ultimate show "Free shipping included". The comparison
-  table's Free Shipping row uses the same logic. (The section only
-  *communicates* the threshold — the actual free-shipping rate lives in
-  Settings → Shipping.)
-- **No hardcoded product IDs:** cards use theme-editor product pickers
-  (stored as handles); product-page swatches use the `color_siblings`
-  metafield.
-- **CTA links to the bundle's product page** (the selected color's product),
-  matching the existing sibling-product switcher logic — no add-to-cart
-  variant complexity.
-- **Comparison table** (Strada Pro → Bottle + Free Shipping) is generated
-  from the union of the bundles' item lists, so it can never drift out of
-  sync with the cards.
+What it does, in order:
 
-## Deploy to the theme copy
+1. Uploads the sections/snippets/asset/page template to the **theme copy**
+   (refuses the live theme).
+2. Patches the copy's `templates/product.json`: adds the kit-switcher
+   Custom Liquid block above the buy buttons (idempotent).
+3. Builds `templates/product.velluto-bundle.json` from the copy's real
+   product template (gallery/accordions/reviews/trust badges carry over
+   1:1), swapping the hardcoded color-swatch block for the metafield-driven
+   snippet and appending the included-items section.
+4. Creates the 8 kit products — **active** (drafts wouldn't render, so the
+   switcher couldn't be tested) but in no collection or menu, tagged
+   `kit, test`, with metafields and the matching StradaPro color imagery.
+5. Sets kit metafields on the 4 existing products; with `--rename-live`
+   also renames them (old titles saved to `kit_rename_rollback.json`).
+6. Creates the hidden landing page `/pages/strada-pro-sets-test`.
 
-Deployment uses the Admin API Asset endpoint, same mechanism as
-`scripts/deploy_theme.py` in the `velluto-seo-bot` repo (PUT
-`/admin/api/2024-10/themes/{theme_id}/assets.json`, token with
-`write_themes`).
+## Verify on the theme copy preview
 
-1. Upload `sections/*.liquid` and `snippets/*.liquid` as-is.
-2. **Product template:** GET the theme copy's `templates/product.json`,
-   then create `templates/product.velluto-bundle.json` from it by
-   - adding a Custom Liquid block to the product-info section containing
-     `{% render 'velluto-bundle-color-swatches', product: product %}`
-     (replaces the hardcoded StradaPro swatch block for bundle products),
-   - appending the `velluto-bundle-included-items` section below the main
-     section.
-   This keeps the existing gallery, accordions, reviews and trust badges 1:1.
-3. Upload `templates/page.velluto-bundles-test.json`.
-4. Create the 12 draft bundle products (4 colors × 3 sets) with prices
-   €69 / €99 / €119, compare-at prices from the individual item values
-   (Starter €188, Performance €226, Ultimate €256 at current accessory
-   prices), the metafields above, the matching StradaPro color imagery, and
-   `template_suffix: velluto-bundle`.
-5. Create a page (e.g. "Choose your Strada Pro") with template suffix
-   `velluto-bundles-test`, kept out of navigation.
-6. Preview via the unpublished theme copy's Preview link. **Do not publish.**
+- `/products/velluto-stradapro-cycling-glasses-nero`: kit switcher shows
+  Starter selected; Performance carries the "Most Popular" badge; clicking
+  Performance lands on the Performance Kit PDP in Nero with the kit and
+  color switchers in the right state.
+- All 4 colors × 3 kits navigate correctly in both switchers.
+- Kit PDPs show included items + "free shipping" (€99/€119 ≥ €99).
+- Accessory PDPs render unchanged.
+- `/pages/strada-pro-sets-test`: landing page, mobile = Performance first.
 
-## Going live (later, after review)
+## Rollback
 
-- Publish the tested copy, or copy the files + template assignments to the
-  live theme.
-- Switch the 12 bundle products from draft to active.
-- Confirm an actual free-shipping rate ≥ €99 exists in Settings → Shipping.
+- Theme: changes exist only on the copy.
+- Products: the 8 kits are unlinked — set to draft or delete; restore the
+  4 original titles from `kit_rename_rollback.json`.
