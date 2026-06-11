@@ -14,6 +14,7 @@ Usage:
   SHOPIFY_TOKEN=shpat_... python3 deploy_kits.py --list-themes
   SHOPIFY_TOKEN=shpat_... python3 deploy_kits.py --theme-id 123456789
   ... --rename-live       # ALSO rename the 4 live StradaPro products (title only)
+  ... --reprice-live      # ALSO reprice them to 69.00 (compare-at 149.00)
   ... --skip-products     # theme files only
   ... --dry-run           # print what would happen
 
@@ -54,7 +55,7 @@ COLORS = ["nero", "arancia", "espresso", "viola"]
 COLOR_LABELS = {"nero": "Nero", "arancia": "Arancia", "espresso": "Espresso", "viola": "Viola"}
 STARTER_HANDLES = {c: f"velluto-stradapro-cycling-glasses-{c}" for c in COLORS}
 
-# Kit definitions. Starter = the existing products (renamed, price untouched).
+# Kit definitions. Starter = the existing products (renamed + repriced).
 # Individual item values at current storefront prices (2026-06-11):
 # glasses 149, Visione lens 39, clear lens 19, hard case 19, spray 8, cloth 8, bidon 14.
 KITS = {
@@ -62,8 +63,10 @@ KITS = {
         "label": "Starter Kit",
         "tagline": "The essentials, ready to ride",
         "badge": "",
-        "price": None,           # existing product, price untouched
-        "compare_at": None,
+        # Applied to the 4 LIVE products only with --reprice-live.
+        # compare_at 149.00 = the current price / UVP, kept as the anchor.
+        "price": "69.00",
+        "compare_at": "149.00",
         "items": ["Strada Pro", "Velluto Visione™ Lens"],
     },
     "performance": {
@@ -323,11 +326,17 @@ def create_kit_products(dry: bool):
             time.sleep(0.6)
 
 
-def update_starter_products(dry: bool, rename: bool):
-    """Kit metafields on the 4 existing StradaPro products; title rename only
-    with --rename-live (LIVE change — old titles saved for rollback)."""
-    print(f"\n— Existing StradaPro products (metafields{' + LIVE rename' if rename else ''})")
+def update_starter_products(dry: bool, rename: bool, reprice: bool):
+    """Kit metafields on the 4 existing StradaPro products. Title rename only
+    with --rename-live; price 149 → 69 (compare-at 149) only with
+    --reprice-live. Both are LIVE changes — old title/price/compare-at are
+    saved for rollback. Note: the REST price is the store's base (EUR)
+    price; markets with automatic conversion follow it, but fixed per-market
+    price lists (Shopify Markets) must be adjusted separately."""
+    print(f"\n— Existing StradaPro products (metafields"
+          f"{' + LIVE rename' if rename else ''}{' + LIVE reprice' if reprice else ''})")
     rollback = {}
+    cfg = KITS["starter"]
     for color in COLORS:
         handle = STARTER_HANDLES[color]
         prod = product_by_handle(handle)
@@ -335,10 +344,15 @@ def update_starter_products(dry: bool, rename: bool):
             print(f"  ✗ {handle} not found — skipped")
             continue
         pid = prod["id"]
+        variant = prod["variants"][0]
 
         if dry:
-            print(f"  (dry) would set kit metafields on {handle}"
-                  + (f" and rename {prod['title']!r} → {kit_title('starter', color)!r}" if rename else ""))
+            msg = f"  (dry) would set kit metafields on {handle}"
+            if rename:
+                msg += f"; rename {prod['title']!r} → {kit_title('starter', color)!r}"
+            if reprice:
+                msg += f"; reprice {variant['price']} → {cfg['price']} (compare-at {cfg['compare_at']})"
+            print(msg)
             continue
 
         existing_mf = api("GET", f"/products/{pid}/metafields.json?namespace=velluto")["metafields"]
@@ -351,17 +365,27 @@ def update_starter_products(dry: bool, rename: bool):
                 api("POST", f"/products/{pid}/metafields.json", {"metafield": mf})
         print(f"  ✓ metafields on {handle}")
 
+        rollback[handle] = {
+            "title": prod["title"],
+            "price": variant["price"],
+            "compare_at_price": variant.get("compare_at_price"),
+        }
         if rename:
-            rollback[handle] = prod["title"]
             api("PUT", f"/products/{pid}.json", {
                 "product": {"id": pid, "title": kit_title("starter", color)}
             })
             print(f"  ✓ LIVE rename: {prod['title']!r} → {kit_title('starter', color)!r}")
+        if reprice:
+            api("PUT", f"/variants/{variant['id']}.json", {
+                "variant": {"id": variant["id"], "price": cfg["price"],
+                            "compare_at_price": cfg["compare_at"]}
+            })
+            print(f"  ✓ LIVE reprice: {variant['price']} → {cfg['price']} (compare-at {cfg['compare_at']})")
         time.sleep(0.6)
 
-    if rollback:
+    if rollback and not dry and (rename or reprice):
         ROLLBACK_FILE.write_text(json.dumps(rollback, indent=2, ensure_ascii=False))
-        print(f"  Old titles saved to {ROLLBACK_FILE}")
+        print(f"  Old titles/prices saved to {ROLLBACK_FILE}")
 
 
 def create_page(dry: bool):
@@ -384,6 +408,8 @@ def main():
     ap.add_argument("--skip-page", action="store_true")
     ap.add_argument("--rename-live", action="store_true",
                     help="rename the 4 LIVE StradaPro products to '… | Starter Kit | Color'")
+    ap.add_argument("--reprice-live", action="store_true",
+                    help="reprice the 4 LIVE StradaPro products to 69.00 (compare-at 149.00)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -406,7 +432,7 @@ def main():
     build_bundle_template(args.theme_id, patched, args.dry_run)
     if not args.skip_products:
         create_kit_products(args.dry_run)
-        update_starter_products(args.dry_run, args.rename_live)
+        update_starter_products(args.dry_run, args.rename_live, args.reprice_live)
     if not args.skip_page:
         create_page(args.dry_run)
 

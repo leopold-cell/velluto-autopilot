@@ -61,7 +61,7 @@
       "settings": {
         "eyebrow": "Ride Fast. Live Slow.",
         "heading": "Choose your Strada Pro setup",
-        "subheading": "Every set includes the Strada Pro and the Velluto Visione™ lens. Pick the setup that fits the way you ride.",
+        "subheading": "Every kit includes the Strada Pro and the Velluto Visione™ lens. Pick the setup that fits the way you ride.",
         "shipping_note": "Free shipping on orders from [threshold]",
         "free_shipping_threshold": 99,
         "free_shipping_label": "Free shipping included",
@@ -70,7 +70,7 @@
         "trust_2": "30-day returns",
         "trust_3": "2-year warranty",
         "show_comparison": true,
-        "comparison_heading": "Compare the sets",
+        "comparison_heading": "Compare the kits",
         "comparison_shipping_label": "Free Shipping"
       }
     }

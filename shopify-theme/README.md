@@ -15,15 +15,19 @@ theme.** The one approved live change is renaming the 4 StradaPro products
 
 | Kit | Products | Price | Contents |
 | --- | --- | --- | --- |
-| **Starter Kit** | the 4 **existing** StradaPro color products, renamed to `Velluto StradaPro \| Starter Kit \| {Color}` (handles unchanged for SEO/ads) | unchanged (€149 default market) | Strada Pro + Visione™ Lens |
+| **Starter Kit** | the 4 **existing** StradaPro color products, renamed to `Velluto StradaPro \| Starter Kit \| {Color}` (handles unchanged for SEO/ads) | **€69** (was €149; compare-at €149 — applied with `--reprice-live`) | Strada Pro + Visione™ Lens |
 | **Performance Kit** | 4 **new** products `velluto-stradapro-performance-kit-{color}` | €99 (compare-at €226 value) | + Clear Lens, Hard Case |
 | **Ultimate Kit** | 4 **new** products `velluto-stradapro-ultimate-kit-{color}` | €119 (compare-at €256 value) | + Cleaning Spray, Microfiber Cloth, Bottle |
 
 Colors: Nero / Arancia / Espresso / Viola — one product per kit×color,
 matching the store's existing one-product-per-color architecture.
 
-⚠️ Pricing is intentionally inverted (Performance €99 / Ultimate €119 are
-cheaper than the €149 Starter): user-confirmed anchor/upsell play.
+Pricing ladder €69 / €99 / €119 — Starter does **not** qualify for free
+shipping (from €99); Performance and Ultimate do. Note on markets: the
+script sets the base (EUR) price; markets with automatic conversion follow
+it, but any **fixed per-market price lists** (Shopify Markets, e.g. the
+DKK/NOK/PLN/SEK prices in seo-bot's `commercial_config.py`) must be
+adjusted separately in the admin.
 
 ## How the switchers work
 
@@ -64,7 +68,7 @@ Needs `SHOPIFY_TOKEN` (scopes: `write_themes`, `write_products`,
 ```
 python3 deploy_kits.py --list-themes
 python3 deploy_kits.py --theme-id <COPY_ID> --dry-run
-python3 deploy_kits.py --theme-id <COPY_ID> --rename-live
+python3 deploy_kits.py --theme-id <COPY_ID> --rename-live --reprice-live
 ```
 
 What it does, in order:
@@ -81,7 +85,9 @@ What it does, in order:
    switcher couldn't be tested) but in no collection or menu, tagged
    `kit, test`, with metafields and the matching StradaPro color imagery.
 5. Sets kit metafields on the 4 existing products; with `--rename-live`
-   also renames them (old titles saved to `kit_rename_rollback.json`).
+   also renames them and with `--reprice-live` sets them to €69
+   (compare-at €149). Old titles/prices saved to
+   `kit_rename_rollback.json`.
 6. Creates the hidden landing page `/pages/strada-pro-sets-test`.
 
 ## Verify on the theme copy preview
