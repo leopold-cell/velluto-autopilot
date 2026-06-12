@@ -106,3 +106,33 @@ What it does, in order:
 - Theme: changes exist only on the copy.
 - Products: the 8 kits are unlinked — set to draft or delete; restore the
   4 original titles from `kit_rename_rollback.json`.
+
+## EU Withdrawal Button (live by June 19, 2026)
+
+Required by Directive (EU) 2023/2673 for stores selling to EU buyers.
+Implementation (deployed **live**, unlike the kit test):
+
+| Requirement | Implementation |
+| --- | --- |
+| Clearly visible, continuously available button/link | "Right of withdrawal" link in the footer menu (added by `deploy_withdrawal.py` via GraphQL, or 1-minute manual step) → `/pages/withdrawal` |
+| Two-step confirmation (name + order reference) | `sections/velluto-withdrawal-form.liquid`: step 1 details, step 2 summary + "Withdraw from contract now". No-JS fallback: single step with explicit confirmation checkbox. |
+| Merchant-side record | Submission uses Shopify's native contact form → store contact inbox, subject-tagged `[Withdrawal]`, includes submission timestamp. |
+| Automatic confirmation email (content + timestamp) | Client-side Klaviyo event `Withdrawal Requested` (public site key `W24JTE`, a section setting) triggers a flow that sends template **`SQQ2zG` "Withdrawal Confirmation (EU Widerruf)"** (already created in Klaviyo). |
+
+Deploy: `python3 scripts/deploy_withdrawal.py --theme-id <ID> [--live-ok]` —
+uploads section + `templates/page.withdrawal.json`, creates the published
+page `/pages/withdrawal`, appends the footer menu link. `--live-ok` is
+required to target the live theme. QA on the copy first, then live before
+**June 19**.
+
+Remaining manual steps:
+1. **Klaviyo flow** (API cannot create flows): Flows → Create → trigger =
+   metric "Withdrawal Requested" → Email → use template "Withdrawal
+   Confirmation (EU Widerruf)" → set live. Recommended: mark the email as
+   transactional-style (no marketing filters) so every requester receives it.
+2. When Shopify ships its **native withdrawal feature** (announced for the
+   week of June 15): compare; if adequate, enable it and keep or retire this
+   page (decision point — the footer link can target Shopify's native flow).
+3. Have legal review the wording (button labels follow the directive's
+   "withdraw from contract here/now" pattern; all copy is editable via
+   section settings, incl. German wording per market).

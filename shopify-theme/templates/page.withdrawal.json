@@ -1,0 +1,10 @@
+{
+  "name": "Withdrawal (EU)",
+  "sections": {
+    "main": {
+      "type": "velluto-withdrawal-form",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
