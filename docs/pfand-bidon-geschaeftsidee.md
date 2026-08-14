@@ -312,6 +312,65 @@ ohne die Eyewear-Marke mit Lebensmittelrisiko zu belasten.
 
 ---
 
+## 12. Günstige Erstcharge & Partner-Beteiligung
+
+### Erstcharge maximal günstig (~12–25 k€ statt 80–140 k€)
+
+Der Trick: Charge 1 testet **Produkt, Geschmack, Kanal und Pfand-Logistik** — nicht die finale Flasche.
+
+1. **Keine Custom-Flasche:** Standard-500-ml-PET von der Stange + Katalog-Sportcap (28-mm-PCO,
+   tethered) — spart 30–100 k€ Werkzeug. Vorher Stock-Mold-Kataloge der Flaschenhersteller nach
+   zylindrischen Formen mit Ø 70–75 mm durchsuchen: Existiert zufällig eine passende Bestandsform,
+   gibt es den Cage-Fit fast gratis.
+2. **Kaltfüllung statt Aseptik:** Mit Konservierung (z. B. Kaliumsorbat) oder verkürzter
+   Haltbarkeit/Kühlkette füllen kleine Lohnabfüller ab ~5.000 Flaschen (Hofmann) bzw. ab
+   ~1.000 l (Mostereien) ab — Aseptik kommt erst mit der Serienflasche.
+3. **Ein SKU:** Ein Flavor, eine Größe, ein Etikett (digital gedruckt, DPG-zertifizierte
+   Druckerei kann Kleinauflagen).
+4. **Vorfinanzieren statt finanzieren:** Vorbestellungen über die Velluto-Liste, ggf. Crowdfunding
+   (Startnext), und Event-Vorverträge mit Anzahlung — Charge 1 ist im Idealfall verkauft, bevor
+   sie produziert wird.
+5. **Falls der Cage-Fit in Charge 1 sein muss:** Single-Cavity-Pilotwerkzeug (~5–15 k$) auf einer
+   Single-Stage-Maschine statt Serien-Multi-Cavity — höhere Stückkosten, Bruchteil der Werkzeugkosten.
+
+Rechnung Minimal-Charge (8–10 k Flaschen, Standardflasche, kaltgefüllt): abgespeckte
+Rezeptur/Labor 5–10 k€ + Abfüllung/Material ~0,6–0,9 €/Fl. ≈ 6–9 k€ + DPG/GS1/Etiketten ~2 k€
+→ **~12–20 k€**; mit Pilotwerkzeug für echte Bidon-Form +10–20 k€.
+
+### Abfüller beteiligen („Rauch-Modell")
+
+Vorbild: [Rauch füllt Red Bull exklusiv seit 1987 ab](https://de.wikipedia.org/wiki/Rauch_Fruchts%C3%A4fte),
+trug Produktion/Kapazität von Anfang an und ist mitgewachsen bis hin zu
+[gemeinsamen Werksübernahmen](https://www.lebensmittelzeitung.net/industrie/nachrichten/grossbritannien-red-bull-und-rauch-uebernehmen-naechsten-getraenkeabfueller-168280).
+Übertragen: Der Abfüller finanziert die teuersten Bausteine (Blaswerkzeug, Abfüllkapazität,
+Zahlungsziele) gegen eine von drei Gegenleistungen:
+- **Umsatzbeteiligung pro Flasche** (einfachste Form, keine Gesellschafterstruktur),
+- **Minderheitsanteil 5–15 %** mit Meilenstein-Vesting (Anteile entstehen nur bei erreichten
+  Absatzzielen), oder
+- **befristeter Exklusiv-Produktionsvertrag** (3–5 Jahre) als Absicherung seiner Investition.
+
+Vertragshygiene: Werkzeug-Eigentum und Rezeptur-IP bleiben beim Startup (notfalls
+Rückkaufoption), Exklusivität befristen, Preis-Benchmarking-Klausel gegen Lock-in.
+
+### Vertriebspartner beteiligen
+
+- **Ohne Equity (bevorzugt):** GFGH/Distributor bekommt Gebietsexklusivität gegen
+  Mindestabnahme; Handelsvertreter auf Provision (8–15 %); Eventveranstalter auf
+  Revenue-Share pro Flasche statt Sponsoring-Fee.
+- **Mit Equity („Distribution for Equity"):** Strategischer Getränke-Partner mit
+  Vertriebsnetz/LEH-Zugang als Minderheitsgesellschafter — der Markt ist dafür offen:
+  [Oettinger übernahm das Startup Joy Bräu](https://convenienceshop.de/getraenke/5916-brauerei-oettinger-uebernahme-des-startup-joy-braeu.html),
+  Krombacher-Gesellschafter investieren in Getränke-/FoodTech-Startups
+  ([ValueGrain](https://www.meininger.de/bier/brauereien/schadeberg-investiert-millionen-valuegrain)),
+  und mit [Drinks Ventures](https://www.about-drinks.com/drinks-ventures-startet-finanzierungsprogramm-fuer-getraenkemarken/)
+  existiert ein eigenes Finanzierungsprogramm für Getränkemarken.
+- **Gleiche Deal-Hygiene wie beim Abfüller:** unter 25,1 % (keine Sperrminorität),
+  Meilenstein-Vesting an Absatzziele gekoppelt, Exklusivität kanal- und zeitbegrenzt,
+  Buy-back-Option — Vertriebszusagen sind schnell gemacht und schwer durchzusetzen, deshalb
+  Anteile nur gegen gelieferte Distribution.
+
+---
+
 ## Fazit
 
 Die Idee besetzt einen real existierenden, überprüfbaren Whitespace: **Format (74 mm) ×
