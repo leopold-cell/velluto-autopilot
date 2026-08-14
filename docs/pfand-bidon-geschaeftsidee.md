@@ -136,6 +136,38 @@ kostet im Fachhandel 4 € — „Drink kaufen, Bidon gratis" invertiert die Wer
 (50–100 k Flaschen) 25–60 k€, DPG/GS1/Design-Anmeldungen < 5 k€, Rezeptur/Labor/Haltbarkeit
 10–20 k€, Branding/Launch 20–50 k€ → **realistisch 100–250 k€** ohne LEH-Listungsbudget.
 
+### Umsatzpotenzial DACH (TAM → SAM → SOM)
+
+**Marktrahmen (TAM):** Sportgetränke DE ~392 Mio. € (2025, Handel + Out-of-Home); DACH
+hochgerechnet ~450–500 Mio. €. Dazu das Sporternährungs-Segment Ausdauer (Carb-Mixe, Gels)
+mit Premium-Preisen und ~5 % Wachstum p. a.
+
+**Zielgruppen-Schichtung DACH (Schätzung):**
+
+| Schicht | Größe (DACH) | Flaschen/Jahr | Ø-Preis | Potenzial |
+|---|---|---|---|---|
+| Harter Kern: Event-/Leistungsfahrer, Triathleten (kauft heute Maurten/SiS-Pulver) | ~250–400 k | 30–50 | 3,50 € | ~30–60 Mio. € |
+| Ambitionierte Hobbyfahrer (Rennrad/Gravel, fährt regelmäßig, kauft gelegentlich Sportnahrung) | ~1–1,5 Mio. | 8–15 | 3,00 € | ~25–60 Mio. € |
+| Gelegenheitsfahrer (~7,5 Mio. inkl. AT/CH) | nur als Tankstellen-Impulskauf erreichbar | — | — | Upside, nicht planbar |
+
+Davon realistisch mit einem RTD-Produkt adressierbar (viele bleiben bei Pulver/Leitungswasser):
+**SAM ≈ 25–45 Mio. €/Jahr** für die Kategorie „fertig befüllter Race-Bidon" in DACH.
+
+**Erreichbarer Umsatz (SOM) nach Vertriebsphasen:**
+
+| Phase | Volumen | Umsatz (netto Hersteller) |
+|---|---|---|
+| Jahr 1 — Events + D2C + Bikeshops | 60–150 k Flaschen | **0,2–0,5 Mio. €** |
+| Jahr 3 — GFGH, Lekkerland-Test, Regionallistung, 30–50 Events | 0,7–1,5 Mio. Flaschen | **2–5 Mio. €** |
+| Jahr 5 — nationale Distribution (Tankstelle + LEH), etablierte Marke | 2,5–4,5 Mio. Flaschen | **8–15 Mio. €** |
+
+Sanity-Check: 10 Mio. € ≈ 2–3 % des DACH-Sportgetränkemarkts bzw. ~3 Mio. Flaschen — ambitioniert,
+aber für eine differenzierte neue Kategorie in 5 Jahren plausibel (Referenz: Holy erreichte D2C-only
+~60 Mio. € in 4 Jahren mit breiterer Zielgruppe; fritz-kola 116 Mio. € nach 20 Jahren im Massenmarkt).
+**Upside-Szenario** 20–40 Mio. €, falls das Produkt über den Radsport hinaus als Convenience-Sportdrink
+an der Tankstelle dreht (Isostar-Kundschaft, Gym/Running) — das entscheidet sich am Regal, nicht in
+der Planung. Break-even der Vollkosten liegt je nach Overhead grob bei 0,5–1 Mio. Flaschen/Jahr.
+
 ---
 
 ## 6. Vertriebswege & Go-to-Market
