@@ -15,7 +15,8 @@ und startet danach einen Test (Standard 14 Tage) mit Go/Kill-Empfehlung. Gebaut 
 | Freigabe per API (`/ideas`, `/ideas/{id}/decision`), Experiment-Start, Metriken, Go/Kill-Auswertung | gebaut + getestet |
 | Guardrails: Kill-Switch, Dry-Run Standard, Caps, Mindestabstand, Sperrliste, Opt-out, Offenlegungspflicht, LinkedIn nur Assist-Queue, E-Mail nur Opt-in | gebaut + getestet |
 | LLM-Budgetdeckel pro Tag | gebaut (nicht mit echter API getestet) |
-| **Noch nicht gebaut** | echte Sender für X/Reddit (Queue-Status `queued` wird noch von niemandem abgeholt), Landingpage-Generator/Deploy, Stripe-Vorbestellung, Ads, Telegram/WhatsApp-Digest, Dashboard-UI, Web-Suche-/Reddit-/X-Collector, Proof-of-Demand- und „Neu möglich"-Collector |
+| Landingpage (A/B, serverseitig gerendert, HTML-escaped, Pflichthinweis "in Entwicklung"), Besuchszählung ohne Cookies/IP, Double-Opt-in-Warteliste, Abmeldung + Sperrliste, Impressum/Datenschutz-Vorlage (Seite wird ohne `LEGAL_*` verweigert), Stripe-Checkout (erstattbare Anzahlung) + signierter Webhook | gebaut + getestet (Stripe/SendGrid nur mit Mock-Transport, **nicht gegen echte Konten**) |
+| **Noch nicht gebaut** | echte Sender für X/Reddit (Queue-Status `queued` wird noch von niemandem abgeholt), Stripe-Rückerstattungs-Flow, Ads, Telegram/WhatsApp-Digest, Dashboard-UI, Web-Suche-/Reddit-/X-Collector, Proof-of-Demand- und „Neu möglich"-Collector |
 
 ## Start
 
@@ -39,4 +40,5 @@ Freigeben: `curl -H "X-API-Key: …" localhost:8100/ideas` → `POST /ideas/1/de
 
 ## Dokumente
 - `docs/deep-research-ai-abos-wohlhabende.md` – Marktrecherche und Produktideen
+- `docs/validation-brunomind.md` – Desk-Validierung von brunomind.com mit den neuen Kriterien
 - `docs/learnings-minini-bazzly-kinso.md` – Learnings aus Daniel Mininis Founder-Mode-Folge, Bazzly und Kinso und wie sie ins Radar einfließen
