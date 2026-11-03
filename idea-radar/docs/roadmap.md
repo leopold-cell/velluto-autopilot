@@ -6,7 +6,7 @@ Jede freigegebene Idee durchläuft dieselben Stufen. **Stufe 3 (No-Brainer-Pilot
 |---|---|---|---|
 | 0 | Radar + Freigabe | 3 Idea-Cards/Tag, Leopold gibt frei | täglich |
 | 1 | Evidenz | ≥ 20 echte öffentliche Beiträge (wörtliche Zitate, Links) | 2–3 Tage |
-| 2 | Gespräche | 10 Zielkunden + 5 Berater/Partner; Entscheidungsregel der Idee (siehe `radar/nachfolge-interviews.md`) | 1–2 Wochen |
+| 2 | Gespräche (KI-Interview, automatisch ausgewertet) | 10 Zielkunden + 5 Berater/Partner; Regeln in `interviews.py::scorecard`; Gewinnung über Partner/eigene Beiträge (`radar/nachfolge-verteilkit.md`) | 2–4 Wochen |
 | 3 | **No-Brainer-Pilotangebot** | Angebot geschrieben, rechtlich geprüft, Kapazität für Pilot-Betreuung geklärt | 1–2 Tage |
 | 4 | Landingpage + Warteliste + Pilotplätze (+ erstattbare Reservierung) | Seite live, Impressum/Datenschutz vorhanden | 2–3 Tage |
 | 5 | Pilot durchführen | 5–10 Pilotkunden, 3 Monate, händisch/KI-gestützt (Concierge), wöchentliche Nutzung messen | 3 Monate |

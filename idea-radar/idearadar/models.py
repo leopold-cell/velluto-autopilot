@@ -108,6 +108,7 @@ class Landing(Base):
     pilot_spots: Mapped[int] = mapped_column(Integer, default=0)
     pilot_months: Mapped[int] = mapped_column(Integer, default=3)
     pilot_discount_pct: Mapped[int] = mapped_column(Integer, default=30)
+    interview_questions: Mapped[list] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
 
@@ -149,3 +150,16 @@ class Preorder(Base):
     status: Mapped[str] = mapped_column(String(16), default="pending")  # pending|paid
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
     paid_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class Interview(Base):
+    """Asynchronous AI-led interview. No name is collected; consent and AI disclosure are mandatory."""
+    __tablename__ = "interviews"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    experiment_id: Mapped[int] = mapped_column(ForeignKey("experiments.id"))
+    token: Mapped[str] = mapped_column(String(64), unique=True)
+    consent_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+    status: Mapped[str] = mapped_column(String(8), default="active")  # active|done
+    transcript: Mapped[list] = mapped_column(JSON, default=list)  # [{"role": "assistant"|"user", "text": str}]
+    analysis: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)

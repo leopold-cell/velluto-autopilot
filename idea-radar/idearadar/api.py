@@ -13,6 +13,7 @@ from .landing import LegalMissing, create_landing
 from .metrics import compute_metrics
 from .models import Experiment, Idea, Landing, OutreachMessage
 from .web import build_router
+from .interviews import build_router as build_interview_router, delete_old, scorecard
 from .outreach import handle_reply, queue_outreach
 
 
@@ -47,11 +48,20 @@ class KillIn(BaseModel):
     enabled: bool
 
 
-def create_app(settings: Settings | None = None, session_factory=None, mailer=None, http_client=None) -> FastAPI:
+def create_app(settings: Settings | None = None, session_factory=None, mailer=None, http_client=None, llm_factory=None) -> FastAPI:
     cfg = settings or get_settings()
     factory = session_factory or make_session_factory(cfg.database_url)
     app = FastAPI(title="Idea Radar")
     app.include_router(build_router(cfg, factory, mailer, http_client))
+
+    def default_llm(session):
+        from .llm import ClaudeLLM
+
+        if not cfg.anthropic_api_key:
+            raise RuntimeError("ANTHROPIC_API_KEY not configured")
+        return ClaudeLLM(session, cfg)
+
+    app.include_router(build_interview_router(cfg, factory, llm_factory or default_llm))
 
     def auth(x_api_key: str = Header(default="")):
         if not cfg.admin_api_key:
@@ -145,6 +155,29 @@ def create_app(settings: Settings | None = None, session_factory=None, mailer=No
     @app.post("/outreach/reply", dependencies=[Depends(auth)])
     def reply(body: ReplyIn, s=Depends(db)):
         return {"suppressed": handle_reply(s, cfg, body.channel, body.handle, body.text)}
+
+    class InterviewIn(BaseModel):
+        questions: list[str] = Field(default_factory=list, max_length=15)
+
+    @app.post("/experiments/{exp_id}/interview", dependencies=[Depends(auth)])
+    def interview_setup(exp_id: int, body: InterviewIn, s=Depends(db)):
+        lp = s.scalar(select(Landing).where(Landing.experiment_id == exp_id))
+        if lp is None:
+            raise HTTPException(409, "create the landing page first (it carries Impressum/Datenschutz)")
+        if body.questions:
+            lp.interview_questions = [q.strip()[:400] for q in body.questions if q.strip()]
+            s.commit()
+        return {"url": f"{cfg.public_base_url}/i/{lp.slug}"}
+
+    @app.get("/experiments/{exp_id}/interview-report", dependencies=[Depends(auth)])
+    def interview_report(exp_id: int, s=Depends(db)):
+        if s.get(Experiment, exp_id) is None:
+            raise HTTPException(404, "experiment not found")
+        return scorecard(s, exp_id)
+
+    @app.post("/maintenance/delete-old-interviews", dependencies=[Depends(auth)])
+    def purge(days: int = 90, s=Depends(db)):
+        return {"deleted": delete_old(s, days)}
 
     @app.post("/killswitch", dependencies=[Depends(auth)])
     def killswitch(body: KillIn, s=Depends(db)):
