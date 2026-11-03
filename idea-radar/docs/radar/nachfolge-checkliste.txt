@@ -1,0 +1,112 @@
+CHECKLISTE: IDEE A (NACHFOLGE-READINESS) IN 2 WOCHEN VALIDIEREN
+Stand 03.11.2026. Ziel: 10 Gespräche mit Inhabern und 5 mit Beratern/Kammern, danach Go/Kill-Entscheidung. Es wird nichts verkauft und keine Landingpage gebaut, bevor die Regeln unten erfüllt sind.
+
+WICHTIGE EHRLICHKEIT VORAB
+- Ich konnte KEINE namentlichen Inhaber finden (Reddit und Foren sind für mich gesperrt, die Websuche liefert nur Ratgeber). Unten stehen nur öffentliche Berater, Podcasts und Kammern, deren Relevanz aus Suchtreffern stammt und nicht persönlich geprüft ist. Die LinkedIn-Suchlinks öffnen Suchergebnisse in DEINEM Konto; das Linkformat habe ich nicht getestet.
+- Antwortquoten sind eine Annahme: rechne mit 10-20 % Antworten. Für 10 Inhaber-Gespräche brauchst du daher ca. 50-100 persönliche Anfragen.
+
+----------------------------------------------------
+TEIL 1: VORBEREITUNG (Tag 1)
+----------------------------------------------------
+☐ LinkedIn-Profil ehrlich: echtes Foto, Headline mit deiner Rolle (z. B. "Gründer Velluto | recherchiert Nachfolge-Vorbereitung"), kurzer Text, was du erforschst.
+☐ Tabelle anlegen (Name, Rolle, Kanal, Datum Anfrage, Antwort ja/nein, Termin, Notizen, Einwilligung Notizen ja/nein).
+☐ Feste Regeln: max. 10 persönliche Anfragen pro Tag, von Hand, keine Tools/Automatisierung (LinkedIn-Bedingungen). Pro Person nur EINE Erinnerung.
+☐ Kein E-Mail-Kaltversand an Unbekannte (UWG § 7).
+☐ 20-Min-Gespräche: vorher fragen, ob du mitschreiben darfst; Zitate nur anonymisiert verwenden.
+☐ Kalender-Link für Terminbuchung bereitlegen.
+
+----------------------------------------------------
+TEIL 2: KONTAKTE (nach Priorität)
+----------------------------------------------------
+Priorität 1: Kammern als Türöffner (schnellster Zugang zu Inhabern)
+☐ IHK-Nachfolgeberater/in deiner Region. Beispiele mit Nachfolge-Tools: IHK Hannover https://www.ihk.de/hannover/hauptnavigation/gruendung-sicherung-nachfolge/unternehmensnachfolge-1/einstiegsinformationen-5181868 und IHK Bonn https://ihk-bonn.de/unternehmensfoerderung/unternehmenswerkstatt/unternehmensnachfolge-uwd . Nachricht: C (unten). Bitte um Einladung zu Veranstaltungen und um 2-3 Inhaber für ein anonymes Gespräch.
+☐ HWK-Betriebsberater/in (Handwerkskammer deiner Region), gleiche Bitte. Nachricht: C.
+☐ Regionalpartner von nexxt-change (Liste über nexxt-change.org bzw. IHK): gleiche Bitte. Nachricht: C.
+
+Priorität 2: Berater mit Nachfolge-Fokus
+☐ Maximilian Kinner, SH+C München, Fachberater für Unternehmensnachfolge (DStV): https://shc.de/maximilian-kinner  Nachricht: B.
+☐ Ecovis KSO, Standorte Köln und Düsseldorf, Schwerpunkt Vermögens-/Unternehmensnachfolge: https://ecovis-kso.com/schwerpunkte/vermoegensnachfolge  (Ansprechpartner über die Seite wählen). Nachricht: B.
+☐ Thomas Hösle (Gast bei "Founder Talks", Folge 03/2026 zu Übergabe-Stolpersteinen): LinkedIn-Suche https://www.linkedin.com/search/results/people/?keywords=Thomas%20H%C3%B6sle%20Unternehmensnachfolge  Nachricht: B oder D.
+☐ 5 weitere Steuerberater mit Titel "Fachberater für Unternehmensnachfolge": LinkedIn-Suche https://www.linkedin.com/search/results/people/?keywords=Fachberater%20f%C3%BCr%20Unternehmensnachfolge  Nachricht: B.
+
+Priorität 3: Multiplikatoren mit Inhaber-Zugang
+☐ Benedikt Stentrup, Host des Podcasts "Nachfolgeschmiede": LinkedIn-Suche https://www.linkedin.com/search/results/people/?keywords=Benedikt%20Stentrup  Nachricht: D.
+☐ Veranstaltung "GÖRG meets DUB: Unternehmensnachfolge erfolgreich gestalten" am 04.11.2026: https://www.goerg.de/de/aktuelles/veranstaltungen/04-11-2026/goerg-meets-dub-unternehmensnachfolge-erfolgreich-gestalten  Teilnahme prüfen; später Teilnehmer ansprechen (A oder B).
+
+Priorität 4: Inhaber selbst finden (musst du in deinem Konto suchen)
+☐ LinkedIn-Beiträge, letzte 30 Tage: https://www.linkedin.com/search/results/content/?keywords=keinen%20Nachfolger
+☐ LinkedIn-Beiträge: https://www.linkedin.com/search/results/content/?keywords=Betriebs%C3%BCbergabe
+☐ LinkedIn-Beiträge: https://www.linkedin.com/search/results/content/?keywords=Unternehmensverkauf%20Inhaber
+☐ Kommentare unter Beiträgen der Berater oben lesen: dort schreiben Inhaber. Nur Personen anschreiben, die selbst öffentlich über ihre Übergabe/ihren Verkauf schreiben oder Inhaber sind.
+☐ Google: site:linkedin.com/posts "keinen Nachfolger" Inhaber   |   site:xing.com/discuss Nachfolge
+☐ Reddit im Browser: r/selbststaendig, r/Finanzen, r/SellMyBusiness, r/fatFIRE; Suche "Nachfolger", "successor", "retire sell company". Nur öffentlich kommentieren/antworten, Subreddit-Regeln lesen, keine unaufgeforderten Massen-DMs.
+☐ Warmes Netzwerk: Velluto-Geschäftskunden, Lieferanten, Steuerberater/Bank, die selbst Inhaber kennen. Bitte um Empfehlung statt Kaltkontakt.
+
+----------------------------------------------------
+TEIL 3: FERTIGE NACHRICHTEN (alle ≤ 200 Zeichen, passen in die LinkedIn-Kontaktanfrage; Platzhalter in [ ] ersetzen)
+----------------------------------------------------
+A) INHABER, Kontaktanfrage (188 Zeichen):
+Guten Tag [Vorname], Sie führen einen Betrieb. Ich recherchiere, wie Inhaber Übergabe oder Verkauf vorbereiten und wo Hilfe fehlt (kein Verkauf, nur Zuhören). 20 Min Austausch? [Dein Name]
+
+B) BERATER, Kontaktanfrage (193 Zeichen):
+Guten Tag [Vorname], Sie begleiten Unternehmensnachfolgen. Ich prüfe, ob ein Vorbereitungs-Tool für Inhaber sinnvoll wäre, und möchte Ihre Praxis-Sicht hören (20 Min, kein Verkauf). [Dein Name]
+
+C) KAMMER / NACHFOLGEBERATER (176 Zeichen):
+Guten Tag [Vorname], ich recherchiere, wie Inhaber ihre Übergabe vorbereiten, und würde gern kurz mit Ihnen sprechen, wo Ihre Klienten typischerweise haken. 15 Min? [Dein Name]
+
+D) PODCAST-HOST / MULTIPLIKATOR (185 Zeichen):
+Hallo [Vorname], ich höre Ihren Podcast zur Nachfolge. Ich prüfe, ob ein Vorbereitungs-Tool für Inhaber Sinn macht, und würde gern 15 Min Ihre Erfahrung hören. Kein Verkauf. [Dein Name]
+
+E) NACHRICHT NACH ANNAHME, INHABER (lang, kein Pitch):
+Danke fürs Vernetzen, [Vorname]. Kurz zu mir: Ich bin [Dein Name], [Rolle/Firma]. Ich untersuche, wie Inhaber ihren Betrieb auf Übergabe oder Verkauf vorbereiten und woran es dabei hakt, etwa bei Unterlagen oder Abhängigkeit vom Inhaber. Ich möchte nichts verkaufen, sondern zuhören und lernen. Hätten Sie 20 Minuten, gern per Telefon oder Video? Ihre Angaben bleiben vertraulich und anonymisiert. Termin: [Kalenderlink]. Falls das Thema für Sie nicht passt, ist das völlig in Ordnung.
+
+F) NACHRICHT NACH ANNAHME, BERATER:
+Danke fürs Vernetzen, [Vorname]. Ich bin [Dein Name], [Rolle/Firma], und prüfe, ob Inhaber mit einem digitalen Hilfsmittel (Readiness-Check, Datenraum-Checkliste, monatliche Aufgaben) besser auf Übergabe oder Verkauf vorbereitet in Ihre Beratung kommen. Mich interessiert Ihre Praxis: in welchem Zustand kommen Mandanten, was fehlt fast immer, und was dürfte so ein Tool nie tun? 20 Minuten, kein Verkauf. Termin: [Kalenderlink].
+
+G) EINMALIGE ERINNERUNG (nach 5-7 Tagen ohne Antwort):
+Hallo [Vorname], kurze Erinnerung an meine Anfrage zum Thema Nachfolge. Falls es nicht passt, gern eine kurze Absage, dann melde ich mich nicht erneut. Danke Ihnen!
+
+H) DANK + EMPFEHLUNG (nach dem Gespräch):
+Vielen Dank für das offene Gespräch, [Vorname]. Das war sehr hilfreich. Kennen Sie 1-2 Personen, die vor einer ähnlichen Situation stehen und mit mir sprechen würden? Ich melde mich nur mit Ihrem Einverständnis bei ihnen.
+
+I) NACHRICHT AN KAMMER NACH ANNAHME (Bitte um Vermittlung):
+Danke, [Vorname]. Konkret bitte ich Sie um zwei Dinge: 1) 15 Minuten, in denen Sie mir die typischen Probleme Ihrer Klienten schildern; 2) wenn Sie es für sinnvoll halten, die Vermittlung von 2-3 Inhabern, die für ein anonymes 20-Minuten-Gespräch offen sind. Ich verkaufe nichts. Gern teile ich Ihnen danach meine Erkenntnisse mit.
+
+----------------------------------------------------
+TEIL 4: GESPRÄCH (20 Min)
+----------------------------------------------------
+Inhaber:
+1. Wie weit sind Sie mit Verkauf/Übergabe (Idee, Gespräche, Zeitplan)?
+2. Was haben Sie bisher getan? Was hat Sie überrascht? Was hat Zeit/Geld gekostet?
+3. Wer hilft Ihnen (Steuerberater, Makler, Bank, Anwalt)? Wie zufrieden?
+4. Welche Unterlagen/Informationen waren am schwersten zusammenzustellen?
+5. Wovor haben Sie Sorge (Preis, Mitarbeiter, Kunden, Prüfung durch Käufer)?
+6. Was geben Sie heute dafür aus? Was wäre eine strukturierte Begleitung wert?
+7. Wen müsste so ein Angebot empfehlen, damit Sie ihm vertrauen?
+8. Erst GANZ AM ENDE, offen fragen (Pilot-Frage): "Angenommen, es gäbe 3 Monate lang kostenlos einen Readiness-Check, eine Liste fehlender Unterlagen und monatliche Aufgaben, persönlich begleitet, ohne Zahlungsdaten. Im Gegenzug bitten wir um 15 Minuten Feedback alle zwei Wochen. Würden Sie das nutzen? Warum, warum nicht? Was müsste dabei herauskommen, damit Sie danach dafür zahlen würden, und wie viel?"
+Berater:
+1. In welchem Zustand kommen Mandanten bei Nachfolge zu Ihnen? Was fehlt fast immer?
+2. Wie viele Stunden kostet die Aufbereitung von Unterlagen? Wer zahlt das?
+3. Welche Tools nutzen Sie oder Mandanten heute? Was fehlt?
+4. Würden Sie Mandanten ein Vorbereitungs-Tool empfehlen? Unter welchen Bedingungen (Haftung, Datenschutz, Provision)?
+5. Was darf ein Tool nie tun?
+
+----------------------------------------------------
+TEIL 5: ZEITPLAN
+----------------------------------------------------
+☐ Tag 1: Vorbereitung (Teil 1), Kammern, Berater und Podcast anschreiben (7-10 Anfragen).
+☐ Tag 2-5: je 10 Anfragen (Berater, Inhaber über Suchlinks, warme Kontakte). Erste Gespräche führen.
+☐ Tag 6-7: Erinnerungen (G) senden; Gespräche notieren.
+☐ Tag 8-12: weitere Anfragen + Gespräche; nach Gespräch immer Nachricht H.
+☐ Tag 13-14: Auswertung (Teil 6).
+
+----------------------------------------------------
+TEIL 6: AUSWERTUNG (nach 10 Inhaber- und 5 Berater-Gesprächen)
+----------------------------------------------------
+Landingpage nur bauen, wenn ALLE drei stimmen:
+☐ Mindestens 6 von 10 Inhabern nennen Vorbereitung/Unterlagen als echtes, aktuelles Problem.
+☐ Mindestens 3 von 10 haben dafür schon Geld oder viel Zeit ausgegeben.
+☐ Mindestens 2 Berater stellen konkret eine Empfehlung oder Partnerschaft in Aussicht.
+Zusatz: Mindestens 5 Inhaber sagen beim Pilot-Angebot (Frage 8) "Ja, das würde ich nutzen". Weniger = Pilotangebot überarbeiten oder Idee verwerfen.
+
+Quellen: IHK Hannover/Bonn (Nachfolge-Tools), SH+C, Ecovis KSO, GÖRG, Podcast-Verzeichnisse. Weitere Details: idea-radar/docs/radar/nachfolge-interviews.md im Branch claude/affectionate-brahmagupta-9hxl1b.
