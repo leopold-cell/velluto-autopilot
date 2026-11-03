@@ -28,6 +28,20 @@ class Settings(BaseSettings):
     cap_email_per_day: int = 50
     min_gap_seconds: int = 120
 
+    # public landing pages
+    public_base_url: str = "http://localhost:8100"
+    hash_secret: str = "change-me"            # salts the cookie-less visitor hash
+    legal_company: str = ""                   # Impressum / Datenschutz are rendered from these;
+    legal_address: str = ""                   # landing pages are refused while they are empty
+    legal_email: str = ""
+    deposit_eur: float = 9.0
+    sendgrid_api_key: str = ""
+    mail_from: str = ""
+
+    # Stripe (REST, no SDK). Test keys (sk_test_...) first.
+    stripe_secret_key: str = ""
+    stripe_webhook_secret: str = ""
+
     # experiment defaults
     explore_days: int = 7
     default_test_days: int = 14

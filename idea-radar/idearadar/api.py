@@ -9,7 +9,10 @@ from .config import Settings, get_settings
 from .db import make_session_factory
 from .experiment import day_index, decide, evaluate
 from .guardrails import Guardrails
-from .models import Experiment, Idea, OutreachMessage
+from .landing import LegalMissing, create_landing
+from .metrics import compute_metrics
+from .models import Experiment, Idea, Landing, OutreachMessage
+from .web import build_router
 from .outreach import handle_reply, queue_outreach
 
 
@@ -44,10 +47,11 @@ class KillIn(BaseModel):
     enabled: bool
 
 
-def create_app(settings: Settings | None = None, session_factory=None) -> FastAPI:
+def create_app(settings: Settings | None = None, session_factory=None, mailer=None, http_client=None) -> FastAPI:
     cfg = settings or get_settings()
     factory = session_factory or make_session_factory(cfg.database_url)
     app = FastAPI(title="Idea Radar")
+    app.include_router(build_router(cfg, factory, mailer, http_client))
 
     def auth(x_api_key: str = Header(default="")):
         if not cfg.admin_api_key:
@@ -103,7 +107,28 @@ def create_app(settings: Settings | None = None, session_factory=None) -> FastAP
         exp = s.get(Experiment, exp_id)
         if exp is None:
             raise HTTPException(404, "experiment not found")
-        return evaluate(exp.metrics, day_index(exp), exp.test_days, exp.budget_eur, cfg)
+        return evaluate(compute_metrics(s, exp), day_index(exp), exp.test_days, exp.budget_eur, cfg)
+
+    @app.get("/experiments/{exp_id}/funnel", dependencies=[Depends(auth)])
+    def funnel(exp_id: int, s=Depends(db)):
+        exp = s.get(Experiment, exp_id)
+        if exp is None:
+            raise HTTPException(404, "experiment not found")
+        return compute_metrics(s, exp)
+
+    @app.post("/experiments/{exp_id}/landing", dependencies=[Depends(auth)])
+    def landing(exp_id: int, preorder: bool = False, s=Depends(db)):
+        exp = s.get(Experiment, exp_id)
+        if exp is None:
+            raise HTTPException(404, "experiment not found")
+        existing = s.scalar(select(Landing).where(Landing.experiment_id == exp_id))
+        if existing:
+            return {"slug": existing.slug, "url": f"{cfg.public_base_url}/l/{existing.slug}"}
+        try:
+            lp = create_landing(s, cfg, exp, preorder=preorder)
+        except LegalMissing as e:
+            raise HTTPException(409, str(e))
+        return {"slug": lp.slug, "url": f"{cfg.public_base_url}/l/{lp.slug}", "preorder": lp.preorder_enabled}
 
     @app.post("/experiments/{exp_id}/outreach", dependencies=[Depends(auth)])
     def outreach(exp_id: int, body: OutreachIn, s=Depends(db)):

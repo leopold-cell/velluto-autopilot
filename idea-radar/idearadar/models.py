@@ -94,3 +94,54 @@ class LLMSpend(Base):
     __tablename__ = "llm_spend"
     day: Mapped[datetime] = mapped_column(Date, primary_key=True)
     usd: Mapped[float] = mapped_column(Float, default=0.0)
+
+
+class Landing(Base):
+    __tablename__ = "landings"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    experiment_id: Mapped[int] = mapped_column(ForeignKey("experiments.id"), unique=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True)
+    variants: Mapped[dict] = mapped_column(JSON, default=dict)  # {"a": {...copy}, "b": {...copy}}
+    preorder_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    deposit_eur: Mapped[float] = mapped_column(Float, default=0.0)
+    price_eur: Mapped[float] = mapped_column(Float, default=0.0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class Visit(Base):
+    """One row per (experiment, variant, day, hashed visitor): cookie-less, no IP stored."""
+    __tablename__ = "visits"
+    __table_args__ = (UniqueConstraint("experiment_id", "day", "visitor_hash"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    experiment_id: Mapped[int] = mapped_column(ForeignKey("experiments.id"))
+    variant: Mapped[str] = mapped_column(String(1))
+    day: Mapped[datetime] = mapped_column(Date)
+    visitor_hash: Mapped[str] = mapped_column(String(64))
+
+
+class WaitlistEntry(Base):
+    __tablename__ = "waitlist"
+    __table_args__ = (UniqueConstraint("experiment_id", "email"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    experiment_id: Mapped[int] = mapped_column(ForeignKey("experiments.id"))
+    email: Mapped[str] = mapped_column(String(256))
+    name: Mapped[str] = mapped_column(String(128), default="")
+    variant: Mapped[str] = mapped_column(String(1), default="a")
+    token: Mapped[str] = mapped_column(String(64), unique=True)
+    confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
+    unsubscribed: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class Preorder(Base):
+    __tablename__ = "preorders"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    experiment_id: Mapped[int] = mapped_column(ForeignKey("experiments.id"))
+    email: Mapped[str] = mapped_column(String(256))
+    variant: Mapped[str] = mapped_column(String(1), default="a")
+    stripe_session_id: Mapped[str] = mapped_column(String(128), unique=True)
+    amount_cents: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(16), default="pending")  # pending|paid
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+    paid_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
