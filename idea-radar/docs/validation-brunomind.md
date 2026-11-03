@@ -2,6 +2,8 @@
 
 Stand 2026-11-03. Basis: die öffentlich lesbare Seite (Startseite, /about, /privacy, /terms – Text, kein Quellcode/Analytics) und Web-Recherche. Zahlen deiner Warteliste (Besucher, Anmeldungen, Quellen, Ausgaben) kenne ich nicht, deshalb ist das **Desk-Validation, kein Nachfrage-Beweis**. Meine Score-Eingaben sind Schätzungen.
 
+> **Status: verworfen am 2026-11-03 (Entscheidung von Leopold).** Gelernt: Endkunden-Preis zu niedrig, Konsolidierung im Markt, KI-Therapie-Regulierung.
+
 ## Kurzurteil
 **Noch nicht validiert – und so, wie die Seite heute aussieht, würde ich keinen bezahlten Traffic darauf schicken.** Das Problem ist real und häufig, aber (1) die Zahlungsbereitschaft ist bei 2,99 $/Monat nicht tragfähig, (2) der Markt zeigt Konsolidierung und strenge KI-Therapie-Regeln, (3) die Seite enthält mehrere Aussagen, die rechtlich/glaubwürdigkeitsmäßig riskant sind.
 
