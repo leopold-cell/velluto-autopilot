@@ -1,0 +1,25 @@
+[project]
+name = "idea-radar"
+version = "0.1.0"
+description = "Daily problem radar for affluent audiences: finds recurring problems, ranks SaaS ideas, human approval, then guarded demand validation."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn>=0.32",
+  "sqlalchemy>=2.0",
+  "httpx>=0.27",
+  "pydantic>=2.9",
+  "pydantic-settings>=2.6",
+  "anthropic>=0.40",
+  "apscheduler>=3.10",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+postgres = ["psycopg[binary]>=3.2"]
+
+[tool.setuptools]
+packages = ["idearadar", "idearadar.collectors"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
