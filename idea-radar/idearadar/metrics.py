@@ -21,6 +21,8 @@ def compute_metrics(session: Session, exp: Experiment) -> dict:
         total["visitors"] += visitors
         total["signups"] += signups
         total["preorders"] += pre
+    out["pilots"] = session.scalar(select(func.count()).select_from(WaitlistEntry).where(
+        WaitlistEntry.experiment_id == exp.id, WaitlistEntry.pilot.is_(True), WaitlistEntry.unsubscribed.is_(False))) or 0
     out.update({k: total[k] + out["external"][k] for k in total})
     out["conversion"] = round(out["signups"] / out["visitors"], 4) if out["visitors"] else 0.0
     return out

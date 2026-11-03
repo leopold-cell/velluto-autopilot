@@ -34,7 +34,9 @@ def build_variants(idea: Idea) -> dict:
     b = {**a, "headline": hooks[0] if hooks else a["headline"]}
     if len(hooks) > 1:
         b["subline"] = hooks[1]
-    return {"a": a, "b": b}
+    po = card.get("pilot_offer") or {}
+    pilot = {"you_get": str(po.get("you_get") or "").strip(), "we_ask": str(po.get("we_ask") or "").strip()}
+    return {"a": {**a, "pilot": pilot}, "b": {**b, "pilot": pilot}}
 
 
 def create_landing(session: Session, cfg: Settings, exp: Experiment, *, preorder: bool) -> Landing:
@@ -42,7 +44,8 @@ def create_landing(session: Session, cfg: Settings, exp: Experiment, *, preorder
         raise LegalMissing("LEGAL_COMPANY, LEGAL_ADDRESS and LEGAL_EMAIL must be set before a landing page can go live (Impressum/Datenschutz)")
     idea = session.get(Idea, exp.idea_id)
     lp = Landing(experiment_id=exp.id, slug=slugify(idea.title), variants=build_variants(idea), preorder_enabled=preorder,
-                 deposit_eur=cfg.deposit_eur, price_eur=idea.price_eur)
+                 deposit_eur=cfg.deposit_eur, price_eur=idea.price_eur,
+                 pilot_spots=cfg.pilot_spots, pilot_months=cfg.pilot_months, pilot_discount_pct=cfg.pilot_discount_pct)
     session.add(lp)
     session.commit()
     return lp
@@ -61,7 +64,14 @@ def _page(title: str, body: str) -> str:
             f"<title>{escape(title)}</title><style>{CSS}</style></head><body>{body}</body></html>")
 
 
-def render_landing(lp: Landing, variant: str, cfg: Settings, *, message: str = "") -> str:
+def pilot_terms(lp: Landing, v: dict) -> tuple[str, str]:
+    p = v.get("pilot") or {}
+    get = p.get("you_get") or f"{lp.pilot_months or 3} Monate kostenlos nutzen, ohne Zahlungsdaten und ohne automatische Verlängerung"
+    ask = p.get("we_ask") or "ein kurzes Feedback-Gespräch alle zwei Wochen (15 Min.) und ehrliche Rückmeldung, was fehlt"
+    return get, ask
+
+
+def render_landing(lp: Landing, variant: str, cfg: Settings, *, message: str = "", spots_taken: int = 0) -> str:
     v = lp.variants.get(variant) or lp.variants["a"]
     bullets = "".join(f"<li>{escape(b)}</li>" for b in v.get("bullets", []))
     price = f"<p>Geplanter Preis: <b>{lp.price_eur:.2f} € / Monat</b> (Änderungen vorbehalten).</p>" if lp.price_eur else ""
@@ -71,7 +81,16 @@ def render_landing(lp: Landing, variant: str, cfg: Settings, *, message: str = "
                    f"<input name=email type=email required placeholder='E-Mail für die Reservierung'>"
                    f"<button class=s>Platz reservieren: {lp.deposit_eur:.2f} € Anzahlung, bis Launch voll erstattbar</button></form>")
     msg = f"<p class=n>{escape(message)}</p>" if message else ""
-    body = (f"<p class=n>{escape(NOTICE)}</p>{msg}<h1>{escape(v['headline'])}</h1><p>{escape(v.get('subline', ''))}</p><ul>{bullets}</ul>{price}"
+    pilot = ""
+    if (lp.pilot_spots or 0) > 0:
+        get, ask = pilot_terms(lp, v)
+        left = max(0, (lp.pilot_spots or 0) - spots_taken)  # real count of confirmed sign-ups, never invented
+        status = f"Noch {left} von {lp.pilot_spots} Pilotplätzen frei." if left else "Alle Pilotplätze sind vergeben, du kommst auf die Warteliste."
+        after = (f" Danach {lp.pilot_discount_pct} % Gründerrabatt für 12 Monate, nur wenn du bleiben willst; du kannst jederzeit gehen."
+                 if lp.pilot_discount_pct else "")
+        pilot = (f"<div class=n><b>Pilotprogramm: {escape(status)}</b><br>Du bekommst: {escape(get)}.<br>"
+                 f"Wir bitten dich um: {escape(ask)}.{escape(after)} Pilotplätze gehen an die ersten bestätigten Anmeldungen.</div>")
+    body = (f"<p class=n>{escape(NOTICE)}</p>{msg}{pilot}<h1>{escape(v['headline'])}</h1><p>{escape(v.get('subline', ''))}</p><ul>{bullets}</ul>{price}"
             f"<form method=post action='/l/{escape(lp.slug)}/join'><input type=hidden name=v value='{escape(variant)}'>"
             f"<input class=h name=website tabindex=-1 autocomplete=off>"
             f"<input name=name placeholder='Vorname'><input name=email type=email required placeholder='E-Mail'>"

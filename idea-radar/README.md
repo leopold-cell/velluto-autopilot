@@ -40,5 +40,7 @@ Freigeben: `curl -H "X-API-Key: …" localhost:8100/ideas` → `POST /ideas/1/de
 
 ## Dokumente
 - `docs/deep-research-ai-abos-wohlhabende.md` – Marktrecherche und Produktideen
+- `docs/roadmap.md` – feste Stufen jeder Idee inkl. Pflicht-Pilotangebot
+- `docs/radar/us-to-eu-scan.md` – US→DACH-Scan
 - `docs/validation-brunomind.md` – Desk-Validierung von brunomind.com mit den neuen Kriterien
 - `docs/learnings-minini-bazzly-kinso.md` – Learnings aus Daniel Mininis Founder-Mode-Folge, Bazzly und Kinso und wie sie ins Radar einfließen

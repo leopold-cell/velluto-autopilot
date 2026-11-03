@@ -101,7 +101,7 @@ def test_full_funnel_double_opt_in_visits_and_unsubscribe():
     assert c.get(f"/l/unsubscribe/{token}").status_code == 200
     assert c.get(f"/experiments/{exp_id}/funnel", headers=h).json()["signups"] == 0
     c.post(f"/l/{slug}/join", content="email=anna%40example.com", headers=form)
-    assert len(mailer.sent) == 1  # no new mail to a suppressed address
+    assert len([m for m in mailer.sent if m[1] == "Bitte bestätige deine Anmeldung"]) == 1  # no new confirmation mail to a suppressed address
     assert "Muster GmbH" in c.get(f"/l/{slug}/impressum").text
 
 
@@ -138,3 +138,24 @@ def test_stripe_signature_rules():
         verify_webhook(payload, sign(payload), "")  # no secret configured
     with pytest.raises(StripeError):
         create_checkout_session("", amount_cents=100, product_name="p", success_url="s", cancel_url="c", email="a@b.de", experiment_id=1, variant="a")
+
+
+def test_pilot_offer_truthful_spots_and_pilot_assignment():
+    cfg, factory, c, h, exp_id, mailer = setup(pilot_spots=2)
+    slug = c.post(f"/experiments/{exp_id}/landing", headers=h).json()["slug"]
+    form = {"Content-Type": "application/x-www-form-urlencoded"}
+    page = c.get(f"/l/{slug}", headers={"user-agent": "Mozilla/5.0"}).text
+    assert "Noch 2 von 2 Pilotplätzen frei" in page and "3 Monate kostenlos" in page  # defaults when the card has no pilot_offer
+    tokens = []
+    for i in range(3):
+        c.post(f"/l/{slug}/join", content=f"email=p{i}%40example.com&v=a", headers=form)
+        tokens.append(mailer.sent[-1][2].split("/l/confirm/")[1].split()[0])
+    for t in tokens[:2]:
+        c.get(f"/l/confirm/{t}")
+    page = c.get(f"/l/{slug}", headers={"user-agent": "Mozilla/5.0"}).text
+    assert "Alle Pilotplätze sind vergeben" in page
+    c.get(f"/l/confirm/{tokens[2]}")  # third confirms after spots are gone: waitlist, not pilot
+    f = c.get(f"/experiments/{exp_id}/funnel", headers=h).json()
+    assert f["signups"] == 3 and f["pilots"] == 2
+    pilot_mails = [m for m in mailer.sent if m[1] == "Du bist Pilotkunde"]
+    assert len(pilot_mails) == 2 and "keine automatische Abbuchung" in pilot_mails[0][2]

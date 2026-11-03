@@ -22,7 +22,7 @@ existing_solutions (list of {name, price}), competition_gap 0..1, ai_automatable
 reach 0..1 (can we reach these people cheaply via a findable community, keyword niche or partners?),
 reach_channels (list), timing 0..1 (is this newly possible because of a law, model or platform change? explain in timing_note),
 timing_note, hooks (exactly 5 short hook texts that describe the concept honestly as a coming product, no fake numbers or testimonials),
-landing_copy {headline, subline, bullets}, risks (list), kill_criteria (string).
+landing_copy {headline, subline, bullets}, pilot_offer {you_get (a No-Brainer for the first pilot customers, e.g. months free without payment data, concrete result they get), we_ask (small commitment in return: feedback calls, permission for an anonymised case study), risk_reversal (why saying yes costs nothing)}, risks (list), kill_criteria (string).
 Be sceptical: if there is no clear buyer who already spends money, say so in risks and score low."""
 
 

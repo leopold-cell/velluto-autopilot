@@ -6,7 +6,7 @@ from urllib.parse import parse_qs
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 
 from .config import Settings
@@ -60,7 +60,9 @@ def build_router(cfg: Settings, factory, mailer: Mailer | None = None, http_clie
             msg = {"ok": "Fast geschafft: bitte bestätige deine E-Mail-Adresse über den Link, den wir dir geschickt haben.",
                    "bad": "Bitte gib eine gültige E-Mail-Adresse an.", "paid": "Danke! Deine Reservierung ist eingegangen."}.get(
                 request.query_params.get("m", ""), "")
-            return render_landing(lp, variant, cfg, message=msg)
+            taken = s.scalar(select(func.count()).select_from(WaitlistEntry).where(
+                WaitlistEntry.experiment_id == lp.experiment_id, WaitlistEntry.confirmed.is_(True), WaitlistEntry.unsubscribed.is_(False))) or 0
+            return render_landing(lp, variant, cfg, message=msg, spots_taken=taken)
 
     @r.post("/l/{slug}/join")
     async def join(slug: str, request: Request):
@@ -95,7 +97,20 @@ def build_router(cfg: Settings, factory, mailer: Mailer | None = None, http_clie
                 raise HTTPException(404)
             if not e.confirmed:
                 e.confirmed, e.confirmed_at = True, utcnow()
+                lp = s.scalar(select(Landing).where(Landing.experiment_id == e.experiment_id))
+                taken = s.scalar(select(func.count()).select_from(WaitlistEntry).where(
+                    WaitlistEntry.experiment_id == e.experiment_id, WaitlistEntry.pilot.is_(True))) or 0
+                if lp and lp.pilot_spots > taken:
+                    e.pilot = True
                 s.commit()
+                if e.pilot and lp:
+                    from .landing import pilot_terms
+                    get, ask = pilot_terms(lp, next(iter(lp.variants.values())))
+                    mail.send(e.email, "Du bist Pilotkunde",
+                              f"Willkommen im Pilotprogramm: {get}.\nWir bitten dich um: {ask}.\n"
+                              f"Wir melden uns persönlich zum Start. Es gibt keine automatische Abbuchung; "
+                              f"danach {lp.pilot_discount_pct} % Gründerrabatt für 12 Monate, wenn du bleiben willst.\n"
+                              f"Abmelden: {cfg.public_base_url}/l/unsubscribe/{e.token}\n\n{cfg.legal_company}")
             return "<!doctype html><meta charset=utf-8><p style='font-family:system-ui;max-width:560px;margin:40px auto'>Danke, du bist auf der Warteliste.</p>"
 
     @r.get("/l/unsubscribe/{token}", response_class=HTMLResponse)

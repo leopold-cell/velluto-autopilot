@@ -105,6 +105,9 @@ class Landing(Base):
     preorder_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     deposit_eur: Mapped[float] = mapped_column(Float, default=0.0)
     price_eur: Mapped[float] = mapped_column(Float, default=0.0)
+    pilot_spots: Mapped[int] = mapped_column(Integer, default=0)
+    pilot_months: Mapped[int] = mapped_column(Integer, default=3)
+    pilot_discount_pct: Mapped[int] = mapped_column(Integer, default=30)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
 
@@ -130,6 +133,7 @@ class WaitlistEntry(Base):
     token: Mapped[str] = mapped_column(String(64), unique=True)
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
     unsubscribed: Mapped[bool] = mapped_column(Boolean, default=False)
+    pilot: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 

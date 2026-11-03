@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     stripe_secret_key: str = ""
     stripe_webhook_secret: str = ""
 
+    # No-Brainer pilot offer (fixed roadmap step for every idea)
+    pilot_spots: int = 10
+    pilot_months: int = 3
+    pilot_discount_pct: int = 30        # founding price after the pilot, locked for 12 months
+
     # experiment defaults
     explore_days: int = 7
     default_test_days: int = 14
