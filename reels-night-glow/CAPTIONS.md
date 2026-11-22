@@ -69,3 +69,26 @@ Caption:
 Hinweise:
 - Alle Szenen sind KI-generiert (Higgsfield). Auf Instagram und TikTok das Label „KI-generiert“ bzw. „AI-generated content“ setzen.
 - Die Ringe sind so dargestellt, wie das Produkt beim Fahren wirkt: eine Lampe pro Rad, im Stand nur das Lämpchen, beim Fahren der volle Ring.
+
+---
+
+## Reel 6 – Christmas Gift POV (Nachbau des viralen Formats)
+Dateien: `reel6_xmas_gift_en.mp4` (englisch) und `reel6_xmas_gift_de.mp4` (deutsch)
+
+Ablauf (15 s): POV hinter einem Freund in der Dämmerung mit Hook-Text → harter Schnitt in die Nacht, die Räder leuchten als Lichtring (Weihnachtsmarkt) → Pink von der Seite → drehende blaue Felge → Geschenkbox unterm Baum („1 light per wheel 🎁“) → Endcard „Comment “GLOW” ✨“.
+
+**Sound:** Beim Original-Reel in Instagram auf den Audio-Namen tippen → „Audio verwenden“. Den harten Schnitt (Sekunde 3,4) auf den Beat-Drop legen.
+
+**Caption EN:**
+> The perfect Christmas gift for cyclists doesn’t exiii… 🤫🎄
+> Comment “GLOW” and we’ll send you the link ✨
+>
+> #cycling #christmasgifts #giftsforcyclists #bikelife #nightride #glow #bicycle #velluto
+
+**Caption DE:**
+> Das perfekte Weihnachtsgeschenk für Radfahrer gibt’s nii… 🤫🎄
+> Kommentiere „GLOW“ und wir schicken dir den Link ✨
+>
+> #weihnachtsgeschenk #geschenkidee #radfahren #fahrrad #bikelife #nightride #velluto
+
+**Wichtig für „Comment GLOW“:** Damit das funktioniert, braucht ihr eine Auto-DM (z. B. ManyChat oder die Instagram-eigene Funktion „Automatische Antworten“), die bei „GLOW“ den Produktlink schickt. Sonst „Link in Bio“ verwenden.
