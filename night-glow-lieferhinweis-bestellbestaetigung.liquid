@@ -1,0 +1,26 @@
+{%- comment -%}
+  Velluto Night Glow – Lieferhinweis für die Bestellbestätigung
+  Einfügen in: Shopify Admin → Einstellungen → Benachrichtigungen → Kundenbenachrichtigungen
+  → „Bestellbestätigung“ → Code bearbeiten.
+  Position: direkt unter der Begrüßung (vor der Bestellübersicht).
+  Der Block erscheint NUR, wenn ein Night-Glow-Artikel in der Bestellung ist.
+{%- endcomment -%}
+{%- assign ng_in_order = false -%}
+{%- for line in line_items -%}
+  {%- if line.sku contains 'NG-' or line.title contains 'Night Glow' -%}
+    {%- assign ng_in_order = true -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if ng_in_order -%}
+<table class="row" style="width:100%;margin:16px 0;">
+  <tr>
+    <td style="background:#fff4f4;border:1px solid #f01818;border-radius:8px;padding:16px;font-size:15px;line-height:1.5;color:#1e1e1e;">
+      <p style="margin:0 0 8px;"><strong>Hinweis zur Lieferzeit Ihrer Night Glow LED-Ventilkappen</strong></p>
+      <p style="margin:0 0 8px;">Aufgrund des hohen Bestellaufkommens verzögert sich die Lieferung leider. Wir können Ihre Bestellung voraussichtlich erst in ca. 2 Wochen versenden.</p>
+      <p style="margin:0 0 8px;">Wenn Ihnen das zu lange dauert, schreiben Sie uns einfach eine E-Mail an <a href="mailto:info@velluto-shop.com">info@velluto-shop.com</a> – wir stornieren Ihre Bestellung dann selbstverständlich kostenlos.</p>
+      <p style="margin:0;">Wir entschuldigen uns für die Unannehmlichkeiten.</p>
+      <p style="margin:12px 0 0;font-size:13px;color:#5b5656;">Due to high demand, your Night Glow order will ship in approx. 2 weeks. If that is too long for you, just email info@velluto-shop.com and we will cancel your order free of charge. We apologise for the inconvenience.</p>
+    </td>
+  </tr>
+</table>
+{%- endif -%}
