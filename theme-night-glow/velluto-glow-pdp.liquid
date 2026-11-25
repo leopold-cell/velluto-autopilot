@@ -109,6 +109,9 @@
         <product-form>
         {%- form 'product', product, id: 'ng-form' -%}
           <input type="hidden" name="id" id="ng-vid" value="{{ first_v.id }}">
+          {%- assign ng_prop = section.settings.pairs_prop | default: 'Pair colours' -%}
+          <input type="hidden" id="ng-prop" name="properties[{{ ng_prop | escape }}]" value="" disabled>
+          <input type="hidden" id="ng-prop-codes" name="properties[_pair_codes]" value="" disabled>
           <div class="ng-tiers" id="ng-tiers">
             {%- for block in section.blocks -%}
               {%- if block.type == 'tier' -%}
@@ -134,11 +137,15 @@
                     </div>
                     <div class="ng-colors">
                       {%- if block.settings.thumb != blank -%}<img class="ng-cthumb" src="{{ block.settings.thumb | file_url }}&width=120" alt="" width="34" height="34" loading="lazy">{%- endif -%}
+                      {%- if n > nmin -%}
+                      <div class="ng-pairs" data-pairs="{{ n | divided_by: 2 }}"></div>
+                      {%- else -%}
                       <span class="ng-x" aria-hidden="true">1x</span>
                       <span class="ng-cname" data-cname></span>
                       <select class="ng-select" aria-label="{{ section.settings.color_label }}">
                         {%- for cv in color_values -%}{%- assign ci = forloop.index0 -%}{%- assign has = false -%}{%- for v in product.variants -%}{%- assign skp = v.sku | split: '-' -%}{%- assign vn = skp[1] | plus: 0 -%}{%- if vn == 0 -%}{%- assign vn = v.option1 | slice: 0 | plus: 0 -%}{%- endif -%}{%- if vn == n and v.option2 == cv -%}{%- assign has = true -%}{%- endif -%}{%- endfor -%}{%- if has -%}<option value="{{ ci }}">{{ cv }}</option>{%- endif -%}{%- endfor -%}
                       </select>
+                      {%- endif -%}
                     </div>
                   </label>
                 {%- endif -%}
@@ -310,10 +317,10 @@
   </div>
 
   <script type="application/json" id="ng-variants">
-  [{%- for v in product.variants -%}{%- assign skp = v.sku | split: '-' -%}{%- assign vn = skp[1] | plus: 0 -%}{%- if vn == 0 -%}{%- assign vn = v.option1 | slice: 0 | plus: 0 -%}{%- endif -%}{%- assign ci = 0 -%}{%- for cv in color_values -%}{%- if cv == v.option2 -%}{%- assign ci = forloop.index0 -%}{%- endif -%}{%- endfor -%}{%- assign vfull = pmin | times: vn | divided_by: nmin -%}{"id":{{ v.id }},"size":{{ vn }},"color":{{ ci }},"price":{{ v.price }},"priceFmt":{{ v.price | money | json }},"fullFmt":{{ vfull | money | json }},"pct":{{ vfull | minus: v.price | times: 100.0 | divided_by: vfull | round }},"available":{{ v.available | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+  [{%- for v in product.variants -%}{%- assign skp = v.sku | split: '-' -%}{%- assign vn = skp[1] | plus: 0 -%}{%- if vn == 0 -%}{%- assign vn = v.option1 | slice: 0 | plus: 0 -%}{%- endif -%}{%- assign ci = 0 -%}{%- for cv in color_values -%}{%- if cv == v.option2 -%}{%- assign ci = forloop.index0 -%}{%- endif -%}{%- endfor -%}{%- assign vfull = pmin | times: vn | divided_by: nmin -%}{"id":{{ v.id }},"code":{{ skp[2] | default: '' | json }},"size":{{ vn }},"color":{{ ci }},"price":{{ v.price }},"priceFmt":{{ v.price | money | json }},"fullFmt":{{ vfull | money | json }},"pct":{{ vfull | minus: v.price | times: 100.0 | divided_by: vfull | round }},"available":{{ v.available | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
   </script>
   <script type="application/json" id="ng-colornames">{{ color_values | json }}</script>
-  <script type="application/json" id="ng-i18n">{ "save": {{ section.settings.save_label | json }}, "soldout": {{ section.settings.soldout | json }}, "cta": {{ section.settings.cta | json }} }</script>
+  <script type="application/json" id="ng-i18n">{ "save": {{ section.settings.save_label | json }}, "soldout": {{ section.settings.soldout | json }}, "cta": {{ section.settings.cta | json }}, "pair": {{ section.settings.pair_label | default: 'Pair' | json }} }</script>
 </div>
 
 <script src="{{ 'velluto-glow-pdp.js' | asset_url }}" defer></script>
@@ -325,6 +332,8 @@
   "settings": [
     { "type": "text", "id": "save_label", "label": "Save label", "default": "Save" },
     { "type": "text", "id": "color_label", "label": "Colour label", "default": "Colour" },
+    { "type": "text", "id": "pair_label", "label": "Pair label (4/8-pack colour choice)", "default": "Pair" },
+    { "type": "text", "id": "pairs_prop", "label": "Order note label for pair colours", "default": "Pair colours" },
     { "type": "text", "id": "cta", "label": "Button label", "default": "Add to Cart" },
     { "type": "text", "id": "soldout", "label": "Sold out label", "default": "Sold out" },
     { "type": "text", "id": "fine_print", "label": "Fine print" },
