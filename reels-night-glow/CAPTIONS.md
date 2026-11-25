@@ -117,3 +117,18 @@ Ablauf: Box mit roter Schleife vor dem Weihnachtsbaum („Geschenk für Radfahre
 > #giftideas #christmasgifts #giftsforcyclists #unboxing #cycling #bikelife #bicycle #velluto
 
 Hinweis: KI-generierte Szenen – Label „KI-generiert / AI-generated“ setzen.
+
+## Reel 8 – POV: Christmas (Variante von Reel 7)
+Dateien: `reel8_pov_christmas_en.mp4` / `reel8_pov_christmas_de.mp4` – gleicher Schnitt wie Reel 7, Hook „POV: this is what you got for Christmas 😍“ / „POV: Das hast du zu Weihnachten bekommen 😍“.
+
+**Caption EN:**
+> POV: this is what you got for Christmas 😍🎁
+> Night Glow turns every wheel into a ring of light ✨ Pair from €14.99 · Link in bio
+>
+> #pov #christmasgift #giftsforcyclists #unboxing #cycling #bikelife #velluto
+
+**Caption DE:**
+> POV: Das hast du zu Weihnachten bekommen 😍🎁
+> Night Glow macht jedes Rad zum Lichtring ✨ Paar ab 14,99 € · Link in Bio
+>
+> #pov #weihnachtsgeschenk #geschenkidee #unboxing #radfahren #bikelife #velluto
