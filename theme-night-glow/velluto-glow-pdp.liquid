@@ -1,0 +1,398 @@
+{%- liquid
+  assign first_v = product.selected_or_first_available_variant
+  assign nmin = 999
+  assign pmin = 0
+  for v in product.variants
+    assign skp = v.sku | split: '-'
+    assign n = skp[1] | plus: 0
+    if n == 0
+      assign n = v.option1 | slice: 0 | plus: 0
+    endif
+    if n > 0 and n < nmin
+      assign nmin = n
+      assign pmin = v.price
+    endif
+  endfor
+  assign color_values = product.options_with_values[1].values
+  assign vid_count = 0
+  for m in product.media
+    if m.media_type == 'video'
+      assign vid_count = vid_count | plus: 1
+    endif
+  endfor
+  assign faq_count = 0
+  for block in section.blocks
+    if block.type == 'faq'
+      assign faq_count = faq_count | plus: 1
+    endif
+  endfor
+  assign faq_half = faq_count | plus: 1 | divided_by: 2
+  comment
+    Bilder mit deutschem Text: auf /de das Original, in allen anderen Sprachen die englische Version aus Shopify Files.
+    Format je Eintrag: m<Media-ID>=<Dateiname in Shopify Files>
+  endcomment
+  assign ng_en_map = ''
+  if request.locale.iso_code != 'de'
+    assign ng_en_map = 'm61240193515861=velluto-night-glow-pack-en.png|m61240193581397=velluto-night-glow-info-en.png|m61240637292885=velluto-night-glow-steps-en.png' | split: '|'
+  endif
+-%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet">
+{{ 'velluto-glow-pdp.css' | asset_url | stylesheet_tag }}
+
+<div class="ng" id="ng-root" data-section="{{ section.id }}">
+  <div class="ng-wrap">
+    <div class="ng-buy" id="ng-buy">
+      <div class="ng-gal">
+        <div class="ng-thumbs" role="tablist">
+          {%- for media in product.media -%}
+            {%- liquid
+              assign ng_key = 'm' | append: media.id | append: '='
+              assign ng_en = ''
+              for e in ng_en_map
+                if e contains ng_key
+                  assign ng_en = e | remove_first: ng_key | file_url
+                endif
+              endfor
+            -%}
+            <button type="button" class="ng-thumb{% if media.media_type == 'video' %} v{% endif %}" data-i="{{ forloop.index0 }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="{{ media.alt | escape }}">
+              {%- if ng_en != blank -%}<img src="{{ ng_en }}&width=160" alt="" width="56" height="56" loading="lazy">{%- else -%}<img src="{{ media.preview_image | image_url: width: 160 }}" alt="" width="56" height="56" loading="lazy">{%- endif -%}
+            </button>
+          {%- endfor -%}
+        </div>
+        <div class="ng-mainwrap">
+          <div class="ng-track" id="ng-track">
+            {%- for media in product.media -%}
+              <div class="ng-slide">
+                {%- liquid
+                  assign ng_key = 'm' | append: media.id | append: '='
+                  assign ng_en = ''
+                  for e in ng_en_map
+                    if e contains ng_key
+                      assign ng_en = e | remove_first: ng_key | file_url
+                    endif
+                  endfor
+                -%}
+                {%- if media.media_type == 'video' -%}
+                  {%- assign src = media.sources | where: 'format', 'mp4' | where: 'height', 720 | first -%}
+                  {%- unless src -%}{%- assign src = media.sources | where: 'format', 'mp4' | last -%}{%- endunless -%}
+                  <video muted loop playsinline {% if forloop.first %}autoplay preload="auto"{% else %}preload="none"{% endif %} poster="{{ media.preview_image | image_url: width: 900 }}" aria-label="{{ media.alt | escape }}"><source src="{{ src.url }}" type="video/mp4"></video>
+                  <button type="button" class="ng-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
+                {%- else -%}
+                  {%- if ng_en != blank -%}
+                  <img src="{{ ng_en }}&width=1100" srcset="{{ ng_en }}&width=600 600w, {{ ng_en }}&width=896 896w" sizes="(max-width:1000px) 100vw, 520px" alt="{{ media.alt | escape }}" {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+                  {%- else -%}
+                  <img src="{{ media.preview_image | image_url: width: 1100 }}" srcset="{{ media.preview_image | image_url: width: 600 }} 600w, {{ media.preview_image | image_url: width: 900 }} 900w, {{ media.preview_image | image_url: width: 1400 }} 1400w" sizes="(max-width:1000px) 100vw, 520px" alt="{{ media.alt | escape }}" {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+          <button type="button" class="ng-arrow prev" id="ng-prev" aria-label="Previous">&#8249;</button>
+          <button type="button" class="ng-arrow next" id="ng-next" aria-label="Next">&#8250;</button>
+          <div class="ng-count" id="ng-count">1 / {{ product.media.size }}</div>
+        </div>
+      </div>
+
+      <div class="ng-info">
+        <h1 class="ng-title">{{ product.title }}</h1>
+        <div class="ng-priceline">
+          <span class="ng-price" id="ng-price">{{ first_v.price | money }}</span>
+          <span class="ng-strike" id="ng-strike" hidden></span>
+          <span class="ng-savepill" id="ng-savepill" hidden></span>
+        </div>
+        <div class="ng-pills">
+          {%- for block in section.blocks -%}{%- if block.type == 'bullet' -%}<span class="ng-pill" {{ block.shopify_attributes }}><span aria-hidden="true">{{ block.settings.emoji }}</span>{{ block.settings.text }}</span>{%- endif -%}{%- endfor -%}
+        </div>
+
+        <product-form>
+        {%- form 'product', product, id: 'ng-form' -%}
+          <input type="hidden" name="id" id="ng-vid" value="{{ first_v.id }}">
+          <div class="ng-tiers" id="ng-tiers">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'tier' -%}
+                {%- assign n = block.settings.size | plus: 0 -%}
+                {%- assign tv = nil -%}
+                {%- for v in product.variants -%}
+                  {%- assign skp = v.sku | split: '-' -%}{%- assign vn = skp[1] | plus: 0 -%}{%- if vn == 0 -%}{%- assign vn = v.option1 | slice: 0 | plus: 0 -%}{%- endif -%}
+                  {%- if vn == n and tv == nil -%}{%- assign tv = v -%}{%- endif -%}
+                {%- endfor -%}
+                {%- if tv -%}
+                  {%- assign full = pmin | times: n | divided_by: nmin -%}
+                  {%- assign save = full | minus: tv.price -%}
+                  <label class="ng-tier" data-size="{{ n }}" data-active="false" {{ block.shopify_attributes }}>
+                    {%- if block.settings.badge != blank -%}<span class="ng-badge{% if block.settings.badge_dark %} dark{% endif %}">{{ block.settings.badge }}</span>{%- endif -%}
+                    <input type="radio" name="ng-size" value="{{ n }}">
+                    <div class="ng-tier-top">
+                      <span class="ng-radio"></span>
+                      <span class="ng-tier-main">
+                        <span class="ng-tier-title">{{ block.settings.title }}{%- if n > nmin and save > 0 -%}<span class="ng-savetag">{{ section.settings.save_label }} {{ save | money }}</span>{%- endif -%}</span>
+                        <span class="ng-tier-sub">{{ block.settings.subtitle }}</span>
+                      </span>
+                      <span class="ng-tier-price"><b>{{ tv.price | money }}</b>{%- if n > nmin and save > 0 -%}<s>{{ full | money }}</s>{%- endif -%}</span>
+                    </div>
+                    <div class="ng-colors">
+                      {%- if block.settings.thumb != blank -%}<img class="ng-cthumb" src="{{ block.settings.thumb | file_url }}&width=120" alt="" width="34" height="34" loading="lazy">{%- endif -%}
+                      <span class="ng-x" aria-hidden="true">1x</span>
+                      <span class="ng-cname" data-cname></span>
+                      <select class="ng-select" aria-label="{{ section.settings.color_label }}">
+                        {%- for cv in color_values -%}{%- assign ci = forloop.index0 -%}{%- assign has = false -%}{%- for v in product.variants -%}{%- assign skp = v.sku | split: '-' -%}{%- assign vn = skp[1] | plus: 0 -%}{%- if vn == 0 -%}{%- assign vn = v.option1 | slice: 0 | plus: 0 -%}{%- endif -%}{%- if vn == n and v.option2 == cv -%}{%- assign has = true -%}{%- endif -%}{%- endfor -%}{%- if has -%}<option value="{{ ci }}">{{ cv }}</option>{%- endif -%}{%- endfor -%}
+                      </select>
+                    </div>
+                  </label>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          <button type="submit" class="ng-atc" id="ng-atc" name="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a1.6 1.6 0 0 0 1.6 1.2h8.2a1.6 1.6 0 0 0 1.6-1.2L21 7H6"/></svg><span id="ng-atc-t">{{ section.settings.cta }}</span></button>
+        {%- endform -%}
+        </product-form>
+
+        <div class="ng-trust">
+          {%- assign tn = 0 -%}
+          {%- for block in section.blocks -%}{%- if block.type == 'trust' -%}{%- if tn > 0 -%}<i aria-hidden="true">|</i>{%- endif -%}{%- assign tn = tn | plus: 1 -%}<span {{ block.shopify_attributes }}>{{ block.settings.text }}</span>{%- endif -%}{%- endfor -%}
+        </div>
+        <div class="ng-pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag: class: 'ng-payicon' }}{%- endfor -%}</div>
+
+        <div class="ng-acc">
+          {%- for block in section.blocks -%}{%- if block.type == 'info' -%}
+            <details {{ block.shopify_attributes }}><summary>{{ block.settings.title }}</summary><div class="b">{{ block.settings.text }}</div></details>
+          {%- endif -%}{%- endfor -%}
+        </div>
+        {%- if section.settings.fine_print != blank -%}<p class="ng-fine">{{ section.settings.fine_print }}</p>{%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- assign has_m = false -%}
+  {%- for block in section.blocks -%}{%- if block.type == 'marquee' -%}{%- assign has_m = true -%}{%- endif -%}{%- endfor -%}
+  {%- if has_m -%}
+  <div class="ng-marq" aria-hidden="true"><div>
+    {%- for r in (1..6) -%}{%- for block in section.blocks -%}{%- if block.type == 'marquee' -%}<span>{{ block.settings.text }}</span>{%- endif -%}{%- endfor -%}{%- endfor -%}
+  </div></div>
+  {%- endif -%}
+
+  <section class="ng-sec"><div class="ng-wrap"><div class="ng-bens">
+    {%- for block in section.blocks -%}{%- if block.type == 'benefit' -%}
+      <div class="ng-ben" {{ block.shopify_attributes }}>
+        <div class="ng-ben-img"><img src="{{ block.settings.image | file_url }}&width=900" srcset="{{ block.settings.image | file_url }}&width=600 600w, {{ block.settings.image | file_url }}&width=900 900w" sizes="(max-width: 749px) 100vw, 50vw" alt="{{ block.settings.alt | escape }}" loading="lazy" decoding="async" width="900" height="900"></div>
+        <div class="ng-ben-txt">
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+          <ul>
+            {%- if block.settings.b1 != blank -%}<li>{{ block.settings.b1 }}</li>{%- endif -%}
+            {%- if block.settings.b2 != blank -%}<li>{{ block.settings.b2 }}</li>{%- endif -%}
+            {%- if block.settings.b3 != blank -%}<li>{{ block.settings.b3 }}</li>{%- endif -%}
+          </ul>
+        </div>
+      </div>
+    {%- endif -%}{%- endfor -%}
+  </div></div></section>
+
+  <section class="ng-sec" style="padding-top:0"><div class="ng-wrap">
+    <h2 class="ng-h2">{{ section.settings.features_heading }} <em>{{ section.settings.features_accent }}</em></h2>
+    <div class="ng-feat">
+      {%- for block in section.blocks -%}{%- if block.type == 'feature' -%}
+        <div class="ng-fc" {{ block.shopify_attributes }}>
+          <div class="ng-ico" aria-hidden="true">
+            {%- case block.settings.icon -%}
+              {%- when 'shield' -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 8.3-7 9.5-4.1-1.2-7-5.1-7-9.5V6z"/><path d="M9.2 12.2l2 2 3.8-4"/></svg>
+              {%- when 'check' -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.7 2.7L16 9.6"/></svg>
+              {%- when 'refresh' -%}<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/></svg>
+              {%- when 'eye' -%}<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg>
+              {%- else -%}<svg viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+            {%- endcase -%}
+          </div>
+          <h3>{{ block.settings.title }}</h3><p>{{ block.settings.text }}</p>
+        </div>
+      {%- endif -%}{%- endfor -%}
+    </div>
+  </div></section>
+
+  {%- if vid_count > 0 -%}
+  <section class="ng-sec" style="padding-top:0"><div class="ng-wrap">
+    <h2 class="ng-h2">{{ section.settings.video_heading }} <em>{{ section.settings.video_accent }}</em></h2>
+    <div class="ng-vids">
+      {%- for media in product.media -%}{%- if media.media_type == 'video' -%}
+        {%- assign vsrc = media.sources | where: 'format', 'mp4' | where: 'height', 480 | first -%}
+        {%- unless vsrc -%}{%- assign vsrc = media.sources | where: 'format', 'mp4' | last -%}{%- endunless -%}
+        <div class="ng-vid"><video muted loop playsinline preload="none" poster="{{ media.preview_image | image_url: width: 600 }}" aria-label="{{ media.alt | escape }}"><source src="{{ vsrc.url }}" type="video/mp4"></video><button type="button" class="ng-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button></div>
+      {%- endif -%}{%- endfor -%}
+    </div>
+  </div></section>
+  {%- endif -%}
+
+  <section class="ng-sec" style="padding-top:0"><div class="ng-wrap"><div class="ng-cmp">
+    <div><h2 class="ng-h2">{{ section.settings.compare_heading }} <em>{{ section.settings.compare_accent }}</em></h2><p class="ng-sub">{{ section.settings.compare_sub }}</p></div>
+    <table class="ng-tbl">
+      <thead><tr><th></th><th class="us">{{ section.settings.col_us }}<small>{{ section.settings.col_us_sub }}</small></th><th>{{ section.settings.col_reflector }}<small>{{ section.settings.col_reflector_sub }}</small></th></tr></thead>
+      <tbody>
+        {%- for block in section.blocks -%}{%- if block.type == 'compare' -%}
+          <tr {{ block.shopify_attributes }}>
+            <td><span class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.7 2.7L16 9.6"/></svg>{{ block.settings.label }}</span></td>
+            <td class="us">{% if block.settings.us %}<span class="ng-y"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>{% else %}<span class="ng-n"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span>{% endif %}</td>
+            <td>{% if block.settings.reflector %}<span class="ng-y"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>{% else %}<span class="ng-n"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span>{% endif %}</td>
+          </tr>
+        {%- endif -%}{%- endfor -%}
+      </tbody>
+    </table>
+  </div></div></section>
+
+  <section class="ng-sec ng-stepsec"><div class="ng-wrap">
+    <h2 class="ng-h2">{{ section.settings.steps_heading }} <em>{{ section.settings.steps_accent }}</em></h2>
+    <p class="ng-sub">{{ section.settings.steps_sub }}</p>
+    <div class="ng-steps">
+      {%- assign sn = 0 -%}
+      {%- for block in section.blocks -%}{%- if block.type == 'step' -%}
+        {%- assign sn = sn | plus: 1 -%}
+        <div class="ng-step" {{ block.shopify_attributes }}><img src="{{ block.settings.image | file_url }}&width=800" alt="{{ block.settings.title | escape }}" loading="eager" decoding="async" fetchpriority="low" width="800" height="600"><div class="tx"><div class="hd"><span class="no">{{ sn }}</span><h3>{{ block.settings.title }}</h3></div><p>{{ block.settings.text }}</p></div></div>
+      {%- endif -%}{%- endfor -%}
+    </div>
+  </div></section>
+
+  <section class="ng-sec"><div class="ng-wrap">
+    <h2 class="ng-h2" style="font-size:clamp(30px,4vw,42px)">{{ section.settings.faq_heading }}</h2>
+    <div class="ng-faq">
+      <div class="ng-faqcol">
+        {%- assign fi = 0 -%}
+        {%- for block in section.blocks -%}{%- if block.type == 'faq' -%}{%- assign fi = fi | plus: 1 -%}{%- if fi <= faq_half -%}
+          <details {{ block.shopify_attributes }}><summary>{{ block.settings.question }}</summary><div class="a">{{ block.settings.answer }}</div></details>
+        {%- endif -%}{%- endif -%}{%- endfor -%}
+      </div>
+      <div class="ng-faqcol">
+        {%- assign fi = 0 -%}
+        {%- for block in section.blocks -%}{%- if block.type == 'faq' -%}{%- assign fi = fi | plus: 1 -%}{%- if fi > faq_half -%}
+          <details {{ block.shopify_attributes }}><summary>{{ block.settings.question }}</summary><div class="a">{{ block.settings.answer }}</div></details>
+        {%- endif -%}{%- endif -%}{%- endfor -%}
+      </div>
+    </div>
+  </div></section>
+
+  <div class="ng-garband"><div class="ng-gar">
+    <svg class="sh" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 1l10 4v8c0 6.2-4.2 11.4-10 13.4C6.2 24.4 2 19.2 2 13V5z"/></svg>
+    <h2><span>{{ section.settings.gar_heading }}</span> {{ section.settings.gar_accent }}</h2>
+    <p>{{ section.settings.gar_text }}</p>
+    <a class="ng-gcta" href="#ng-buy">{{ section.settings.gar_cta }}</a>
+    <ul>{%- for block in section.blocks -%}{%- if block.type == 'gar_point' -%}<li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>{%- endif -%}{%- endfor -%}</ul>
+  </div></div>
+
+  <section class="ng-sec"><div class="ng-wrap">
+    <div class="ng-why">
+      <h2>{{ section.settings.why_heading }}</h2>
+      {%- for block in section.blocks -%}{%- if block.type == 'why' -%}
+        <div {{ block.shopify_attributes }}><h3>{{ block.settings.title }}</h3><p>{{ block.settings.text }}</p></div>
+      {%- endif -%}{%- endfor -%}
+    </div>
+  </div></section>
+
+  <section class="ng-sec ng-news" style="padding-top:8px"><div class="ng-wrap">
+    <h2>{{ section.settings.news_heading }}</h2>
+    <p>{{ section.settings.news_sub }}</p>
+    {%- form 'customer', id: 'ng-news' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="ok">{{ section.settings.news_ok }}</p>
+      {%- else -%}
+        <div class="ng-nfield">
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input type="email" name="contact[email]" required autocomplete="email" placeholder="{{ section.settings.news_placeholder | escape }}" aria-label="{{ section.settings.news_placeholder | escape }}">
+          <button type="submit" aria-label="OK"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+  </div></section>
+
+  {%- if section.settings.disclaimer != blank -%}<p class="ng-disc">{{ section.settings.disclaimer }}</p>{%- endif -%}
+
+  <div class="ng-sticky" id="ng-sticky" data-show="false">
+    <div class="t"><b>{{ product.title }}</b><span id="ng-sticky-price">{{ first_v.price | money }}</span></div>
+    <button type="button" class="ng-atc" id="ng-sticky-btn">{{ section.settings.cta }}</button>
+  </div>
+
+  <script type="application/json" id="ng-variants">
+  [{%- for v in product.variants -%}{%- assign skp = v.sku | split: '-' -%}{%- assign vn = skp[1] | plus: 0 -%}{%- if vn == 0 -%}{%- assign vn = v.option1 | slice: 0 | plus: 0 -%}{%- endif -%}{%- assign ci = 0 -%}{%- for cv in color_values -%}{%- if cv == v.option2 -%}{%- assign ci = forloop.index0 -%}{%- endif -%}{%- endfor -%}{%- assign vfull = pmin | times: vn | divided_by: nmin -%}{"id":{{ v.id }},"size":{{ vn }},"color":{{ ci }},"price":{{ v.price }},"priceFmt":{{ v.price | money | json }},"fullFmt":{{ vfull | money | json }},"pct":{{ vfull | minus: v.price | times: 100.0 | divided_by: vfull | round }},"available":{{ v.available | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+  </script>
+  <script type="application/json" id="ng-colornames">{{ color_values | json }}</script>
+  <script type="application/json" id="ng-i18n">{ "save": {{ section.settings.save_label | json }}, "soldout": {{ section.settings.soldout | json }}, "cta": {{ section.settings.cta | json }} }</script>
+</div>
+
+<script src="{{ 'velluto-glow-pdp.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Night Glow PDP",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "save_label", "label": "Save label", "default": "Save" },
+    { "type": "text", "id": "color_label", "label": "Colour label", "default": "Colour" },
+    { "type": "text", "id": "cta", "label": "Button label", "default": "Add to Cart" },
+    { "type": "text", "id": "soldout", "label": "Sold out label", "default": "Sold out" },
+    { "type": "text", "id": "fine_print", "label": "Fine print" },
+    { "type": "text", "id": "features_heading", "label": "Features heading", "default": "Be seen from" },
+    { "type": "text", "id": "features_accent", "label": "Features heading (accent)", "default": "every side." },
+    { "type": "text", "id": "video_heading", "label": "Video heading", "default": "See it" },
+    { "type": "text", "id": "video_accent", "label": "Video heading (accent)", "default": "in action." },
+    { "type": "text", "id": "compare_heading", "label": "Compare heading", "default": "More than" },
+    { "type": "text", "id": "compare_accent", "label": "Compare heading (accent)", "default": "a reflector." },
+    { "type": "text", "id": "compare_sub", "label": "Compare subline" },
+    { "type": "text", "id": "col_us", "label": "Column 1", "default": "Night Glow" },
+    { "type": "text", "id": "col_us_sub", "label": "Column 1 subline", "default": "Glow wheel lights" },
+    { "type": "text", "id": "col_reflector", "label": "Column 2", "default": "Spoke reflectors" },
+    { "type": "text", "id": "col_reflector_sub", "label": "Column 2 subline", "default": "Regular" },
+    { "type": "text", "id": "steps_heading", "label": "Steps heading", "default": "Screw. Ride." },
+    { "type": "text", "id": "steps_accent", "label": "Steps heading (accent)", "default": "glow." },
+    { "type": "text", "id": "steps_sub", "label": "Steps subline" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ heading", "default": "Questions riders ask" },
+    { "type": "text", "id": "gar_heading", "label": "Guarantee heading (white)", "default": "14-Day" },
+    { "type": "text", "id": "gar_accent", "label": "Guarantee heading (dark)", "default": "Right of Withdrawal" },
+    { "type": "textarea", "id": "gar_text", "label": "Guarantee text" },
+    { "type": "text", "id": "gar_cta", "label": "Guarantee button", "default": "Get my Night Glow" },
+    { "type": "text", "id": "why_heading", "label": "Why heading", "default": "Why riders pick Velluto" },
+    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "Ride with us" },
+    { "type": "text", "id": "news_sub", "label": "Newsletter text" },
+    { "type": "text", "id": "news_placeholder", "label": "Newsletter placeholder", "default": "Enter your email address" },
+    { "type": "text", "id": "news_ok", "label": "Newsletter success", "default": "Thanks for signing up!" },
+    { "type": "textarea", "id": "disclaimer", "label": "Disclaimer" }
+  ],
+  "blocks": [
+    { "type": "bullet", "name": "Price pill", "settings": [ { "type": "text", "id": "emoji", "label": "Emoji" }, { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "tier", "name": "Pack tier", "settings": [
+      { "type": "select", "id": "size", "label": "Lights in pack", "default": "1", "options": [ { "value": "1", "label": "1" }, { "value": "2", "label": "2" }, { "value": "4", "label": "4" } ] },
+      { "type": "text", "id": "title", "label": "Title" },
+      { "type": "text", "id": "subtitle", "label": "Subtitle" },
+      { "type": "text", "id": "badge", "label": "Badge (marks the preselected pack when set)" },
+      { "type": "checkbox", "id": "badge_dark", "label": "Dark badge", "default": false },
+      { "type": "text", "id": "thumb", "label": "Thumbnail file name (Shopify Files)" }
+    ] },
+    { "type": "trust", "name": "Trust item", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "info", "name": "Info accordion", "settings": [ { "type": "text", "id": "title", "label": "Title" }, { "type": "textarea", "id": "text", "label": "Text" } ] },
+    { "type": "marquee", "name": "Marquee item", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "benefit", "name": "Benefit block", "settings": [
+      { "type": "text", "id": "image", "label": "Image file name (Shopify Files)" },
+      { "type": "text", "id": "alt", "label": "Image alt text" },
+      { "type": "text", "id": "title", "label": "Title" },
+      { "type": "textarea", "id": "text", "label": "Text" },
+      { "type": "text", "id": "b1", "label": "Check 1" },
+      { "type": "text", "id": "b2", "label": "Check 2" },
+      { "type": "text", "id": "b3", "label": "Check 3" }
+    ] },
+    { "type": "feature", "name": "Feature", "settings": [
+      { "type": "select", "id": "icon", "label": "Icon", "default": "bolt", "options": [ { "value": "bolt", "label": "Bolt" }, { "value": "check", "label": "Check" }, { "value": "shield", "label": "Shield" }, { "value": "refresh", "label": "Refresh" }, { "value": "eye", "label": "Eye" } ] },
+      { "type": "text", "id": "title", "label": "Title" }, { "type": "textarea", "id": "text", "label": "Text" }
+    ] },
+    { "type": "compare", "name": "Compare row", "settings": [
+      { "type": "text", "id": "label", "label": "Label" },
+      { "type": "checkbox", "id": "us", "label": "Night Glow", "default": true },
+      { "type": "checkbox", "id": "reflector", "label": "Spoke reflectors", "default": false }
+    ] },
+    { "type": "step", "name": "Step", "settings": [
+      { "type": "text", "id": "image", "label": "Image file name (Shopify Files)" },
+      { "type": "text", "id": "title", "label": "Title" }, { "type": "textarea", "id": "text", "label": "Text" }
+    ] },
+    { "type": "faq", "name": "FAQ", "settings": [ { "type": "text", "id": "question", "label": "Question" }, { "type": "textarea", "id": "answer", "label": "Answer" } ] },
+    { "type": "gar_point", "name": "Guarantee point", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "why", "name": "Why card", "settings": [ { "type": "text", "id": "title", "label": "Title" }, { "type": "textarea", "id": "text", "label": "Text" } ] }
+  ],
+  "presets": [ { "name": "Night Glow PDP" } ]
+}
+{% endschema %}
