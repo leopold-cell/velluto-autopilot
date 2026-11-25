@@ -1,0 +1,65 @@
+{%- comment -%}
+  PDP-Audit (28.09.2026), Maßnahme 7: Social-Proof-Leiste unter dem Menü, 5 runde Icons mit Wert + Label.
+  Zahlen: "700+ zufriedene Kunden" (Stand Okt 2026, von Leo bestaetigt), "95% Weiterempfehlung"
+  (Wert aus dem Audit; Datenquelle noch nachtragen, siehe Audit-Hinweis "Zahlen belegen").
+  Texte: Theme-Locale-Keys velluto.trust_bar.* (en.default.json), Uebersetzungen ueber die Shopify Translations API / Translate & Adapt.
+  Abstand nach unten: auf Produktseiten extra Luft zum Produkttitel (Klasse vtb--pdp).
+  Nov 2026: Auf der Night-Glow-Produktseite (Template product.night-glow) ausgeblendet –
+  "30 Tage Testphase" und "UV400" gelten fuer die Brillen, nicht fuer Night Glow (14 Tage Widerruf).
+{%- endcomment -%}
+{%- unless template.suffix == 'night-glow' -%}
+{%- liquid
+  assign pdp_class = ''
+  if template.name == 'product'
+    assign pdp_class = ' vtb--pdp'
+  endif
+-%}
+{%- style -%}
+  .vtb{ background:#fff; border-bottom:1px solid #ececec; }
+  .vtb--pdp{ margin-bottom:2.25rem; }
+  .vtb-in{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.5rem; max-width:52rem; margin:0 auto; padding:1.1rem 1rem 1.1rem; }
+  .vtb-i{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:.5rem; }
+  .vtb-c{ width:2.9rem; height:2.9rem; border-radius:50%; background:#111; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .vtb-c svg{ width:1.2rem; height:1.2rem; stroke:#fff; stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .vtb-v{ display:block; font-size:.82rem; font-weight:700; color:#111; letter-spacing:.01em; line-height:1.1; }
+  .vtb-l{ display:block; margin-top:.15rem; font-size:.66rem; color:#6b6b6b; line-height:1.2; letter-spacing:.02em; }
+  @media(max-width:749px){
+    .vtb--pdp{ margin-bottom:1.5rem; }
+    .vtb-in{ display:flex; justify-content:flex-start; gap:1.1rem; overflow-x:auto; scrollbar-width:none; padding:.9rem 1rem; }
+    .vtb-in::-webkit-scrollbar{ display:none; }
+    .vtb-i{ flex:0 0 5.2rem; }
+    .vtb-c{ width:2.6rem; height:2.6rem; }
+  }
+{%- endstyle -%}
+<div class="vtb{{ pdp_class }}">
+  <div class="vtb-in">
+    <div class="vtb-i">
+      <span class="vtb-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg></span>
+      <span><span class="vtb-v">{{ 'velluto.trust_bar.sold_value' | t }}</span><span class="vtb-l">{{ 'velluto.trust_bar.sold_label' | t }}</span></span>
+    </div>
+    <div class="vtb-i">
+      <span class="vtb-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span>
+      <span><span class="vtb-v">{{ 'velluto.trust_bar.recommend_value' | t }}</span><span class="vtb-l">{{ 'velluto.trust_bar.recommend_label' | t }}</span></span>
+    </div>
+    <div class="vtb-i">
+      <span class="vtb-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg></span>
+      <span><span class="vtb-v">{{ 'velluto.trust_bar.trial_value' | t }}</span><span class="vtb-l">{{ 'velluto.trust_bar.trial_label' | t }}</span></span>
+    </div>
+    <div class="vtb-i">
+      <span class="vtb-c"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span>
+      <span><span class="vtb-v">{{ 'velluto.trust_bar.uv_value' | t }}</span><span class="vtb-l">{{ 'velluto.trust_bar.uv_label' | t }}</span></span>
+    </div>
+    <div class="vtb-i">
+      <span class="vtb-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg></span>
+      <span><span class="vtb-v">{{ 'velluto.trust_bar.origin_value' | t }}</span><span class="vtb-l">{{ 'velluto.trust_bar.origin_label' | t }}</span></span>
+    </div>
+  </div>
+</div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Velluto Trust Bar",
+  "settings": []
+}
+{% endschema %}
