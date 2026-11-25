@@ -92,3 +92,28 @@ Ablauf (15 s): POV hinter einem Freund in der Dämmerung mit Hook-Text → harte
 > #weihnachtsgeschenk #geschenkidee #radfahren #fahrrad #bikelife #nightride #velluto
 
 **Wichtig für „Comment GLOW“:** Damit das funktioniert, braucht ihr eine Auto-DM (z. B. ManyChat oder die Instagram-eigene Funktion „Automatische Antworten“), die bei „GLOW“ den Produktlink schickt. Sonst „Link in Bio“ verwenden.
+
+---
+
+## Reel 7 – Unboxing mit Geschenk-Twist
+Dateien: `reel7_unboxing_geschenk_de.mp4` und `reel7_unboxing_geschenk_en.mp4` (17 s)
+
+Ablauf: Box mit roter Schleife vor dem Weihnachtsbaum („Geschenk für Radfahrer, die schon alles haben? 🎁“) → Schleife auf → Deckel hoch, 4 Lampen leuchten („Das hier ✨“) → pinke Lampe in der Hand („LED-Ventilkappen in 4 Farben“) → aufschrauben → Lichtring-Fahrt („…und jedes Rad wird zum Lichtring ⭕“) → Endcard „Das Geschenk unterm Baum 🎄 · Paar ab 14,99 €“.
+
+**Sound:** ruhiger, warmer Weihnachts-/Lo-fi-Sound oder ein ASMR-Unboxing-Audio (Papier/Schleife). Den Schnitt zur Nachtfahrt (Sek. ~10,8) auf einen Beat legen.
+
+**Caption DE:**
+> Für die Person, die beim Radfahren schon alles hat 🎁🚲
+> Night Glow macht jedes Rad zum Lichtring ✨ – verpackt in der schwarzen Velluto-Box, fertig zum Verschenken.
+> Paar ab 14,99 € · Link in Bio
+>
+> #geschenkidee #weihnachtsgeschenk #geschenkfürradfahrer #unboxing #fahrrad #radfahren #bikelife #velluto
+
+**Caption EN:**
+> For the cyclist who already has everything 🎁🚲
+> Night Glow turns every wheel into a ring of light ✨ – packed in the black Velluto box, ready to gift.
+> Pair from €14.99 · Link in bio
+>
+> #giftideas #christmasgifts #giftsforcyclists #unboxing #cycling #bikelife #bicycle #velluto
+
+Hinweis: KI-generierte Szenen – Label „KI-generiert / AI-generated“ setzen.
