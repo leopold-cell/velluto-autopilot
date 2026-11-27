@@ -35,4 +35,4 @@ Link in Bio → Velluto Starter Vision Kit (StradaPro, ab 69 €).
 > Winter in Thailand 🌴🛵 Roller, Palmen, 35° – und im Frühling geht's mit derselben Brille aufs Rennrad 🚴
 > Velluto StradaPro · UV400 · ab 69 € · Link in Bio
 >
-> #thailand #rollertour #kohkood #sonnenbrille #urlaub #rennrad #velluto
+> #thailand #rollertour #inselleben #sonnenbrille #urlaub #rennrad #velluto
